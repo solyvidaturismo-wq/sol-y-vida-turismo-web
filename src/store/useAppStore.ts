@@ -385,7 +385,7 @@ export const useAppStore = create<AppStore>()(
 
 export const useSuppliers = () => useAppStore((s) => s.suppliers);
 export const useProducts = () => useAppStore((s) => s.products);
-export const useSidebarOpen = () => useAppStore((s) => s.sidebarOpen);
 export const useRoutes = () => useAppStore((s) => s.routes);
+export const useSidebarOpen = () => useAppStore((s) => s.sidebarOpen);
 export const useStoreLoading = () => useAppStore((s) => s.loading);
 export const useStoreError = () => useAppStore((s) => s.error);
