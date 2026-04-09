@@ -1,310 +1,314 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useRoutes, useProducts, useSuppliers, useAppStore } from '../store/useAppStore';
+import React from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { 
   ArrowLeft, 
   MapPin, 
-  Calendar, 
-  Users, 
-  Map, 
-  Edit2, 
-  Trash2, 
-  DollarSign, 
   Clock, 
-  Package, 
-  ChevronRight,
-  Info,
-  TrendingUp,
+  Route as PathIcon,
   Tag,
   Star,
-  Zap,
-  Layout,
-  ExternalLink,
-  ChevronDown
+  CheckCircle2,
+  Calendar,
+  DollarSign,
+  TrendingUp,
+  Image as ImageIcon
 } from 'lucide-react';
-import { useState } from 'react';
+import { useAppStore } from '../store/useAppStore';
 
 export default function RouteDetailPage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const routes = useRoutes();
-  const products = useProducts();
-  const suppliers = useSuppliers();
-  const deleteRoute = useAppStore(s => s.deleteRoute);
-
-  const route = routes.find(r => r.id === id);
+  const { id } = useParams<{ id: string }>();
+  const getRouteById = useAppStore((s) => s.getRouteById);
+  const suppliers = useAppStore((s) => s.suppliers);
+  const products = useAppStore((s) => s.products);
+  
+  const route = getRouteById(id || '');
 
   if (!route) {
     return (
-      <div className="h-96 flex flex-col items-center justify-center text-center space-y-4">
-        <Map size={48} className="text-slate-800" />
-        <h2 className="text-xl font-black text-white">Ruta no encontrada</h2>
-        <Link to="/rutas" className="btn-secondary">Volver al panel</Link>
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <h2 className="text-2xl font-bold text-slate-300">Ruta no encontrada</h2>
+        <Link to="/routes" className="mt-4 text-sky-500 hover:underline">Volver al catálogo</Link>
       </div>
     );
   }
 
-  const handleDelete = async () => {
-    if (confirm(`¿Eliminar permanently "${route.name}"?`)) {
-      await deleteRoute(route.id);
-      navigate('/rutas');
-    }
-  };
-
-  // Group itinerary by day
-  const daysMap: Record<number, typeof route.itinerary> = {};
-  route.itinerary.forEach(item => {
-    if (!daysMap[item.day]) daysMap[item.day] = [];
-    daysMap[item.day].push(item);
-  });
-  const sortedDays = Object.keys(daysMap).map(Number).sort((a, b) => a - b);
-
   return (
-    <div className="space-y-8 animate-page-enter">
-      {/* Route Hero Banner */}
-      <div className="relative h-80 md:h-[450px] -mt-6 -mx-4 md:-mx-8 overflow-hidden rounded-b-[50px] shadow-2xl group">
-         {route.images?.[0] ? (
-           <img src={route.images[0]} className="w-full h-full object-cover" />
-         ) : (
-           <div className="w-full h-full bg-slate-900 flex items-center justify-center">
-              <Map size={120} className="text-slate-800" />
-           </div>
-         )}
-         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
-         
-         {/* Controls */}
-         <div className="absolute top-8 left-8 flex items-center gap-4">
-            <Link to="/rutas" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-xs font-black uppercase tracking-widest">
-               <ArrowLeft size={16} /> Mis Rutas
+    <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Header & Main Info */}
+      <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={route.images[0] || "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1"} 
+            className="w-full h-full object-cover blur-sm brightness-50"
+            alt=""
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+        </div>
+
+        <div className="relative z-10 p-8 md:p-12 flex flex-col md:flex-row gap-8 items-end justify-between">
+          <div className="space-y-4">
+            <Link 
+              to="/routes" 
+              className="inline-flex items-center gap-2 text-sky-400 font-bold text-xs uppercase tracking-widest hover:text-sky-300 transition-colors"
+            >
+              <ArrowLeft size={14} /> Volver a Rutas
             </Link>
-         </div>
-
-         <div className="absolute top-8 right-8 flex items-center gap-3">
-            <button onClick={() => navigate(`/rutas/${route.id}/editar`)} className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-emerald-500 hover:border-emerald-500 transition-all">
-               <Edit2 size={20} />
-            </button>
-            <button onClick={handleDelete} className="p-3 rounded-2xl bg-rose-500/10 backdrop-blur-md border border-rose-500/20 text-rose-500 hover:bg-rose-500 hover:text-white transition-all">
-               <Trash2 size={20} />
-            </button>
-         </div>
-
-         {/* Title area */}
-         <div className="absolute bottom-10 left-10 right-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-4 flex-1">
-               <div className="flex flex-wrap items-center gap-3">
-                  <span className="badge badge-emerald text-[10px] font-black uppercase tracking-widest px-3 py-1">
-                    <MapPin size={10} className="mr-1" /> {route.destination}
-                  </span>
-                  <span className={`badge ${route.status === 'activo' ? 'badge-emerald' : 'badge-amber'} text-[10px] font-black uppercase`}>
-                    {route.status}
-                  </span>
-               </div>
-               <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none">{route.name}</h1>
-               <div className="flex flex-wrap items-center gap-6 text-slate-300 text-sm font-black">
-                  <span className="flex items-center gap-1.5"><Calendar size={18} className="text-emerald-500" /> {route.duration_days} DIAS / {route.duration_days - 1} NOCHES</span>
-                  <span className="flex items-center gap-1.5"><TrendingUp size={18} className="text-emerald-500" /> {route.booking_count} RESERVAS</span>
-               </div>
+            <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight">
+              {route.name}
+            </h1>
+            <div className="flex flex-wrap gap-4 items-center">
+              <span className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md text-slate-300">
+                <MapPin size={16} className="text-sky-400" /> {route.destination}
+              </span>
+              <span className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md text-slate-300">
+                <Clock size={16} className="text-amber-400" /> {route.duration_days} Días
+              </span>
+              <span className={`px-4 py-2 rounded-2xl border backdrop-blur-md font-bold uppercase text-[10px] tracking-widest ${
+                route.status === 'activo' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-slate-500/10 border-slate-500/30 text-slate-400'
+              }`}>
+                {route.status}
+              </span>
             </div>
+          </div>
 
-            <div className="bg-emerald-500/10 backdrop-blur-xl border border-emerald-500/30 p-8 rounded-[40px] text-right min-w-[240px]">
-               <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Costo Estimado p/pax</p>
-               <div className="text-4xl font-black text-white">
-                 <span className="text-lg mr-1">{route.pricing.currency}</span>
-                 {route.pricing.base_price_per_pax.toLocaleString()}
-               </div>
-               <div className="mt-2 flex gap-1 justify-end">
-                  {route.tags.slice(0, 3).map(t => (
-                    <span key={t} className="text-[8px] px-1.5 py-0.5 rounded bg-white/5 text-slate-400 uppercase border border-white/10">{t}</span>
-                  ))}
-               </div>
+          <div className="bg-white p-6 rounded-3xl border border-white/20 shadow-xl min-w-[280px]">
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Precio desde</p>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-black text-slate-900">${route.pricing.base_price_per_pax}</span>
+              <span className="text-lg font-bold text-slate-500">{route.pricing.currency} / pax</span>
             </div>
-         </div>
+            <button className="w-full mt-6 py-4 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-bold transition-all shadow-lg hover:shadow-sky-500/25 active:scale-95">
+              Solicitar Cotización
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-         {/* Column: Core Details */}
-         <div className="lg:col-span-2 space-y-8">
-            <div className="glass-card p-8">
-               <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
-                    <Info size={20} />
-                  </div>
-                  <h2 className="text-2xl font-black text-white">Visión General</h2>
-               </div>
-               <p className="text-slate-400 font-medium leading-relaxed text-lg">
-                 {route.description || 'Proporciona una descripción cautivadora para esta ruta en el editor.'}
-               </p>
-               
-               <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-8 border-t border-white/5 pt-8">
-                  <div className="space-y-4">
-                     <h4 className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">Inclusiones Técnicas</h4>
-                     <ul className="space-y-3">
-                        {['Vuelos seleccionables', 'Alojamiento 4 estrellas', 'Guías certificados', 'Traslados privados'].map((inc, i) => (
-                          <li key={i} className="flex items-center gap-3 text-slate-300 text-sm font-bold">
-                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                             {inc}
-                          </li>
-                        ))}
-                     </ul>
-                  </div>
-                  <div className="space-y-4">
-                     <h4 className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">Exclusiones</h4>
-                     <ul className="space-y-3">
-                        {['Propinas', 'Gastos personales', 'Seguro internacional'].map((exc, i) => (
-                          <li key={i} className="flex items-center gap-3 text-slate-500 text-sm font-bold">
-                             <div className="w-1.5 h-1.5 rounded-full bg-slate-700" />
-                             {exc}
-                          </li>
-                        ))}
-                     </ul>
-                  </div>
-               </div>
+        {/* Left Column: Description & Itinerary */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Summary Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+             <div className="p-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
+                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Dificultad</p>
+                <div className="flex items-center gap-2">
+                  <PathIcon size={16} className="text-sky-400" />
+                  <span className="font-bold text-white capitalize">{route.difficulty || 'Moderada'}</span>
+                </div>
+             </div>
+             <div className="p-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
+                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Vistas</p>
+                <div className="flex items-center gap-2">
+                  <TrendingUp size={16} className="text-rose-400" />
+                  <span className="font-bold text-white tracking-widest">{route.view_count}</span>
+                </div>
+             </div>
+             <div className="p-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
+                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Reservas</p>
+                <div className="flex items-center gap-2">
+                  <Star size={16} className="text-amber-400" />
+                  <span className="font-bold text-white tracking-widest">{route.booking_count}</span>
+                </div>
+             </div>
+             <div className="p-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
+                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Aprobado</p>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-emerald-400" />
+                  <span className="font-bold text-white">100%</span>
+                </div>
+             </div>
+          </div>
+
+          {/* Detailed Description */}
+          <div className="p-8 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md font-medium text-slate-300 leading-relaxed shadow-xl">
+            <h3 className="text-xl font-bold text-white mb-4">Sobre esta aventura</h3>
+            <p className="whitespace-pre-line">{route.description}</p>
+            
+            <div className="mt-8 grid grid-cols-2 gap-6">
+              <div>
+                <h4 className="flex items-center gap-2 text-emerald-400 font-bold text-sm mb-4">
+                  <CheckCircle2 size={16} /> Lo que incluye
+                </h4>
+                <ul className="space-y-2">
+                  {route.included.map((item, i) => (
+                    <li key={i} className="text-sm flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="flex items-center gap-2 text-rose-400 font-bold text-sm mb-4">
+                  <Tag size={16} /> No incluye
+                </h4>
+                <ul className="space-y-2">
+                  {route.not_included.map((item, i) => (
+                    <li key={i} className="text-sm flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
+          </div>
 
-            {/* Itinerary Timeline */}
-            <div className="space-y-6">
-               <div className="flex items-center justify-between px-2">
-                  <h2 className="text-2xl font-black text-white flex items-center gap-3">
-                     <Layout className="text-emerald-500" />
-                     Cronograma de Ruta
-                  </h2>
-               </div>
+          {/* Itinerary Timeline */}
+          <div className="space-y-6">
+             <div className="flex items-center justify-between">
+                <h3 className="text-2xl font-black text-white tracking-tight">Plan de Viaje</h3>
+                <span className="px-4 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 font-bold text-xs">
+                  {route.duration_days} Días / {route.duration_days - 1} Noches
+                </span>
+             </div>
 
-               <div className="space-y-12">
-                  {sortedDays.map((dayNum) => (
-                    <div key={dayNum} className="relative pl-12">
-                       {/* Timeline vertical bar */}
-                       <div className="absolute left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500/40 via-emerald-500/10 to-transparent" />
-                       
-                       {/* Day marker */}
-                       <div className="absolute left-0 top-0 w-12 h-12 rounded-2xl bg-slate-900 border-2 border-emerald-500 flex items-center justify-center z-10 shadow-lg shadow-emerald-500/10">
-                          <span className="text-white font-black text-lg">{dayNum}</span>
+             <div className="relative space-y-12 before:absolute before:inset-0 before:left-8 before:w-0.5 before:bg-gradient-to-b before:from-sky-500/50 before:via-sky-500/10 before:to-transparent">
+                {Array.from({ length: route.duration_days }).map((_, d) => {
+                  const dayNum = d + 1;
+                  const dayItems = route.itinerary.filter(i => i.day === dayNum);
+                  
+                  return (
+                    <div key={d} className="relative pl-20 transition-all group">
+                       <div className="absolute left-0 top-0 w-16 h-16 rounded-3xl bg-slate-900 border-2 border-sky-500/40 flex items-center justify-center font-black text-2xl text-white shadow-xl group-hover:bg-sky-500 group-hover:border-sky-400 transition-all group-hover:scale-110 z-10">
+                         {dayNum}
                        </div>
-
+                       
                        <div className="space-y-6">
-                          <h3 className="text-xl font-black text-white px-2">Día {dayNum}: Exploración Intensa</h3>
-                          
-                          <div className="space-y-4">
-                             {daysMap[dayNum].map((item, idx) => {
-                               const product = products.find(p => p.id === item.product_id);
-                               const supplier = suppliers.find(s => s.id === product?.supplier_id);
+                         <h4 className="text-xl font-bold text-white pt-4">Día {dayNum}: Exploración</h4>
+                         
+                         <div className="grid gap-4">
+                           {dayItems.length > 0 ? (
+                             dayItems.map((item, idx) => {
+                               const supplier = item.ref_type === 'supplier' ? suppliers.find(s => s.id === item.ref_id) : null;
+                               const product = item.ref_type === 'product' ? products.find(p => p.id === item.ref_id) : null;
+                               const title = supplier?.name || product?.name || 'Recurso no asignado';
+                               const catLabel = supplier?.category || product?.category;
                                
                                return (
                                  <div 
                                    key={idx} 
-                                   className="glass-card p-6 flex flex-col md:flex-row gap-6 hover:border-emerald-500/30 transition-all group relative overflow-hidden"
+                                   className="p-6 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all hover:translate-x-2"
                                  >
-                                    <div className="w-full md:w-32 h-24 rounded-2xl bg-slate-800 overflow-hidden shrink-0 border border-white/5">
-                                      {product?.images?.[0] ? <img src={product.images[0]} className="w-full h-full object-cover" /> : <Package size={24} className="m-auto mt-8 text-slate-700" />}
+                                    <div className="flex items-start justify-between mb-4">
+                                       <h4 className="font-bold text-white group-hover:text-sky-400 transition-colors">
+                                         {title}
+                                       </h4>
+                                       {(item.time_start || item.time_end) && (
+                                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1 shrink-0" style={{ background: 'rgba(14,165,233,0.1)', color: '#38bdf8' }}>
+                                           <Clock size={10}/> {item.time_start || '?'} - {item.time_end || '?'}
+                                         </span>
+                                       )}
                                     </div>
-
-                                    <div className="flex-1 space-y-3">
-                                       <div className="flex items-center gap-3">
-                                          <span className="px-2 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-widest">{item.start_time} - {item.end_time}</span>
-                                          <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{product?.category}</span>
-                                       </div>
-                                       <div>
-                                          <h4 className="text-lg font-black text-white mb-1 group-hover:text-emerald-400 transition-colors uppercase tracking-tight">{product?.name || 'Servicio Personalizado'}</h4>
-                                          <p className="text-xs text-slate-500 font-bold flex items-center gap-1.5">
-                                            <Package size={12} className="text-emerald-500" /> Operado por {supplier?.name || 'Sol y Vida'}
-                                          </p>
-                                       </div>
-                                       <div className="flex flex-wrap gap-2">
-                                          {item.notes && <p className="text-xs text-slate-400 italic bg-white/5 px-3 py-1.5 rounded-xl border border-white/5 w-full">"{item.notes}"</p>}
-                                       </div>
-                                    </div>
+                                    {catLabel && (
+                                      <p className="text-xs font-bold capitalize mb-2" style={{ color: 'var(--color-brand-sun)' }}>
+                                        {catLabel.replace('_', ' ')}
+                                      </p>
+                                    )}
                                     
-                                    <div className="flex md:flex-col justify-between items-center md:items-end">
-                                       <div className="text-right">
-                                          <p className="text-[10px] font-black text-slate-600 uppercase">Costo</p>
-                                          <p className="text-sm font-black text-white">$ {product?.base_price || 0}</p>
-                                       </div>
-                                       <Link to={`/productos/${product?.id}/detalle`} className="p-2 rounded-xl bg-white/5 text-slate-500 hover:bg-emerald-500 hover:text-slate-900 transition-all">
-                                          <ExternalLink size={16} />
-                                       </Link>
-                                    </div>
+                                    {/* Content details */}
+                                    {product && (
+                                      <div className="mb-3 space-y-1">
+                                        <p className="text-xs line-clamp-2" style={{ color: 'var(--color-text-secondary)' }}>
+                                          {product.short_description || product.description || 'Sin descripción detallada.'}
+                                        </p>
+                                        <div className="flex items-center gap-3 text-[10px]" style={{ color: 'var(--color-text-muted)' }}>
+                                          {(product.duration_minutes ?? 0) > 0 && <span>⏱️ Duración: {product.duration_minutes} min</span>}
+                                          {product.base_price > 0 && <span className="text-emerald-400 font-semibold">💰 Precio Ref: ${product.base_price} {product.currency}</span>}
+                                        </div>
+                                        {product.activity_itinerary && product.activity_itinerary.length > 0 && (
+                                           <div className="mt-3 pt-2 pl-3 border-l-2 border-sky-500/30 space-y-2">
+                                             <p className="text-[10px] font-bold text-sky-400 uppercase tracking-widest mb-2">Sub-Itinerario</p>
+                                             {product.activity_itinerary.map((excItem, i) => (
+                                               <div key={i} className="flex flex-col mb-1.5">
+                                                 <div className="flex items-center gap-2">
+                                                   <span className="text-[10px] font-bold bg-sky-500/20 text-sky-300 px-1.5 py-0.5 rounded">{excItem.time}</span>
+                                                   <span className="text-xs text-slate-200 font-medium">{excItem.activity}</span>
+                                                 </div>
+                                                 {excItem.description && (
+                                                   <span className="text-[10px] text-slate-400 pl-10 leading-tight">{excItem.description}</span>
+                                                 )}
+                                               </div>
+                                             ))}
+                                           </div>
+                                        )}
+                                      </div>
+                                    )}
                                     
-                                    {/* Small design element */}
-                                    <div className="absolute right-0 top-0 w-24 h-24 bg-emerald-500/5 blur-3xl rounded-full -mr-12 -mt-12" />
+                                    {item.notes && (
+                                      <div className="flex gap-2 p-3 mt-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[10.5px] italic text-amber-200 font-medium leading-normal">
+                                         <Star size={12} className="shrink-0 text-amber-400" />
+                                         {item.notes}
+                                      </div>
+                                    )}
                                  </div>
                                );
-                             })}
-                          </div>
+                             })
+                           ) : (
+                             <p className="text-sm italic text-slate-500 pl-4 border-l border-white/10">Este día aún no tiene actividades programadas.</p>
+                           )}
+                         </div>
                        </div>
                     </div>
-                  ))}
-               </div>
-            </div>
-         </div>
+                  );
+                })}
+             </div>
+          </div>
+        </div>
 
-         {/* Column: Sidebar Data */}
-         <div className="space-y-8">
-            {/* Booking Stats */}
-            <div className="glass-card p-6 bg-amber-500/5 border-amber-500/20">
-               <h4 className="text-lg font-black text-white mb-6 flex items-center gap-2">
-                  <TrendingUp size={20} className="text-amber-500" /> Rendimiento
-               </h4>
-               <div className="space-y-6">
-                  <div className="flex justify-between items-end">
-                     <div>
-                        <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest leading-none mb-1">Total Reservas</p>
-                        <p className="text-3xl font-black text-white">{route.booking_count}</p>
-                     </div>
-                     <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full">+12% vs last month</span>
-                  </div>
-                  
-                  <div className="pt-6 border-t border-white/10">
-                     <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Revenue Generado</p>
-                     <p className="text-4xl font-black text-amber-500">
-                        <span className="text-base mr-1">$</span>
-                        {(route.booking_count * route.pricing.base_price_per_pax).toLocaleString()}
-                     </p>
-                  </div>
-               </div>
-            </div>
+        {/* Right Column: Sidebar info */}
+        <div className="space-y-8">
+           <div className="p-8 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md shadow-2xl">
+              <h4 className="text-lg font-bold text-white mb-6 uppercase tracking-widest text-[10px] opacity-60">Puntos Destacados</h4>
+              <div className="space-y-4">
+                 {route.highlights.map((h, i) => (
+                   <div key={i} className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-sky-500/20 border border-sky-500/30 flex items-center justify-center text-sky-400 font-bold text-xs ring-4 ring-sky-500/5">
+                        {i + 1}
+                      </div>
+                      <span className="text-sm text-slate-200 font-semibold">{h}</span>
+                   </div>
+                 ))}
+              </div>
+           </div>
 
-            {/* Quick Pricing Breakdown */}
-            <div className="glass-card p-6 space-y-6">
-               <h4 className="text-lg font-black text-white flex items-center gap-2">
-                  <DollarSign size={20} className="text-sky-500" /> Desglose Comercial
-               </h4>
-               <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                     <span className="text-slate-500 text-xs font-bold font-mono">NETO ESTIMADO</span>
-                     <span className="text-white font-black text-sm">$ {(route.pricing.base_price_per_pax * 0.85).toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                     <span className="text-slate-500 text-xs font-bold font-mono">MARKUP (15%)</span>
-                     <span className="text-sky-400 font-black text-sm">$ {(route.pricing.base_price_per_pax * 0.15).toFixed(2)}</span>
-                  </div>
-                  <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                     <span className="text-white font-black text-sm font-mono">VENTA TOTAL</span>
-                     <span className="text-emerald-400 font-black text-lg">$ {route.pricing.base_price_per_pax.toLocaleString()}</span>
-                  </div>
-               </div>
-            </div>
+           <div className="p-8 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-md">
+              <h4 className="text-lg font-bold text-white mb-6 uppercase tracking-widest text-[10px] opacity-60">Galería de Fotos</h4>
+              <div className="grid grid-cols-2 gap-3">
+                 {route.images.map((img, i) => (
+                   <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-white/10 group cursor-pointer">
+                      <img 
+                        src={img} 
+                        className="w-full h-full object-cover transition-all group-hover:scale-110 duration-500"
+                        alt={`Route view ${i}`}
+                      />
+                   </div>
+                 ))}
+                 <div className="aspect-square rounded-2xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-2 text-slate-500 hover:border-white/20 hover:text-slate-400 transition-all cursor-pointer">
+                    <ImageIcon size={20} />
+                    <span className="text-[10px] font-bold">Ver más</span>
+                 </div>
+              </div>
+           </div>
 
-            {/* Tags Cloud */}
-            <div className="glass-card p-6">
-               <h4 className="text-lg font-black text-white mb-4">Etiquetas y SEO</h4>
-               <div className="flex flex-wrap gap-2">
-                  {route.tags.map(tag => (
-                    <div key={tag} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 border border-white/5 text-[10px] font-black text-slate-400 uppercase hover:border-emerald-500/40 hover:text-white transition-all">
-                       <Tag size={10} /> {tag}
-                    </div>
-                  ))}
-               </div>
-            </div>
-
-            {/* Operational Notes */}
-            <div className="p-6 rounded-[32px] bg-slate-900 border border-white/5">
-                <div className="flex items-center gap-2 text-white font-black text-sm mb-3">
-                   <Zap size={16} className="text-amber-500" /> NOTAS DE OPERACIÓN
-                </div>
-                <p className="text-[11px] text-slate-500 font-medium leading-relaxed italic">
-                  Esta ruta requiere confirmación de disponibilidad con 72h de antelación para hoteles de categoría Premium.
-                </p>
-            </div>
-         </div>
+           <div className="p-8 rounded-3xl border border-white/10 bg-gradient-to-br from-white/10 to-transparent backdrop-blur-md">
+              <div className="flex items-center gap-4 mb-4">
+                <Calendar className="text-sky-400" />
+                <h4 className="text-lg font-bold text-white">Próximas Salidas</h4>
+              </div>
+              <p className="text-xs text-slate-400 mb-6">Contamos con disponibilidad garantizada durante todo el año. Consulta por grupos privados.</p>
+              <div className="space-y-3">
+                 <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
+                    <span className="text-xs font-bold text-white">Mayo 15 - Jun 10</span>
+                    <span className="text-[10px] font-black text-emerald-400 uppercase">Disponible</span>
+                 </div>
+                 <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between opacity-50">
+                    <span className="text-xs font-bold text-white">Julio 20 - Ago 05</span>
+                    <span className="text-[10px] font-black text-rose-400 uppercase">Agotado</span>
+                 </div>
+              </div>
+           </div>
+        </div>
       </div>
     </div>
   );

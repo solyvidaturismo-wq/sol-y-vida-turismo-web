@@ -1,80 +1,127 @@
-import React, { useState } from 'react';
-import { Upload, X, Image as ImageIcon, Plus } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { Upload, X } from 'lucide-react';
 
 interface ImageUploadProps {
-  value?: string[];
-  onChange: (urls: string[]) => void;
-  max?: number;
+  label: string;
+  value?: string | string[]; // Can be a single Base64 string or array
+  onChange: (value: string | string[]) => void;
+  maxFiles?: number;
+  maxSizeKB?: number;
+  description?: string;
 }
 
-export const ImageUpload: React.FC<ImageUploadProps> = ({ value = [], onChange, max = 5 }) => {
-  const [isDragging, setIsDragging] = useState(false);
+export default function ImageUpload({
+  label,
+  value,
+  onChange,
+  maxFiles = 1,
+  maxSizeKB = 150,
+  description
+}: ImageUploadProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSimulatedUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
+  // Normalize to array for easier handling
+  const existingImages = value
+    ? (Array.isArray(value) ? value : [value])
+    : [];
 
-    // Simulated cloud upload - in reality this would go to Supabase Storage
-    const newUrls = Array.from(files).map((_, i) => `https://images.unsplash.com/photo-${1600000000000 + Date.now() + i}?auto=format&fit=crop&q=80&w=800`);
-    onChange([...value, ...newUrls].slice(0, max));
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null);
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    if (existingImages.length + files.length > maxFiles) {
+      setError(`Solo se permiten hasta ${maxFiles} imagen(es).`);
+      return;
+    }
+
+    const validFiles = files.filter(f => {
+      if (f.size > maxSizeKB * 1024) {
+        setError(`El archivo ${f.name} excede el tamaño máximo de ${maxSizeKB}KB.`);
+        return false;
+      }
+      return true;
+    });
+
+    Promise.all(validFiles.map(f => {
+      return new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => resolve(event.target?.result as string);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(f);
+      });
+    })).then(base64Strings => {
+      const newImages = [...existingImages, ...base64Strings];
+
+      if (maxFiles === 1) {
+        onChange(newImages[newImages.length - 1]); // keep only the last one for maxFiles=1
+      } else {
+        onChange(newImages);
+      }
+
+      // Reset input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    });
   };
 
   const removeImage = (index: number) => {
-    onChange(value.filter((_, i) => i !== index));
+    if (maxFiles === 1) {
+      onChange('');
+    } else {
+      const newArray = [...existingImages];
+      newArray.splice(index, 1);
+      onChange(newArray);
+    }
   };
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {value.map((url, index) => (
-          <div key={index} className="relative aspect-square rounded-2xl bg-slate-800 overflow-hidden border border-white/10 group">
-             <img src={url} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500" alt={`Upload ${index}`} />
-             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <button 
-                  type="button"
-                  onClick={() => removeImage(index)}
-                  className="p-2 rounded-full bg-rose-500 text-white hover:scale-110 transition-transform shadow-xl"
-                >
-                   <X size={16} />
-                </button>
-             </div>
+    <div className="space-y-2">
+      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+        {label}
+      </label>
+
+      <div className="flex flex-wrap gap-4 items-start">
+        {existingImages.map((imgBase64, idx) => (
+          <div key={idx} className="relative group w-32 h-32 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 shadow-sm flex items-center justify-center">
+            {imgBase64 ? (
+              <img src={imgBase64} alt="Preview" className="w-full h-full object-cover" />
+            ) : null}
+            <button
+              type="button"
+              onClick={() => removeImage(idx)}
+              className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <X size={14} />
+            </button>
           </div>
         ))}
 
-        {value.length < max && (
-          <label className={`
-            aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all gap-2
-            ${isDragging ? 'bg-amber-500/10 border-amber-500' : 'bg-slate-900 border-white/5 hover:border-white/20 hover:bg-white/5'}
-          `}>
-             <input 
-               type="file" 
-               multiple 
-               accept="image/*" 
-               onChange={handleSimulatedUpload}
-               className="sr-only"
-               onDragOver={() => setIsDragging(true)}
-               onDragLeave={() => setIsDragging(false)}
-             />
-             <div className="p-3 rounded-full bg-slate-800 text-slate-500">
-                <Plus size={20} />
-             </div>
-             <div className="text-center">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Subir Imagen</p>
-                <p className="text-[8px] text-slate-600 font-bold uppercase mt-1">MAX {max}</p>
-             </div>
-          </label>
+        {existingImages.length < maxFiles && (
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="w-32 h-32 rounded-xl border-2 border-dashed border-sky-300 dark:border-sky-700 hover:border-sky-500 bg-sky-50 dark:bg-sky-500/5 hover:bg-sky-100 dark:hover:bg-sky-500/10 transition-colors flex flex-col items-center justify-center gap-2 text-sky-600 dark:text-sky-400"
+          >
+            <Upload size={24} />
+            <span className="text-[10px] font-bold px-2 text-center">Subir Imagen</span>
+          </button>
         )}
       </div>
 
-      {value.length === 0 && (
-         <div className="p-12 rounded-[40px] bg-slate-900 border border-white/5 border-dashed flex flex-col items-center justify-center text-center">
-            <div className="w-16 h-16 rounded-[28px] bg-slate-800 flex items-center justify-center text-slate-600 mb-4">
-               <ImageIcon size={32} />
-            </div>
-            <h4 className="text-sm font-black text-white uppercase tracking-tight mb-1">Galería de Imágenes</h4>
-            <p className="text-xs text-slate-500 font-medium max-w-[200px]">Sube fotos de alta resolución para mejorar el impacto visual del producto.</p>
-         </div>
-      )}
+      {description && <p className="text-xs text-slate-500">{description}</p>}
+      {error && <p className="text-xs text-red-500 animate-pulse">{error}</p>}
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png, image/jpeg, image/webp"
+        multiple={maxFiles > 1}
+        className="hidden"
+        onChange={handleFileChange}
+      />
     </div>
   );
-};
+}

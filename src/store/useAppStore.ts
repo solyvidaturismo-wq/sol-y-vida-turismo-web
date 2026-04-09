@@ -63,6 +63,7 @@ interface AppStore extends SupplierActions, ProductActions, RouteActions, UiStat
 
   // Sync
   fetchData: () => Promise<void>;
+  resetToMockData: () => void;
 }
 
 // ---- Store ----
@@ -362,6 +363,12 @@ export const useAppStore = create<AppStore>()(
       getActiveProducts: () => get().products.filter((p) => p.status === 'activo').length,
 
       getActiveSuppliers: () => get().suppliers.filter((s) => s.status === 'activo').length,
+
+      resetToMockData: () => {
+        // En un entorno real con Supabase esto podría refrescar los datos
+        // o re-inicializar el estado local.
+        get().fetchData();
+      },
     }),
     {
       name: 'sol-y-vida-ui-state',
@@ -378,7 +385,7 @@ export const useAppStore = create<AppStore>()(
 
 export const useSuppliers = () => useAppStore((s) => s.suppliers);
 export const useProducts = () => useAppStore((s) => s.products);
-export const useRoutes = () => useAppStore((s) => s.routes);
 export const useSidebarOpen = () => useAppStore((s) => s.sidebarOpen);
+export const useRoutes = () => useAppStore((s) => s.routes);
 export const useStoreLoading = () => useAppStore((s) => s.loading);
 export const useStoreError = () => useAppStore((s) => s.error);
