@@ -775,7 +775,7 @@ export default function ItineraryBuilderPage() {
             <h1 className="page-title">Constructor de Itinerario</h1>
             <p className="page-subtitle">
               {route.name} ·{' '}
-              <span style={{ color: 'var(--color-brand-sun)' }}>{route.duration_days} días</span>
+              <span style={{ color: 'var(--color-brand-terra)' }}>{route.duration_days} días</span>
             </p>
           </div>
         </div>

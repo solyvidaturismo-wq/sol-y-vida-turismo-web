@@ -8,8 +8,8 @@ export function ProtectedRoute() {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--color-bg-primary)' }}>
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-xl gradient-sun flex items-center justify-center shadow-lg shadow-[#A8442A]/20 animate-pulse">
-            <span className="text-white text-xl">☀️</span>
+          <div className="w-12 h-12 rounded-xl gradient-terra flex items-center justify-center shadow-lg shadow-[#A8442A]/20 animate-pulse overflow-hidden">
+            <img src="/logo.png" alt="" className="w-full h-full object-contain" />
           </div>
           <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Cargando...</p>
         </div>

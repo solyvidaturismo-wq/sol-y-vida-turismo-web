@@ -180,7 +180,7 @@ export default function ProductDetailPage() {
          <div className="absolute bottom-10 left-10 right-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-4 flex-1">
                <div className="flex flex-wrap items-center gap-3">
-                  <span className="badge badge-sky text-[10px] font-black uppercase tracking-widest px-3 py-1">
+                  <span className="badge badge-gold text-[10px] font-black uppercase tracking-widest px-3 py-1">
                     {meta?.emoji} {meta?.label || product.category}
                   </span>
                   <span className={`badge ${product.status === 'activo' ? 'badge-emerald' : product.status === 'inactivo' ? 'badge-rose' : 'badge-gray'} text-[10px] font-black uppercase flex items-center gap-1`}>

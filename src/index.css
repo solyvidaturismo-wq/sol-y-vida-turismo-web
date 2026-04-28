@@ -40,17 +40,8 @@
     --color-brand-violet:       #8b5cf6;
     --color-brand-rose:         #f43f5e;
 
-    /* Aliases — mantienen funcionando código que aún usa los nombres viejos */
-    --color-brand-sun:        var(--color-brand-terra);
-    --color-brand-sun-light:  var(--color-brand-terra-light);
-    --color-brand-sun-dark:   var(--color-brand-terra-dark);
-    --color-brand-sky:        var(--color-brand-gold);
-    --color-brand-sky-light:  var(--color-brand-gold-light);
-
     --shadow-glow-terra: 0 0 30px rgba(168, 68, 42, 0.25);
     --shadow-glow-gold:  0 0 30px rgba(214, 165, 92, 0.20);
-    --shadow-glow-sun:   var(--shadow-glow-terra);
-    --shadow-glow-sky:   var(--shadow-glow-gold);
 
     --radius-card: 16px;
     --radius-btn:  10px;
@@ -133,13 +124,11 @@
   }
 
   /* Brand gradients (Vélez) */
-  .gradient-terra,
-  .gradient-sun {
+  .gradient-terra {
     background: linear-gradient(135deg, #A8442A 0%, #7E2A21 100%);
   }
 
-  .gradient-gold,
-  .gradient-sky {
+  .gradient-gold {
     background: linear-gradient(135deg, #D6A55C 0%, #B07E3C 100%);
   }
 
@@ -147,17 +136,15 @@
     background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
   }
 
-  /* Text gradient */
-  .text-gradient-terra,
-  .text-gradient-sun {
+  /* Text gradients */
+  .text-gradient-terra {
     background: linear-gradient(135deg, #A8442A 0%, #C84B2C 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .text-gradient-gold,
-  .text-gradient-sky {
+  .text-gradient-gold {
     background: linear-gradient(135deg, #D6A55C 0%, #B07E3C 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -322,15 +309,13 @@
     letter-spacing: 0.05em;
   }
 
-  .badge-terra,
-  .badge-sun {
+  .badge-terra {
     background: rgba(168, 68, 42, 0.16);
     color: #E08C6F;
     border: 1px solid rgba(168, 68, 42, 0.30);
   }
 
-  .badge-gold,
-  .badge-sky {
+  .badge-gold {
     background: rgba(214, 165, 92, 0.16);
     color: #E8B872;
     border: 1px solid rgba(214, 165, 92, 0.30);
@@ -522,10 +507,25 @@
 /* Proteger colores de todos los badges en light mode */
 [data-theme="light"] .badge-amber  { color: #7E2A21 !important; background: rgba(168,68,42,0.12) !important; }
 [data-theme="light"] .badge-terra  { color: #7E2A21 !important; background: rgba(168,68,42,0.12) !important; }
-[data-theme="light"] .badge-sun    { color: #7E2A21 !important; background: rgba(168,68,42,0.12) !important; }
-[data-theme="light"] .badge-sky    { color: #8B5A1F !important; background: rgba(214,165,92,0.18) !important; }
 [data-theme="light"] .badge-gold   { color: #8B5A1F !important; background: rgba(214,165,92,0.18) !important; }
 [data-theme="light"] .badge-emerald{ color: #047857 !important; background: rgba(16,185,129,0.12) !important; }
 [data-theme="light"] .badge-violet { color: #6d28d9 !important; background: rgba(139,92,246,0.12) !important; }
 [data-theme="light"] .badge-rose   { color: #be123c !important; background: rgba(244,63,94,0.12)  !important; }
 [data-theme="light"] .badge-gray   { color: #374151 !important; background: rgba(107,114,128,0.12)!important; }
+
+/* ═══════════════════════════════════════════════════════
+   Light mode contrast fixes — los hex de marca claros
+   tienen bajo contraste sobre fondo crema. Aquí los
+   bajamos a tonos más oscuros del logo solo en tema claro.
+   ═══════════════════════════════════════════════════════ */
+
+/* Texto: dorados claros y terracota brillante → tonos profundos */
+[data-theme="light"] .text-\[\#D6A55C\] { color: #8B5A1F !important; }
+[data-theme="light"] .text-\[\#E8B872\] { color: #B07E3C !important; }
+[data-theme="light"] .text-\[\#C84B2C\] { color: #7E2A21 !important; }
+[data-theme="light"] .text-\[\#E08C6F\] { color: #7E2A21 !important; }
+
+/* Hover targets — mantener consistencia */
+[data-theme="light"] .hover\:text-\[\#D6A55C\]:hover { color: #8B5A1F !important; }
+[data-theme="light"] .hover\:text-\[\#C84B2C\]:hover { color: #7E2A21 !important; }
+[data-theme="light"] .hover\:text-\[\#E8B872\]:hover { color: #B07E3C !important; }

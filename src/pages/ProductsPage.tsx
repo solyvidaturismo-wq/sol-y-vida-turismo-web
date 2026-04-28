@@ -300,7 +300,7 @@ export default function ProductsPage() {
                           </div>
                        </td>
                        <td className="px-6 py-4">
-                          <span className="badge badge-sky text-[10px] font-black">{p.category.replace('_', ' ')}</span>
+                          <span className="badge badge-gold text-[10px] font-black">{p.category.replace('_', ' ')}</span>
                        </td>
                        <td className="px-6 py-4 text-xs font-semibold text-slate-400">
                           {supplier?.name || 'No asignado'}
