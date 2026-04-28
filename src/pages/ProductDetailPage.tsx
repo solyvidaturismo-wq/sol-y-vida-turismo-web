@@ -211,13 +211,13 @@ export default function ProductDetailPage() {
             </div>
 
             <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-[32px] text-right min-w-[200px]">
-               <p className="text-[10px] font-black text-sky-400 uppercase tracking-widest mb-1">Precio Base</p>
-               <div className="text-4xl font-black text-white">
+               <p className="text-[10px] font-black uppercase tracking-widest mb-1" style={{ color: '#7dd3fc', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>Precio Base</p>
+               <div className="text-4xl font-black" style={{ color: '#ffffff', textShadow: '0 2px 8px rgba(0,0,0,0.85)' }}>
                  <span className="text-lg mr-1">{product.currency}</span>
                  {product.base_price.toLocaleString()}
                </div>
                {categoryConfig && (
-                 <p className="text-[10px] text-slate-400 mt-2 font-medium">{categoryConfig.description}</p>
+                 <p className="text-[10px] mt-2 font-medium" style={{ color: 'rgba(255,255,255,0.75)', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>{categoryConfig.description}</p>
                )}
             </div>
          </div>
