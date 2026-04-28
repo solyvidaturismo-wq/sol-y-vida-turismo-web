@@ -40,10 +40,11 @@ export default function LoginPage() {
       <div className="w-full max-w-md relative">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center mb-4">
-            <img src="/logo.png" alt="Inventario Turístico de Vélez" className="h-32 w-auto object-contain" />
-          </div>
-          <p className="text-xs font-bold text-[#E8B872] tracking-widest uppercase mt-1">Sistema de Gestión Turística</p>
+          <img
+            src="/logo.png"
+            alt="Inventario Turístico de Vélez"
+            className="h-48 w-auto object-contain mx-auto"
+          />
         </div>
 
         {/* Login Card */}

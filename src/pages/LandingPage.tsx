@@ -162,13 +162,11 @@ export default function LandingPage() {
           : 'bg-transparent py-5'
       }`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <button onClick={() => scrollToSection('#inicio')} className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-2xl bg-white/95 flex items-center justify-center shadow-lg shadow-[#7E2A21]/20 group-hover:shadow-[#7E2A21]/40 transition-all overflow-hidden p-1">
-              <img src="/logo.png" alt="Inventario Turístico de Vélez" className="w-full h-full object-contain" />
-            </div>
-            <div className="hidden sm:block leading-tight">
-              <p className={`text-xs font-bold tracking-tight transition-colors ${scrolled ? 'text-slate-500' : 'text-white/80'}`}>Inventario Turístico</p>
-              <p className={`text-base font-black tracking-tight transition-colors ${scrolled ? 'text-[#7E2A21]' : 'text-white'}`}>de Vélez</p>
+          <button onClick={() => scrollToSection('#inicio')} className="flex items-center group">
+            <div className={`rounded-2xl bg-white/95 flex items-center justify-center shadow-lg shadow-[#7E2A21]/20 group-hover:shadow-[#7E2A21]/40 transition-all overflow-hidden p-2 ${
+              scrolled ? 'h-14' : 'h-16'
+            }`}>
+              <img src="/logo.png" alt="Inventario Turístico de Vélez" className="h-full w-auto object-contain" />
             </div>
           </button>
 
@@ -750,13 +748,9 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-white/95 flex items-center justify-center overflow-hidden p-1">
-                  <img src="/logo.png" alt="Inventario Turístico de Vélez" className="w-full h-full object-contain" />
-                </div>
-                <div className="leading-tight">
-                  <p className="text-sm font-bold text-white">Inventario Turístico</p>
-                  <p className="text-xs text-slate-400">de Vélez — Santander</p>
+              <div className="mb-4">
+                <div className="inline-flex rounded-xl bg-white/95 p-2 overflow-hidden">
+                  <img src="/logo.png" alt="Inventario Turístico de Vélez" className="h-16 w-auto object-contain" />
                 </div>
               </div>
               <p className="text-sm text-slate-400 leading-relaxed">

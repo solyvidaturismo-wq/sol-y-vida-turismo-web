@@ -67,16 +67,16 @@ export function Sidebar() {
       style={{ background: 'var(--color-sidebar-bg)' }}
     >
       {/* Brand Logo */}
-      <div className="p-6 flex items-center gap-3 overflow-hidden">
-        <div className="min-w-[40px] h-10 rounded-xl bg-white/95 flex items-center justify-center shadow-lg shadow-[#7E2A21]/30 overflow-hidden p-1">
-          <img src="/logo.png" alt="Inventario Turístico de Vélez" className="w-full h-full object-contain" />
+      <div className={`flex items-center justify-center overflow-hidden ${isOpen ? 'p-5' : 'p-3'}`}>
+        <div className={`rounded-2xl bg-white/95 flex items-center justify-center shadow-lg shadow-[#7E2A21]/25 overflow-hidden transition-all ${
+          isOpen ? 'w-full p-3' : 'w-12 h-12 p-1.5'
+        }`}>
+          <img
+            src="/logo.png"
+            alt="Inventario Turístico de Vélez"
+            className={`w-full object-contain ${isOpen ? 'h-20' : 'h-full'}`}
+          />
         </div>
-        {isOpen && (
-          <div className="flex flex-col animate-page-enter leading-tight">
-            <span className="font-extrabold text-white text-[15px] tracking-tight">Inventario Turístico</span>
-            <span className="text-[10px] font-bold text-[#E8B872] tracking-widest uppercase">de Vélez</span>
-          </div>
-        )}
       </div>
 
       {/* Navigation */}
