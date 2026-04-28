@@ -288,7 +288,7 @@ export default function RouteFormPage() {
           {/* ══════ Highlights ══════ */}
           <div className="glass-card p-8 space-y-5">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center"><Star size={18}/></div>
+              <div className="w-8 h-8 rounded-lg bg-[#A8442A]/10 text-[#A8442A] flex items-center justify-center"><Star size={18}/></div>
               <div>
                 <h2 className="text-xl font-black text-white uppercase tracking-tight">Puntos Destacados</h2>
                 <p className="text-[10px] text-slate-500 font-bold">Lo que hace especial esta ruta</p>
@@ -299,7 +299,7 @@ export default function RouteFormPage() {
               setItems={(items) => { setLocalHighlights(items); setValue('highlights', items); }}
               placeholder="Ej: Visita a cascada de 80m de altura"
               icon={<Star size={14} />}
-              color="text-amber-500"
+              color="text-[#A8442A]"
             />
           </div>
 
@@ -337,7 +337,7 @@ export default function RouteFormPage() {
           {/* ══════ Galería de Imágenes ══════ */}
           <div className="glass-card p-8 space-y-5">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center"><Image size={18}/></div>
+              <div className="w-8 h-8 rounded-lg bg-[#D6A55C]/10 text-[#D6A55C] flex items-center justify-center"><Image size={18}/></div>
               <div>
                 <h2 className="text-xl font-black text-white uppercase tracking-tight">Galería de Imágenes</h2>
                 <p className="text-[10px] text-slate-500 font-bold">La primera imagen será la portada</p>
@@ -412,9 +412,9 @@ export default function RouteFormPage() {
         <div className="space-y-8">
 
           {/* Pricing */}
-          <div className="glass-card p-6 bg-gradient-to-br from-indigo-500/5 to-transparent space-y-6">
+          <div className="glass-card p-6 bg-gradient-to-br from-[#D6A55C]/5 to-transparent space-y-6">
             <h3 className="text-lg font-black text-white flex items-center gap-2">
-              <CreditCard size={20} className="text-sky-500" /> Precio del Paquete
+              <CreditCard size={20} className="text-[#D6A55C]" /> Precio del Paquete
             </h3>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -452,7 +452,7 @@ export default function RouteFormPage() {
             <div className="space-y-3">
               <label className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 cursor-pointer hover:bg-white/10 transition-all">
                 <input type="checkbox" {...register('pricing.includes_guide')} className="accent-emerald-400 w-4 h-4" />
-                <Users size={16} className="text-sky-400 shrink-0" />
+                <Users size={16} className="text-[#D6A55C] shrink-0" />
                 <div>
                   <p className="text-sm font-bold text-white">Guía turístico</p>
                   <p className="text-[10px] text-slate-500">Guía local incluido en el precio</p>
@@ -460,7 +460,7 @@ export default function RouteFormPage() {
               </label>
               <label className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 cursor-pointer hover:bg-white/10 transition-all">
                 <input type="checkbox" {...register('pricing.includes_transport')} className="accent-emerald-400 w-4 h-4" />
-                <Bus size={16} className="text-sky-400 shrink-0" />
+                <Bus size={16} className="text-[#D6A55C] shrink-0" />
                 <div>
                   <p className="text-sm font-bold text-white">Transporte</p>
                   <p className="text-[10px] text-slate-500">Traslados incluidos en el paquete</p>
@@ -468,7 +468,7 @@ export default function RouteFormPage() {
               </label>
               <label className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 cursor-pointer hover:bg-white/10 transition-all">
                 <input type="checkbox" {...register('pricing.includes_meals')} className="accent-emerald-400 w-4 h-4" />
-                <Utensils size={16} className="text-sky-400 shrink-0" />
+                <Utensils size={16} className="text-[#D6A55C] shrink-0" />
                 <div>
                   <p className="text-sm font-bold text-white">Comidas</p>
                   <p className="text-[10px] text-slate-500">Alimentación incluida</p>
@@ -492,7 +492,7 @@ export default function RouteFormPage() {
           {/* Configuration */}
           <div className="glass-card p-6 space-y-6">
             <h3 className="text-lg font-black text-white flex items-center gap-2">
-              <Zap size={20} className="text-amber-500" /> Configuración
+              <Zap size={20} className="text-[#A8442A]" /> Configuración
             </h3>
             <div className="space-y-4">
               <div className="space-y-2 text-sm">
@@ -504,9 +504,9 @@ export default function RouteFormPage() {
                 </select>
               </div>
 
-              <label className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 cursor-pointer hover:bg-amber-500/5 transition-all">
-                <input type="checkbox" {...register('is_featured')} className="accent-amber-400 w-4 h-4" />
-                <Star size={16} className="text-amber-400 shrink-0" />
+              <label className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 cursor-pointer hover:bg-[#A8442A]/5 transition-all">
+                <input type="checkbox" {...register('is_featured')} className="accent-[#C84B2C] w-4 h-4" />
+                <Star size={16} className="text-[#C84B2C] shrink-0" />
                 <div>
                   <p className="text-sm font-bold text-white">Ruta Destacada</p>
                   <p className="text-[10px] text-slate-500">Aparece en la sección principal</p>

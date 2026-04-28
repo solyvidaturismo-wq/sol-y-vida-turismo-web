@@ -5,8 +5,8 @@ import type { ToastType } from '../../store/useToastStore';
 const TOAST_STYLES: Record<ToastType, { icon: typeof CheckCircle2; bg: string; border: string; text: string }> = {
   success: { icon: CheckCircle2, bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', text: 'text-emerald-400' },
   error: { icon: XCircle, bg: 'bg-rose-500/10', border: 'border-rose-500/20', text: 'text-rose-400' },
-  warning: { icon: AlertTriangle, bg: 'bg-amber-500/10', border: 'border-amber-500/20', text: 'text-amber-400' },
-  info: { icon: Info, bg: 'bg-sky-500/10', border: 'border-sky-500/20', text: 'text-sky-400' },
+  warning: { icon: AlertTriangle, bg: 'bg-[#A8442A]/10', border: 'border-[#A8442A]/20', text: 'text-[#C84B2C]' },
+  info: { icon: Info, bg: 'bg-[#D6A55C]/10', border: 'border-[#D6A55C]/20', text: 'text-[#D6A55C]' },
 };
 
 export function ToastContainer() {

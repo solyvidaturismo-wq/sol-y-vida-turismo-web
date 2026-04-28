@@ -18,7 +18,7 @@ export const DynamicFields: React.FC<DynamicFieldsProps> = ({ category }) => {
         return (
           <div key={field.name} className={`space-y-2 ${field.type === 'textarea' ? 'md:col-span-2' : ''}`}>
             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">
-              {field.label} {field.required && <span className="text-amber-500">*</span>}
+              {field.label} {field.required && <span className="text-[#A8442A]">*</span>}
             </label>
 
             {field.type === 'text' && (
@@ -92,7 +92,7 @@ export const DynamicFields: React.FC<DynamicFieldsProps> = ({ category }) => {
                          type="checkbox" 
                          value={opt}
                          {...register(field.name)}
-                         className="w-4 h-4 rounded border-white/10 bg-slate-800 text-amber-500 focus:ring-amber-500/50" 
+                         className="w-4 h-4 rounded border-white/10 bg-slate-800 text-[#A8442A] focus:ring-[#A8442A]/50" 
                        />
                        <span className="text-xs font-bold text-slate-300">{opt}</span>
                     </label>

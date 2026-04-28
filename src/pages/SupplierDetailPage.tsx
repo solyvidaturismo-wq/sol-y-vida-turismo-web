@@ -45,7 +45,7 @@ export default function SupplierDetailPage() {
            <AlertCircle size={32} />
         </div>
         <h2 className="text-xl font-black text-white">Proveedor no encontrado</h2>
-        <Link to="/proveedores" className="text-amber-500 font-bold hover:underline">Volver al directorio</Link>
+        <Link to="/proveedores" className="text-[#A8442A] font-bold hover:underline">Volver al directorio</Link>
       </div>
     );
   }
@@ -105,12 +105,12 @@ export default function SupplierDetailPage() {
                   </div>
                   <h1 className="hero-title text-3xl md:text-5xl font-black tracking-tighter flex items-center gap-3">
                     {supplier.name}
-                    {supplier.rating >= 4.5 && <ShieldCheck className="text-sky-400" size={28} />}
+                    {supplier.rating >= 4.5 && <ShieldCheck className="text-[#D6A55C]" size={28} />}
                   </h1>
                   <div className="flex flex-wrap items-center gap-4 text-sm font-medium" style={{ color: 'rgba(255,255,255,0.9)', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
-                    <span className="flex items-center gap-1.5"><MapPin size={16} className="text-amber-500"/> {supplier.location?.city || 'Sin ciudad'}, {supplier.location?.country || 'Sin país'}</span>
-                    <span className="flex items-center gap-1.5"><Star size={16} className="text-amber-500 fill-amber-500"/> {supplier.rating}/5</span>
-                    <span className="flex items-center gap-1.5"><Package size={16} className="text-sky-400"/> {supplierProducts.length} productos</span>
+                    <span className="flex items-center gap-1.5"><MapPin size={16} className="text-[#A8442A]"/> {supplier.location?.city || 'Sin ciudad'}, {supplier.location?.country || 'Sin país'}</span>
+                    <span className="flex items-center gap-1.5"><Star size={16} className="text-[#A8442A] fill-[#A8442A]"/> {supplier.rating}/5</span>
+                    <span className="flex items-center gap-1.5"><Package size={16} className="text-[#D6A55C]"/> {supplierProducts.length} productos</span>
                   </div>
                </div>
             </div>
@@ -133,13 +133,13 @@ export default function SupplierDetailPage() {
             <div className="grid grid-cols-2 gap-4">
                <div className="glass-card p-4 text-center">
                   <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Comisión</p>
-                  <p className="text-2xl font-black text-sky-400">{supplier.commission_pct}%</p>
+                  <p className="text-2xl font-black text-[#D6A55C]">{supplier.commission_pct}%</p>
                </div>
                <div className="glass-card p-4 text-center">
                   <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Rating</p>
                   <div className="flex items-center justify-center gap-1">
-                     <Star size={16} className="text-amber-500 fill-amber-500" />
-                     <p className="text-2xl font-black text-amber-500">{supplier.rating}</p>
+                     <Star size={16} className="text-[#A8442A] fill-[#A8442A]" />
+                     <p className="text-2xl font-black text-[#A8442A]">{supplier.rating}</p>
                   </div>
                </div>
                <div className="glass-card p-4 text-center">
@@ -155,13 +155,13 @@ export default function SupplierDetailPage() {
             {/* Contacto */}
             <div className="glass-card p-6 space-y-5">
                <h3 className="text-lg font-black text-white border-b border-white/5 pb-3 flex items-center gap-2">
-                  <Phone size={18} className="text-amber-500" /> Contacto Principal
+                  <Phone size={18} className="text-[#A8442A]" /> Contacto Principal
                </h3>
                <div className="space-y-4">
                   {supplier.contact?.name && (
                     <div className="flex items-center gap-3">
-                       <div className="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
-                          <User size={16} className="text-amber-500" />
+                       <div className="w-9 h-9 rounded-xl bg-[#A8442A]/10 flex items-center justify-center shrink-0">
+                          <User size={16} className="text-[#A8442A]" />
                        </div>
                        <div>
                           <p className="text-[10px] font-bold text-slate-500 uppercase">Nombre</p>
@@ -171,12 +171,12 @@ export default function SupplierDetailPage() {
                   )}
                   {supplier.contact?.email && (
                     <div className="flex items-center gap-3">
-                       <div className="w-9 h-9 rounded-xl bg-sky-500/10 flex items-center justify-center shrink-0">
-                          <Mail size={16} className="text-sky-400" />
+                       <div className="w-9 h-9 rounded-xl bg-[#D6A55C]/10 flex items-center justify-center shrink-0">
+                          <Mail size={16} className="text-[#D6A55C]" />
                        </div>
                        <div>
                           <p className="text-[10px] font-bold text-slate-500 uppercase">Email</p>
-                          <a href={`mailto:${supplier.contact.email}`} className="text-sm font-bold text-sky-400 hover:underline">{supplier.contact.email}</a>
+                          <a href={`mailto:${supplier.contact.email}`} className="text-sm font-bold text-[#D6A55C] hover:underline">{supplier.contact.email}</a>
                        </div>
                     </div>
                   )}
@@ -208,7 +208,7 @@ export default function SupplierDetailPage() {
             {/* Ubicación */}
             <div className="glass-card p-6 space-y-4">
                <h3 className="text-lg font-black text-white border-b border-white/5 pb-3 flex items-center gap-2">
-                  <MapPin size={18} className="text-amber-500" /> Ubicación
+                  <MapPin size={18} className="text-[#A8442A]" /> Ubicación
                </h3>
                <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
@@ -235,7 +235,7 @@ export default function SupplierDetailPage() {
             {/* Info Fiscal y contractual */}
             <div className="glass-card p-6 space-y-4">
                <h3 className="text-lg font-black text-white border-b border-white/5 pb-3 flex items-center gap-2">
-                  <FileText size={18} className="text-amber-500" /> Datos Comerciales
+                  <FileText size={18} className="text-[#A8442A]" /> Datos Comerciales
                </h3>
                <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
@@ -244,7 +244,7 @@ export default function SupplierDetailPage() {
                   </div>
                   <div className="flex items-center justify-between text-sm">
                      <span className="text-slate-500 font-bold flex items-center gap-1.5"><Percent size={12} /> Comisión</span>
-                     <span className="text-sky-400 font-black">{supplier.commission_pct}%</span>
+                     <span className="text-[#D6A55C] font-black">{supplier.commission_pct}%</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                      <span className="text-slate-500 font-bold flex items-center gap-1.5"><Calendar size={12} /> Contrato Expira</span>
@@ -272,11 +272,11 @@ export default function SupplierDetailPage() {
             {supplier.tags && supplier.tags.length > 0 && (
               <div className="glass-card p-6">
                  <h3 className="text-lg font-black text-white border-b border-white/5 pb-3 mb-4 flex items-center gap-2">
-                    <Tag size={18} className="text-amber-500" /> Etiquetas
+                    <Tag size={18} className="text-[#A8442A]" /> Etiquetas
                  </h3>
                  <div className="flex flex-wrap gap-2">
                     {supplier.tags.map(tag => (
-                      <span key={tag} className="text-[10px] font-bold px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 uppercase tracking-widest">
+                      <span key={tag} className="text-[10px] font-bold px-3 py-1.5 rounded-full bg-[#A8442A]/10 text-[#A8442A] border border-[#A8442A]/20 uppercase tracking-widest">
                         {tag}
                       </span>
                     ))}
@@ -326,7 +326,7 @@ export default function SupplierDetailPage() {
                    if (field.type === 'url') {
                      return (
                        <a href={String(value)} target="_blank" rel="noopener noreferrer"
-                         className="text-sky-400 font-bold text-sm hover:underline truncate flex items-center gap-1.5">
+                         className="text-[#D6A55C] font-bold text-sm hover:underline truncate flex items-center gap-1.5">
                          <Globe size={14} /> {String(value)}
                        </a>
                      );
@@ -335,7 +335,7 @@ export default function SupplierDetailPage() {
                      return (
                        <div className="flex flex-wrap gap-1.5">
                          {value.map((item: string) => (
-                           <span key={item} className="px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[11px] font-bold">
+                           <span key={item} className="px-2.5 py-1 rounded-full bg-[#D6A55C]/10 text-[#D6A55C] border border-[#D6A55C]/20 text-[11px] font-bold">
                              {item}
                            </span>
                          ))}
@@ -458,11 +458,11 @@ export default function SupplierDetailPage() {
             <div className="space-y-4">
                <div className="flex items-center justify-between px-2">
                   <h3 className="text-xl font-black text-white flex items-center gap-2">
-                     <Package size={20} className="text-sky-400" />
+                     <Package size={20} className="text-[#D6A55C]" />
                      Productos Asociados
-                     <span className="text-sm font-black bg-sky-500/20 text-sky-400 px-2 py-0.5 rounded-lg ml-1">{supplierProducts.length}</span>
+                     <span className="text-sm font-black bg-[#D6A55C]/20 text-[#D6A55C] px-2 py-0.5 rounded-lg ml-1">{supplierProducts.length}</span>
                   </h3>
-                  <Link to={`/productos/nuevo?supplier_id=${supplier.id}`} className="text-amber-500 font-bold text-sm hover:text-amber-400">
+                  <Link to={`/productos/nuevo?supplier_id=${supplier.id}`} className="text-[#A8442A] font-bold text-sm hover:text-[#C84B2C]">
                     Añadir Producto +
                   </Link>
                </div>
@@ -478,20 +478,20 @@ export default function SupplierDetailPage() {
                       <Link
                         key={p.id}
                         to={`/productos/${p.id}/detalle`}
-                        className="glass-card p-4 flex items-center gap-4 hover:border-amber-500/30 transition-all group"
+                        className="glass-card p-4 flex items-center gap-4 hover:border-[#A8442A]/30 transition-all group"
                       >
                          <div className="w-16 h-16 rounded-xl bg-slate-800 overflow-hidden shrink-0">
                             {p.images?.[0] ? <img src={p.images[0]} className="w-full h-full object-cover" /> : <Package size={24} className="text-slate-700 m-auto mt-4" />}
                          </div>
                          <div className="flex-1 min-w-0">
-                            <p className="text-white font-bold truncate group-hover:text-amber-500 transition-colors text-sm">{p.name}</p>
+                            <p className="text-white font-bold truncate group-hover:text-[#A8442A] transition-colors text-sm">{p.name}</p>
                             <div className="flex items-center gap-3 mt-1">
                                <span className="text-[10px] font-black text-slate-500 uppercase">{p.category}</span>
                                <span className={`text-[10px] font-black uppercase ${p.status === 'activo' ? 'text-emerald-400' : 'text-rose-400'}`}>{p.status}</span>
                             </div>
-                            <p className="text-xs font-black text-sky-400 mt-0.5">{p.currency} {p.base_price.toLocaleString()}</p>
+                            <p className="text-xs font-black text-[#D6A55C] mt-0.5">{p.currency} {p.base_price.toLocaleString()}</p>
                          </div>
-                         <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-500 group-hover:bg-amber-500 group-hover:text-slate-900 transition-all shrink-0">
+                         <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-500 group-hover:bg-[#A8442A] group-hover:text-slate-900 transition-all shrink-0">
                             <ExternalLink size={14} />
                          </div>
                       </Link>

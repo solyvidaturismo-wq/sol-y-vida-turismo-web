@@ -57,7 +57,7 @@ export function Topbar() {
       {/* Left: Breadcrumbs or Search */}
       <div className="flex items-center gap-4">
         <nav className="flex items-center text-xs font-semibold uppercase tracking-wider text-gray-500">
-          <Link to="/" className="hover:text-amber-500 transition-colors flex items-center gap-1">
+          <Link to="/" className="hover:text-[#A8442A] transition-colors flex items-center gap-1">
             <Home size={14} />
           </Link>
           
@@ -71,12 +71,12 @@ export function Topbar() {
             return (
               <React.Fragment key={name}>
                 {isLast ? (
-                  <span className="text-amber-500/90">{label}</span>
+                  <span className="text-[#A8442A]/90">{label}</span>
                 ) : (
                   <>
                     <Link 
                       to={routeTo} 
-                      className="hover:text-amber-500 transition-colors"
+                      className="hover:text-[#A8442A] transition-colors"
                     >
                       {label}
                     </Link>
@@ -94,7 +94,7 @@ export function Topbar() {
         {/* Global Search Trigger */}
         <button
           onClick={() => setSearchOpen(true)}
-          className="hidden md:flex items-center px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-gray-400 gap-3 mr-4 hover:border-amber-500/50 transition-all cursor-pointer"
+          className="hidden md:flex items-center px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-gray-400 gap-3 mr-4 hover:border-[#A8442A]/50 transition-all cursor-pointer"
         >
           <Search size={16} />
           <span className="text-xs font-medium">Buscar en el inventario...</span>
@@ -105,7 +105,7 @@ export function Topbar() {
         <button
           onClick={handleSyncData}
           disabled={syncing}
-          className="p-2.5 rounded-xl hover:bg-white/5 text-gray-400 hover:text-amber-500 transition-all group disabled:opacity-50"
+          className="p-2.5 rounded-xl hover:bg-white/5 text-gray-400 hover:text-[#A8442A] transition-all group disabled:opacity-50"
           title="Sincronizar con Supabase"
           aria-label="Sincronizar datos"
         >
@@ -115,7 +115,7 @@ export function Topbar() {
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2.5 rounded-xl hover:bg-white/5 text-gray-400 hover:text-amber-500 transition-all"
+          className="p-2.5 rounded-xl hover:bg-white/5 text-gray-400 hover:text-[#A8442A] transition-all"
           title={theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
         >
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
@@ -127,12 +127,12 @@ export function Topbar() {
         {/* User Profile */}
         <div className="flex items-center gap-3 pl-2 group cursor-pointer">
           <div className="flex-col items-end hidden sm:flex">
-            <span className="text-xs font-bold text-white group-hover:text-amber-500 transition-colors truncate max-w-[160px]">
+            <span className="text-xs font-bold text-white group-hover:text-[#A8442A] transition-colors truncate max-w-[160px]">
               {user?.email?.split('@')[0] || 'Usuario'}
             </span>
             <span className="text-[10px] font-bold text-gray-500 tracking-tighter">Administrador</span>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 border border-white/10 flex items-center justify-center text-amber-500 shadow-inner group-hover:border-amber-500/50 transition-all overflow-hidden relative">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 border border-white/10 flex items-center justify-center text-[#A8442A] shadow-inner group-hover:border-[#A8442A]/50 transition-all overflow-hidden relative">
             <User size={20} />
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-900 rounded-full" />
           </div>

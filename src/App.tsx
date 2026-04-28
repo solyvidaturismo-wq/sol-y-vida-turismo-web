@@ -32,7 +32,7 @@ const LandingPage = lazy(() => import('./pages/LandingPage'));
 function PageLoader() {
   return (
     <div className="h-96 flex flex-col items-center justify-center gap-4">
-      <div className="w-10 h-10 rounded-full border-4 border-amber-500/30 border-t-amber-500 animate-spin" />
+      <div className="w-10 h-10 rounded-full border-4 border-[#A8442A]/30 border-t-[#A8442A] animate-spin" />
       <p className="text-slate-500 font-bold tracking-widest text-[10px] uppercase">Cargando módulo...</p>
     </div>
   );

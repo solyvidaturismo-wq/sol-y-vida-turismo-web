@@ -50,8 +50,8 @@ export default function RouteDetailPage() {
 
   const difficultyLabels: Record<string, { label: string; color: string }> = {
     facil: { label: 'Fácil', color: 'text-emerald-400' },
-    moderado: { label: 'Moderado', color: 'text-amber-400' },
-    dificil: { label: 'Difícil', color: 'text-orange-400' },
+    moderado: { label: 'Moderado', color: 'text-[#C84B2C]' },
+    dificil: { label: 'Difícil', color: 'text-[#C84B2C]' },
     extremo: { label: 'Extremo', color: 'text-rose-400' },
   };
 
@@ -134,7 +134,7 @@ export default function RouteDetailPage() {
             </button>
             <Link
               to={`/rutas/${route.id}/itinerario`}
-              className="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-sky-500 hover:border-sky-500 transition-all px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-widest"
+              className="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-[#D6A55C] hover:border-[#D6A55C] transition-all px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-widest"
             >
                <Navigation size={16} /> Editar Itinerario
             </Link>
@@ -145,7 +145,7 @@ export default function RouteDetailPage() {
                <div className="flex items-center gap-2">
                   <span className={`px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md flex items-center gap-1.5 ${
                     route.status === 'activo' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
-                    route.status === 'pausado' ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' :
+                    route.status === 'pausado' ? 'bg-[#A8442A]/20 text-[#E08C6F] border-[#A8442A]/30' :
                     route.status === 'borrador' ? 'bg-slate-500/20 text-slate-300 border-slate-500/30' :
                     'bg-rose-500/20 text-rose-300 border-rose-500/30'
                   }`}>
@@ -153,7 +153,7 @@ export default function RouteDetailPage() {
                     {route.status.toUpperCase()}
                   </span>
                   {route.is_featured && (
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1.5">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#A8442A]/20 text-[#E08C6F] border border-[#A8442A]/30 flex items-center gap-1.5">
                        <Star size={12} fill="currentColor" /> Destacada
                     </span>
                   )}
@@ -199,7 +199,7 @@ export default function RouteDetailPage() {
                </div>
                <div className="glass-card p-4 text-center">
                   <p className="text-[10px] font-black text-slate-500 uppercase">Vistas</p>
-                  <p className="text-2xl font-black text-sky-400">{route.view_count}</p>
+                  <p className="text-2xl font-black text-[#D6A55C]">{route.view_count}</p>
                </div>
                <div className="glass-card p-4 text-center">
                   <p className="text-[10px] font-black text-slate-500 uppercase">Revenue Est.</p>
@@ -207,7 +207,7 @@ export default function RouteDetailPage() {
                </div>
                <div className="glass-card p-4 text-center">
                   <p className="text-[10px] font-black text-slate-500 uppercase">Margen</p>
-                  <p className={`text-xl font-black ${margin >= 30 ? 'text-emerald-400' : margin >= 10 ? 'text-amber-400' : 'text-rose-400'}`}>{margin.toFixed(0)}%</p>
+                  <p className={`text-xl font-black ${margin >= 30 ? 'text-emerald-400' : margin >= 10 ? 'text-[#C84B2C]' : 'text-rose-400'}`}>{margin.toFixed(0)}%</p>
                </div>
             </div>
 
@@ -270,12 +270,12 @@ export default function RouteDetailPage() {
             {route.highlights && route.highlights.length > 0 && (
               <div className="glass-card p-6">
                  <h3 className="text-lg font-black text-white border-b border-white/5 pb-3 mb-4 flex items-center gap-2">
-                    <Star size={16} className="text-amber-500" /> Highlights
+                    <Star size={16} className="text-[#A8442A]" /> Highlights
                  </h3>
                  <div className="space-y-2">
                     {route.highlights.map((h, i) => (
                       <div key={i} className="flex items-start gap-2">
-                         <CheckCircle2 size={14} className="text-amber-500 mt-0.5 shrink-0" />
+                         <CheckCircle2 size={14} className="text-[#A8442A] mt-0.5 shrink-0" />
                          <p className="text-sm text-white font-medium">{h}</p>
                       </div>
                     ))}
@@ -414,12 +414,12 @@ export default function RouteDetailPage() {
                                              {isProduct ? 'Producto' : 'Proveedor'}
                                            </span>
                                            {(item.time_start || item.time_end) && (
-                                             <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-sky-500/10 text-sky-400 flex items-center gap-1 shrink-0">
+                                             <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#D6A55C]/10 text-[#D6A55C] flex items-center gap-1 shrink-0">
                                                <Clock size={10} /> {item.time_start || '?'} — {item.time_end || '?'}
                                              </span>
                                            )}
                                            {item.is_optional && (
-                                             <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-400">Opcional</span>
+                                             <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#A8442A]/10 text-[#C84B2C]">Opcional</span>
                                            )}
                                            {item.included_in_price ? (
                                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-400">Incluido</span>
@@ -430,7 +430,7 @@ export default function RouteDetailPage() {
                                      </div>
 
                                      {resolved.category && (
-                                       <p className="text-xs font-bold text-amber-500 capitalize">{resolved.category}</p>
+                                       <p className="text-xs font-bold text-[#A8442A] capitalize">{resolved.category}</p>
                                      )}
 
                                      {resolved.description && (
@@ -451,11 +451,11 @@ export default function RouteDetailPage() {
 
                                      {/* Product activity sub-itinerary */}
                                      {resolved.activityItinerary.length > 0 && (
-                                       <div className="mt-2 pt-2 pl-3 border-l-2 border-sky-500/30 space-y-1.5">
-                                          <p className="text-[10px] font-bold text-sky-400 uppercase tracking-widest">Sub-Itinerario</p>
+                                       <div className="mt-2 pt-2 pl-3 border-l-2 border-[#D6A55C]/30 space-y-1.5">
+                                          <p className="text-[10px] font-bold text-[#D6A55C] uppercase tracking-widest">Sub-Itinerario</p>
                                           {resolved.activityItinerary.map((step: any, i: number) => (
                                             <div key={i} className="flex items-center gap-2">
-                                               <span className="text-[10px] font-bold bg-sky-500/20 text-sky-300 px-1.5 py-0.5 rounded">{step.time}</span>
+                                               <span className="text-[10px] font-bold bg-[#D6A55C]/20 text-[#E8B872] px-1.5 py-0.5 rounded">{step.time}</span>
                                                <span className="text-xs text-slate-300 font-medium">{step.activity}</span>
                                             </div>
                                           ))}
@@ -465,7 +465,7 @@ export default function RouteDetailPage() {
                                      {/* Supplier info for products */}
                                      {resolved.supplier && isProduct && (
                                        <p className="text-[10px] text-slate-500">
-                                         Proveedor: <Link to={`/proveedores/${resolved.supplier.id}/detalle`} className="text-sky-400 hover:text-sky-300">{resolved.supplier.name}</Link>
+                                         Proveedor: <Link to={`/proveedores/${resolved.supplier.id}/detalle`} className="text-[#D6A55C] hover:text-[#E8B872]">{resolved.supplier.name}</Link>
                                        </p>
                                      )}
 

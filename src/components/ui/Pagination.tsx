@@ -50,7 +50,7 @@ export default function Pagination({ currentPage, totalItems, pageSize, onPageCh
                 onClick={() => onPageChange(item as number)}
                 className={`w-8 h-8 rounded-xl text-[10px] font-black uppercase transition-all ${
                   currentPage === item
-                    ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/20'
+                    ? 'bg-[#A8442A] text-slate-900 shadow-lg shadow-[#A8442A]/20'
                     : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'
                 }`}
               >

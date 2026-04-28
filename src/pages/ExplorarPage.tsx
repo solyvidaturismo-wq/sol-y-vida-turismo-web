@@ -52,7 +52,7 @@ export default function ExplorarPage() {
          <Zap className="absolute -right-20 -bottom-20 text-white/[0.02] w-96 h-96 rotate-12" />
          <div className="relative z-10 max-w-2xl">
             <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-4">
-               Explora el Universo <span className="text-amber-500">Sol y Vida</span>
+               Explora el Universo <span className="text-[#A8442A]">Sol y Vida</span>
             </h1>
             <p className="text-slate-400 font-medium mb-8 text-lg">
                Busca entre cientos de experiencias, hoteles y servicios curados para los viajeros más exigentes.
@@ -66,7 +66,7 @@ export default function ExplorarPage() {
                     placeholder="¿A dónde vamos hoy? Busca tours, hoteles..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white font-bold focus:outline-none focus:ring-2 focus:ring-amber-500/50 transition-all"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white font-bold focus:outline-none focus:ring-2 focus:ring-[#A8442A]/50 transition-all"
                   />
                   {query && (
                     <button onClick={() => setQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white">
@@ -74,7 +74,7 @@ export default function ExplorarPage() {
                     </button>
                   )}
                </div>
-               <button className="btn-primary px-10 py-4 bg-amber-500 text-slate-900 shadow-xl shadow-amber-500/20">
+               <button className="btn-primary px-10 py-4 bg-[#A8442A] text-slate-900 shadow-xl shadow-[#A8442A]/20">
                   Buscar Ahora
                </button>
             </div>
@@ -87,7 +87,7 @@ export default function ExplorarPage() {
             <div className="glass-card p-6 space-y-6">
                <div className="flex items-center justify-between mb-2">
                   <h3 className="text-lg font-black text-white flex items-center gap-2">
-                     <Filter size={18} className="text-amber-500" /> Filtros
+                     <Filter size={18} className="text-[#A8442A]" /> Filtros
                   </h3>
                   <button 
                     onClick={() => { setActiveCategory('all'); setSortBy('rating'); setActivePriceRange([0, 5000]); }}
@@ -103,7 +103,7 @@ export default function ExplorarPage() {
                   <div className="space-y-1.5 text-sm font-bold">
                      <button 
                        onClick={() => setActiveCategory('all')}
-                       className={`w-full text-left px-3 py-2 rounded-xl transition-all ${activeCategory === 'all' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'text-slate-400 hover:bg-white/5'}`}
+                       className={`w-full text-left px-3 py-2 rounded-xl transition-all ${activeCategory === 'all' ? 'bg-[#A8442A]/10 text-[#A8442A] border border-[#A8442A]/20' : 'text-slate-400 hover:bg-white/5'}`}
                      >
                        🌎 Todas las experiencias
                      </button>
@@ -111,7 +111,7 @@ export default function ExplorarPage() {
                        <button 
                          key={key}
                          onClick={() => setActiveCategory(key)}
-                         className={`w-full text-left px-3 py-2 rounded-xl transition-all ${activeCategory === key ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'text-slate-400 hover:bg-white/5'}`}
+                         className={`w-full text-left px-3 py-2 rounded-xl transition-all ${activeCategory === key ? 'bg-[#A8442A]/10 text-[#A8442A] border border-[#A8442A]/20' : 'text-slate-400 hover:bg-white/5'}`}
                        >
                          {meta.emoji} {meta.label}
                        </button>
@@ -133,9 +133,9 @@ export default function ExplorarPage() {
                        max="5000" 
                        value={activePriceRange[1]}
                        onChange={(e) => setActivePriceRange([0, parseInt(e.target.value)])}
-                       className="w-full accent-amber-500"
+                       className="w-full accent-[#A8442A]"
                      />
-                     <div className="p-3 rounded-xl bg-slate-900 text-center font-black text-amber-500 border border-white/5">
+                     <div className="p-3 rounded-xl bg-slate-900 text-center font-black text-[#A8442A] border border-white/5">
                         HASTA $ {activePriceRange[1].toLocaleString()}
                      </div>
                   </div>
@@ -173,10 +173,10 @@ export default function ExplorarPage() {
                </div>
 
                <div className="flex items-center gap-2">
-                  <button onClick={() => setViewMode('grid')} className={`p-2 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/20' : 'bg-white/5 text-slate-400'}`}>
+                  <button onClick={() => setViewMode('grid')} className={`p-2 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-[#A8442A] text-slate-900 shadow-lg shadow-[#A8442A]/20' : 'bg-white/5 text-slate-400'}`}>
                      <Grid size={18} />
                   </button>
-                  <button onClick={() => setViewMode('list')} className={`p-2 rounded-xl transition-all ${viewMode === 'list' ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/20' : 'bg-white/5 text-slate-400'}`}>
+                  <button onClick={() => setViewMode('list')} className={`p-2 rounded-xl transition-all ${viewMode === 'list' ? 'bg-[#A8442A] text-slate-900 shadow-lg shadow-[#A8442A]/20' : 'bg-white/5 text-slate-400'}`}>
                      <List size={18} />
                   </button>
                </div>
@@ -188,7 +188,7 @@ export default function ExplorarPage() {
                 {filtered.map(product => {
                   const supplier = suppliers.find(s => s.id === product.supplier_id);
                   return (
-                    <div key={product.id} className="glass-card group overflow-hidden border border-white/5 hover:border-amber-500/40 transition-all duration-300 transform-gpu hover:-translate-y-1">
+                    <div key={product.id} className="glass-card group overflow-hidden border border-white/5 hover:border-[#A8442A]/40 transition-all duration-300 transform-gpu hover:-translate-y-1">
                        <div className="h-48 bg-slate-800 relative">
                           {product.images?.[0] ? (
                             <img src={product.images[0]} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
@@ -200,24 +200,24 @@ export default function ExplorarPage() {
                                 {product.category.replace('_', ' ')}
                              </span>
                           </div>
-                          <div className="absolute bottom-3 right-3 px-3 py-1 rounded-2xl bg-amber-500 text-slate-900 font-black text-xs shadow-xl">
+                          <div className="absolute bottom-3 right-3 px-3 py-1 rounded-2xl bg-[#A8442A] text-slate-900 font-black text-xs shadow-xl">
                              {product.currency} {product.base_price.toLocaleString()}
                           </div>
                        </div>
                        
                        <div className="p-6">
-                          <h3 className="text-lg font-black text-white mb-2 line-clamp-1 group-hover:text-amber-500 transition-colors uppercase tracking-tight">{product.name}</h3>
+                          <h3 className="text-lg font-black text-white mb-2 line-clamp-1 group-hover:text-[#A8442A] transition-colors uppercase tracking-tight">{product.name}</h3>
                           <p className="text-xs text-slate-500 font-medium line-clamp-2 h-8 mb-4 leading-relaxed">
                              {product.short_description || 'Explora esta increíble experiencia diseñada por Sol y Vida.'}
                           </p>
                           
                           <div className="grid grid-cols-2 gap-4 pb-4 mb-4 border-b border-white/5">
                              <div className="flex items-center gap-2 text-slate-400 text-xs font-bold">
-                                <Clock size={14} className="text-amber-500" />
+                                <Clock size={14} className="text-[#A8442A]" />
                                 {product.duration_minutes} min
                              </div>
                              <div className="flex items-center gap-2 text-slate-400 text-xs font-bold justify-end">
-                                <Star size={14} className="text-amber-500 fill-amber-500" />
+                                <Star size={14} className="text-[#A8442A] fill-[#A8442A]" />
                                 {(product as any).rating || '-'}
                              </div>
                           </div>
@@ -231,7 +231,7 @@ export default function ExplorarPage() {
                              </div>
                              <Link 
                                to={`/productos/${product.id}/detalle`}
-                               className="text-amber-500 font-black text-[10px] uppercase tracking-widest hover:text-amber-400 flex items-center gap-1"
+                               className="text-[#A8442A] font-black text-[10px] uppercase tracking-widest hover:text-[#C84B2C] flex items-center gap-1"
                              >
                                Detalles <ChevronRight size={14} />
                              </Link>
@@ -246,17 +246,17 @@ export default function ExplorarPage() {
                 {filtered.map(product => {
                   const supplier = suppliers.find(s => s.id === product.supplier_id);
                   return (
-                    <div key={product.id} className="glass-card p-4 flex gap-6 group hover:border-amber-500/40 transition-all">
+                    <div key={product.id} className="glass-card p-4 flex gap-6 group hover:border-[#A8442A]/40 transition-all">
                        <div className="w-40 h-28 rounded-2xl bg-slate-800 overflow-hidden shrink-0 border border-white/5">
                           {product.images?.[0] ? <img src={product.images[0]} className="w-full h-full object-cover" /> : <Package size={24} className="m-auto mt-10 text-slate-700" />}
                        </div>
                        <div className="flex-1 flex flex-col justify-between py-1">
                           <div>
                              <div className="flex items-center gap-3 mb-1">
-                               <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest">{product.category}</span>
+                               <span className="text-[10px] font-black text-[#A8442A] uppercase tracking-widest">{product.category}</span>
                                <span className="flex items-center gap-1 text-[10px] font-bold text-slate-600"><Star size={10} fill="currentColor" /> {(product as any).rating || '-'}</span>
                              </div>
-                             <h3 className="text-lg font-black text-white group-hover:text-amber-500 transition-colors uppercase tracking-tight">{product.name}</h3>
+                             <h3 className="text-lg font-black text-white group-hover:text-[#A8442A] transition-colors uppercase tracking-tight">{product.name}</h3>
                              <p className="text-xs text-slate-500 font-medium line-clamp-1">{product.short_description || 'Sin descripción disponible.'}</p>
                           </div>
                           <div className="flex items-center gap-4 text-[10px] font-black text-slate-500 uppercase">
@@ -269,7 +269,7 @@ export default function ExplorarPage() {
                              <span className="text-xs block text-slate-500 font-bold mb-1">P. BASE</span>
                              {product.currency} {product.base_price.toLocaleString()}
                           </p>
-                          <Link to={`/productos/${product.id}/detalle`} className="px-4 py-2 rounded-xl bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-widest hover:bg-amber-500 hover:text-slate-900 transition-all">
+                          <Link to={`/productos/${product.id}/detalle`} className="px-4 py-2 rounded-xl bg-[#A8442A]/10 text-[#A8442A] text-[10px] font-black uppercase tracking-widest hover:bg-[#A8442A] hover:text-slate-900 transition-all">
                              Reservar
                           </Link>
                        </div>

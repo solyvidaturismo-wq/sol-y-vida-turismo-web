@@ -21,7 +21,7 @@ function RenderField({ field, register, prefix }: {
     <div className={`space-y-2 ${isFullWidth ? 'md:col-span-2 lg:col-span-3' : ''}`}>
       <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-1.5">
         {field.label}
-        {field.required && <span className="text-amber-500">*</span>}
+        {field.required && <span className="text-[#A8442A]">*</span>}
         {field.unit && <span className="text-slate-700 normal-case font-bold">({field.unit})</span>}
       </label>
 
@@ -85,7 +85,7 @@ function RenderField({ field, register, prefix }: {
           <input
             type="checkbox"
             {...register(fieldPath)}
-            className="w-5 h-5 rounded border-white/10 bg-slate-800 text-amber-500 focus:ring-amber-500/50 accent-amber-500"
+            className="w-5 h-5 rounded border-white/10 bg-slate-800 text-[#A8442A] focus:ring-[#A8442A]/50 accent-[#A8442A]"
           />
           <span className="text-slate-300 text-sm font-bold">{field.label}</span>
         </label>
@@ -99,7 +99,7 @@ function RenderField({ field, register, prefix }: {
                 type="checkbox"
                 value={opt}
                 {...register(fieldPath)}
-                className="w-4 h-4 rounded border-white/10 bg-slate-800 text-sky-500 focus:ring-sky-500/50"
+                className="w-4 h-4 rounded border-white/10 bg-slate-800 text-[#D6A55C] focus:ring-[#D6A55C]/50"
               />
               <span className="text-[11px] font-bold text-slate-300">{opt}</span>
             </label>

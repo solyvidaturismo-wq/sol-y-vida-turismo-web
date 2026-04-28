@@ -296,7 +296,7 @@ export default function ProductFormPage() {
         </div>
         <div className="flex items-center gap-3">
            <button type="button" onClick={() => navigate('/productos')} className="text-slate-500 font-black hover:text-white transition-all text-xs uppercase tracking-widest px-4">Descartar</button>
-           <button type="submit" disabled={saving} className="btn-primary shadow-lg shadow-sky-500/20 bg-gradient-to-r from-sky-500 to-indigo-600 flex items-center gap-2 px-10 disabled:opacity-50">
+           <button type="submit" disabled={saving} className="btn-primary shadow-lg shadow-[#D6A55C]/20 bg-gradient-to-r from-[#D6A55C] to-[#B07E3C] flex items-center gap-2 px-10 disabled:opacity-50">
               {saving ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
@@ -313,7 +313,7 @@ export default function ProductFormPage() {
            {/* Section 1: Identity */}
            <div className="glass-card p-8 space-y-6">
               <div className="flex items-center gap-3 mb-2">
-                 <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center"><Package size={18} /></div>
+                 <div className="w-8 h-8 rounded-lg bg-[#D6A55C]/10 text-[#D6A55C] flex items-center justify-center"><Package size={18} /></div>
                  <h2 className="text-xl font-black text-white">Información Primaria</h2>
               </div>
 
@@ -418,9 +418,9 @@ export default function ProductFormPage() {
 
            {/* Dynamic Category Fields */}
            {PRODUCT_CATEGORIES[selectedCategory] && (
-             <div className="glass-card p-8 border-l-4 border-sky-500/50 bg-sky-500/5 space-y-6">
+             <div className="glass-card p-8 border-l-4 border-[#D6A55C]/50 bg-[#D6A55C]/5 space-y-6">
                 <div className="flex items-center gap-3">
-                   <div className="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center"><Zap size={18} /></div>
+                   <div className="w-8 h-8 rounded-lg bg-[#D6A55C]/20 text-[#D6A55C] flex items-center justify-center"><Zap size={18} /></div>
                    <div>
                       <h2 className="text-xl font-black text-white">Especificaciones Técnicas</h2>
                       <p className="text-[10px] text-slate-500 font-bold uppercase">
@@ -478,15 +478,15 @@ export default function ProductFormPage() {
         {/* Sidebar Controls */}
         <div className="space-y-8">
            {/* Section 1: Pricing */}
-           <div className="glass-card p-6 space-y-6 bg-gradient-to-br from-indigo-500/10 to-transparent">
+           <div className="glass-card p-6 space-y-6 bg-gradient-to-br from-[#D6A55C]/10 to-transparent">
               <h3 className="text-lg font-black text-white flex items-center gap-2">
-                 <DollarSign size={20} className="text-sky-400" /> Tarifas y Comercial
+                 <DollarSign size={20} className="text-[#D6A55C]" /> Tarifas y Comercial
               </h3>
               
               <div className="grid grid-cols-2 gap-4">
                  <div className="space-y-1">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Precio Base</label>
-                    <input type="number" step="0.01" {...register('base_price')} className="form-input w-full font-black text-sky-400" />
+                    <input type="number" step="0.01" {...register('base_price')} className="form-input w-full font-black text-[#D6A55C]" />
                  </div>
                  <div className="space-y-1">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Moneda</label>
@@ -503,7 +503,7 @@ export default function ProductFormPage() {
               <div className="space-y-4">
                  <div className="flex items-center justify-between">
                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Niveles de Precio (Tiers)</p>
-                    <button type="button" onClick={() => appendTier({ name: 'Bulk', min_pax: 5, price: 0 })} className="text-[10px] text-sky-400 font-bold">+ Añadir</button>
+                    <button type="button" onClick={() => appendTier({ name: 'Bulk', min_pax: 5, price: 0 })} className="text-[10px] text-[#D6A55C] font-bold">+ Añadir</button>
                  </div>
                  
                  <div className="space-y-2">
@@ -522,7 +522,7 @@ export default function ProductFormPage() {
            {/* Section 2: Duration & Schedule */}
            <div className="glass-card p-6 space-y-6">
               <h3 className="text-lg font-black text-white flex items-center gap-2">
-                 <Clock size={20} className="text-amber-500" /> Duración y Horario
+                 <Clock size={20} className="text-[#A8442A]" /> Duración y Horario
               </h3>
 
               {/* Duration Type */}
@@ -540,7 +540,7 @@ export default function ProductFormPage() {
                         key={opt.value}
                         className={`flex items-center gap-2 p-3 rounded-xl border cursor-pointer transition-all text-xs font-bold ${
                           durationType === opt.value
-                            ? 'border-amber-500/50 bg-amber-500/10 text-amber-400'
+                            ? 'border-[#A8442A]/50 bg-[#A8442A]/10 text-[#C84B2C]'
                             : 'border-white/5 bg-white/5 text-slate-400 hover:bg-white/10'
                         }`}
                       >
@@ -586,8 +586,8 @@ export default function ProductFormPage() {
                 </div>
               )}
               {(durationType === 'medio_dia' || durationType === 'dia_completo') && (
-                <div className="p-3 rounded-xl bg-amber-500/5 border border-amber-500/10">
-                   <p className="text-[10px] text-amber-400/80 font-bold">
+                <div className="p-3 rounded-xl bg-[#A8442A]/5 border border-[#A8442A]/10">
+                   <p className="text-[10px] text-[#C84B2C]/80 font-bold">
                      {durationType === 'medio_dia' ? '~4 horas de actividad' : '~8 horas de actividad (jornada completa)'}
                    </p>
                 </div>
@@ -608,7 +608,7 @@ export default function ProductFormPage() {
                         key={opt.value}
                         className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                           scheduleType === opt.value
-                            ? 'border-sky-500/50 bg-sky-500/10'
+                            ? 'border-[#D6A55C]/50 bg-[#D6A55C]/10'
                             : 'border-white/5 bg-white/5 hover:bg-white/10'
                         }`}
                       >
@@ -618,7 +618,7 @@ export default function ProductFormPage() {
                           value={opt.value}
                           className="sr-only"
                         />
-                        <opt.Icon size={16} className={scheduleType === opt.value ? 'text-sky-400' : 'text-slate-600'} />
+                        <opt.Icon size={16} className={scheduleType === opt.value ? 'text-[#D6A55C]' : 'text-slate-600'} />
                         <div className="flex-1">
                            <p className={`text-xs font-bold ${scheduleType === opt.value ? 'text-white' : 'text-slate-400'}`}>{opt.label}</p>
                            <p className="text-[10px] text-slate-600">{opt.desc}</p>
@@ -660,7 +660,7 @@ export default function ProductFormPage() {
                           }}
                           className={`flex-1 text-center py-2 rounded-lg text-[10px] font-black cursor-pointer transition-all border ${
                             isActive
-                              ? 'bg-sky-500/20 border-sky-500/50 text-sky-400'
+                              ? 'bg-[#D6A55C]/20 border-[#D6A55C]/50 text-[#D6A55C]'
                               : 'bg-white/5 border-white/5 text-slate-600 hover:bg-white/10'
                           }`}
                         >
@@ -675,7 +675,7 @@ export default function ProductFormPage() {
            {/* Section 3: Capacity & Options */}
            <div className="glass-card p-6 space-y-6">
               <h3 className="text-lg font-black text-white flex items-center gap-2">
-                 <Zap size={20} className="text-sky-400" /> Capacidad y Opciones
+                 <Zap size={20} className="text-[#D6A55C]" /> Capacidad y Opciones
               </h3>
 
               <div className="grid grid-cols-2 gap-4">
@@ -691,14 +691,14 @@ export default function ProductFormPage() {
 
               <div className="space-y-3">
                  <label className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/5 cursor-pointer group transition-all hover:bg-white/10">
-                    <input type="checkbox" {...register('availability.instant_booking')} className="w-5 h-5 rounded-lg border-white/20 bg-slate-900 text-sky-500 focus:ring-sky-500/20" />
+                    <input type="checkbox" {...register('availability.instant_booking')} className="w-5 h-5 rounded-lg border-white/20 bg-slate-900 text-[#D6A55C] focus:ring-[#D6A55C]/20" />
                     <div className="flex-1">
                        <p className="text-sm font-black text-white">Reserva Inmediata</p>
                        <p className="text-[10px] text-slate-500 font-bold uppercase">Confirmación sin manual check</p>
                     </div>
                  </label>
                  <label className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/5 cursor-pointer group transition-all hover:bg-white/10">
-                    <input type="checkbox" {...register('availability.seasonal')} className="w-5 h-5 rounded-lg border-white/20 bg-slate-900 text-amber-500 focus:ring-amber-500/20" />
+                    <input type="checkbox" {...register('availability.seasonal')} className="w-5 h-5 rounded-lg border-white/20 bg-slate-900 text-[#A8442A] focus:ring-[#A8442A]/20" />
                     <div className="flex-1">
                        <p className="text-sm font-black text-white">Temporada Específica</p>
                        <p className="text-[10px] text-slate-500 font-bold uppercase">Restringido por clima o fechas</p>
@@ -745,7 +745,7 @@ export default function ProductFormPage() {
            {/* Banner + Galería */}
            <div className="glass-card p-6 space-y-6">
               <h3 className="text-lg font-black text-white flex items-center gap-2">
-                 <ImageIcon size={20} className="text-indigo-400" /> Media & Fotos
+                 <ImageIcon size={20} className="text-[#D6A55C]" /> Media & Fotos
               </h3>
 
               <ImageUpload

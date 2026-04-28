@@ -43,7 +43,7 @@ function FieldValue({ field, value }: { field: DynamicField; value: any }) {
     return (
       <div className="flex flex-wrap gap-1.5">
         {value.map((v: string) => (
-          <span key={v} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">{v}</span>
+          <span key={v} className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#D6A55C]/10 text-[#D6A55C] border border-[#D6A55C]/20">{v}</span>
         ))}
       </div>
     );
@@ -52,7 +52,7 @@ function FieldValue({ field, value }: { field: DynamicField; value: any }) {
     return <p className="text-sm text-slate-300 whitespace-pre-line leading-relaxed">{String(value)}</p>;
   }
   if (field.type === 'url') {
-    return <a href={String(value)} target="_blank" rel="noopener noreferrer" className="text-sm text-sky-400 hover:underline break-all">{String(value)}</a>;
+    return <a href={String(value)} target="_blank" rel="noopener noreferrer" className="text-sm text-[#D6A55C] hover:underline break-all">{String(value)}</a>;
   }
   if (field.type === 'color') {
     return (
@@ -173,7 +173,7 @@ export default function ProductDetailPage() {
          </div>
 
          <div className="absolute top-8 right-8 flex items-center gap-2">
-            <button onClick={() => navigate(`/productos/${product.id}/editar`)} className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-sky-500 hover:border-sky-500 transition-all" aria-label="Editar"><Edit2 size={20} /></button>
+            <button onClick={() => navigate(`/productos/${product.id}/editar`)} className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-[#D6A55C] hover:border-[#D6A55C] transition-all" aria-label="Editar"><Edit2 size={20} /></button>
             <button onClick={handleDelete} className="p-3 rounded-2xl bg-rose-500/10 backdrop-blur-md border border-rose-500/20 text-rose-500 hover:bg-rose-500 hover:text-white transition-all" aria-label="Eliminar"><Trash2 size={20} /></button>
          </div>
 
@@ -201,11 +201,11 @@ export default function ProductDetailPage() {
                )}
                <div className="flex flex-wrap items-center gap-6 text-sm font-bold" style={{ color: 'rgba(255,255,255,0.85)', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
                   {product.duration_minutes && (
-                    <span className="flex items-center gap-1.5"><Clock size={16} className="text-sky-500" /> {product.duration_minutes} min</span>
+                    <span className="flex items-center gap-1.5"><Clock size={16} className="text-[#D6A55C]" /> {product.duration_minutes} min</span>
                   )}
-                  <span className="flex items-center gap-1.5"><Users size={16} className="text-sky-500" /> {product.availability?.min_pax || 1}–{product.availability?.max_capacity || '∞'} Pax</span>
+                  <span className="flex items-center gap-1.5"><Users size={16} className="text-[#D6A55C]" /> {product.availability?.min_pax || 1}–{product.availability?.max_capacity || '∞'} Pax</span>
                   {supplier && (
-                    <span className="flex items-center gap-1.5"><MapPin size={16} className="text-sky-500" /> {supplier.location?.city || supplier.name}</span>
+                    <span className="flex items-center gap-1.5"><MapPin size={16} className="text-[#D6A55C]" /> {supplier.location?.city || supplier.name}</span>
                   )}
                </div>
             </div>
@@ -229,7 +229,7 @@ export default function ProductDetailPage() {
             {/* Descripción */}
             <div className="glass-card p-8">
                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center"><Info size={20} /></div>
+                  <div className="w-10 h-10 rounded-xl bg-[#D6A55C]/10 text-[#D6A55C] flex items-center justify-center"><Info size={20} /></div>
                   <h3 className="text-2xl font-black text-white">Descripción del Servicio</h3>
                </div>
                <p className="text-slate-400 leading-relaxed font-medium whitespace-pre-line">
@@ -239,7 +239,7 @@ export default function ProductDetailPage() {
 
             {/* === DYNAMIC CATEGORY SECTIONS === */}
             {categoryConfig && categoryConfig.sections.length > 0 && (
-              <div className="glass-card p-8 space-y-8 border-l-4 border-sky-500/40">
+              <div className="glass-card p-8 space-y-8 border-l-4 border-[#D6A55C]/40">
                  <div className="flex items-center gap-3">
                     <span className="text-2xl">{categoryConfig.emoji}</span>
                     <div>
@@ -261,7 +261,7 @@ export default function ProductDetailPage() {
                  ) && (
                    <div className="py-8 text-center bg-slate-900/40 rounded-3xl border border-dashed border-white/10">
                       <p className="text-slate-500 font-bold text-xs uppercase">No se han completado los campos específicos de {categoryConfig.label}.</p>
-                      <button onClick={() => navigate(`/productos/${product.id}/editar`)} className="text-sky-400 font-bold text-xs mt-2 hover:underline">
+                      <button onClick={() => navigate(`/productos/${product.id}/editar`)} className="text-[#D6A55C] font-bold text-xs mt-2 hover:underline">
                         Completar ficha técnica →
                       </button>
                    </div>
@@ -270,9 +270,9 @@ export default function ProductDetailPage() {
             )}
 
             {/* Price Tiers */}
-            <div className="glass-card p-8 bg-sky-500/5 border-sky-500/20">
+            <div className="glass-card p-8 bg-[#D6A55C]/5 border-[#D6A55C]/20">
                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center"><DollarSign size={20} /></div>
+                  <div className="w-10 h-10 rounded-xl bg-[#D6A55C]/20 text-[#D6A55C] flex items-center justify-center"><DollarSign size={20} /></div>
                   <h3 className="text-2xl font-black text-white">Tabla de Tarifas</h3>
                </div>
                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -320,8 +320,8 @@ export default function ProductDetailPage() {
             {(product.recommendations || product.safety_protocols) && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  {product.recommendations && (
-                   <div className="glass-card p-6 bg-amber-500/5 border-amber-500/20">
-                      <div className="flex items-center gap-2 mb-3"><Lightbulb size={18} className="text-amber-500" /><h4 className="text-sm font-black text-white uppercase">Recomendaciones</h4></div>
+                   <div className="glass-card p-6 bg-[#A8442A]/5 border-[#A8442A]/20">
+                      <div className="flex items-center gap-2 mb-3"><Lightbulb size={18} className="text-[#A8442A]" /><h4 className="text-sm font-black text-white uppercase">Recomendaciones</h4></div>
                       <p className="text-xs text-slate-400 leading-relaxed whitespace-pre-line">{product.recommendations}</p>
                    </div>
                  )}
@@ -337,10 +337,10 @@ export default function ProductDetailPage() {
             {/* Payment Methods */}
             {product.payment_methods && product.payment_methods.length > 0 && (
               <div className="glass-card p-6">
-                 <div className="flex items-center gap-2 mb-4"><CreditCard size={18} className="text-sky-400" /><h4 className="text-sm font-black text-white uppercase">Métodos de Pago</h4></div>
+                 <div className="flex items-center gap-2 mb-4"><CreditCard size={18} className="text-[#D6A55C]" /><h4 className="text-sm font-black text-white uppercase">Métodos de Pago</h4></div>
                  <div className="flex flex-wrap gap-2">
                     {product.payment_methods.map(m => (
-                      <span key={m} className="text-[10px] font-bold px-3 py-1.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 uppercase tracking-widest">{m}</span>
+                      <span key={m} className="text-[10px] font-bold px-3 py-1.5 rounded-full bg-[#D6A55C]/10 text-[#D6A55C] border border-[#D6A55C]/20 uppercase tracking-widest">{m}</span>
                     ))}
                  </div>
               </div>
@@ -350,11 +350,11 @@ export default function ProductDetailPage() {
             {product.images && product.images.filter(img => img).length > 0 && (
               <div className="space-y-4">
                  <h3 className="text-xl font-black text-white px-2 flex items-center gap-2">
-                    <ImageIcon size={20} className="text-sky-400" /> Galería ({product.images.filter(img => img).length})
+                    <ImageIcon size={20} className="text-[#D6A55C]" /> Galería ({product.images.filter(img => img).length})
                  </h3>
                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {product.images.filter(img => img).map((img, i) => (
-                      <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-slate-800 border-2 border-transparent hover:border-sky-500 transition-all cursor-pointer">
+                      <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-slate-800 border-2 border-transparent hover:border-[#D6A55C] transition-all cursor-pointer">
                          <img src={img} className="w-full h-full object-cover transition-transform hover:scale-110" />
                       </div>
                     ))}
@@ -411,12 +411,12 @@ export default function ProductDetailPage() {
                   </div>
                </div>
                <div className="p-6 pt-10">
-                  <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">Proveedor</p>
+                  <p className="text-[10px] font-black text-[#A8442A] uppercase tracking-widest mb-1">Proveedor</p>
                   <h4 className="text-white font-black text-lg mb-3">{supplier?.name || 'Desconocido'}</h4>
                   {supplier ? (
                     <div className="space-y-2 mb-4">
                        <div className="flex items-center gap-2 text-xs text-slate-400"><MapPin size={12} className="text-slate-600" /> {supplier.location?.city || '—'}, {supplier.location?.country || '—'}</div>
-                       <div className="flex items-center gap-2 text-xs text-slate-400"><Star size={12} className="text-amber-500 fill-amber-500" /> {supplier.rating}/5 — {supplier.commission_pct}% comisión</div>
+                       <div className="flex items-center gap-2 text-xs text-slate-400"><Star size={12} className="text-[#A8442A] fill-[#A8442A]" /> {supplier.rating}/5 — {supplier.commission_pct}% comisión</div>
                        {supplier.contact?.phone && <div className="flex items-center gap-2 text-xs text-slate-400"><Phone size={12} className="text-slate-600" /> {supplier.contact.phone}</div>}
                     </div>
                   ) : (
@@ -432,12 +432,12 @@ export default function ProductDetailPage() {
             <div className="glass-card p-6">
                <div className="flex items-center justify-between mb-4">
                   <h4 className="text-lg font-black text-white">Presente en Rutas</h4>
-                  <span className="text-[10px] font-black bg-sky-500/20 text-sky-400 px-2 py-0.5 rounded-lg">{associatedRoutes.length}</span>
+                  <span className="text-[10px] font-black bg-[#D6A55C]/20 text-[#D6A55C] px-2 py-0.5 rounded-lg">{associatedRoutes.length}</span>
                </div>
                <div className="space-y-3">
                   {associatedRoutes.length > 0 ? associatedRoutes.map(route => (
-                    <Link key={route.id} to={`/rutas/${route.id}/detalle`} className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-sky-500/30 group transition-all">
-                       <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-slate-500 group-hover:text-sky-500 transition-colors shrink-0"><Zap size={18} /></div>
+                    <Link key={route.id} to={`/rutas/${route.id}/detalle`} className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-[#D6A55C]/30 group transition-all">
+                       <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-slate-500 group-hover:text-[#D6A55C] transition-colors shrink-0"><Zap size={18} /></div>
                        <div className="flex-1 min-w-0">
                           <p className="text-xs font-black text-white truncate">{route.name}</p>
                           <p className="text-[10px] text-slate-500 font-bold">{route.duration_days} días — {route.destination}</p>
@@ -453,10 +453,10 @@ export default function ProductDetailPage() {
             {/* Tags */}
             {product.tags && product.tags.length > 0 && (
               <div className="glass-card p-6">
-                 <h4 className="text-sm font-black text-white uppercase mb-3 flex items-center gap-2"><Tag size={14} className="text-sky-400" /> Etiquetas</h4>
+                 <h4 className="text-sm font-black text-white uppercase mb-3 flex items-center gap-2"><Tag size={14} className="text-[#D6A55C]" /> Etiquetas</h4>
                  <div className="flex flex-wrap gap-2">
                     {product.tags.map(tag => (
-                      <span key={tag} className="text-[10px] font-bold px-3 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 uppercase tracking-widest">{tag}</span>
+                      <span key={tag} className="text-[10px] font-bold px-3 py-1 rounded-full bg-[#D6A55C]/10 text-[#D6A55C] border border-[#D6A55C]/20 uppercase tracking-widest">{tag}</span>
                     ))}
                  </div>
               </div>

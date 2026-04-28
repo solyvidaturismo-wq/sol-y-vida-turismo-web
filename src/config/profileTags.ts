@@ -118,9 +118,9 @@ export function getProfileTagsByGroup(groupId: string): ProfileTag[] {
 
 /** Colores seguros para Tailwind */
 export const PROFILE_COLOR_MAP: Record<string, { bg: string; text: string; bgSoft: string; border: string }> = {
-  sky:     { bg: 'bg-sky-500',     text: 'text-sky-400',     bgSoft: 'bg-sky-500/10',     border: 'border-sky-500/30' },
+  sky:     { bg: 'bg-[#D6A55C]',     text: 'text-[#D6A55C]',     bgSoft: 'bg-[#D6A55C]/10',     border: 'border-[#D6A55C]/30' },
   violet:  { bg: 'bg-violet-500',  text: 'text-violet-400',  bgSoft: 'bg-violet-500/10',  border: 'border-violet-500/30' },
-  amber:   { bg: 'bg-amber-500',   text: 'text-amber-400',   bgSoft: 'bg-amber-500/10',   border: 'border-amber-500/30' },
+  amber:   { bg: 'bg-[#A8442A]',   text: 'text-[#C84B2C]',   bgSoft: 'bg-[#A8442A]/10',   border: 'border-[#A8442A]/30' },
   emerald: { bg: 'bg-emerald-500', text: 'text-emerald-400', bgSoft: 'bg-emerald-500/10', border: 'border-emerald-500/30' },
   rose:    { bg: 'bg-rose-500',    text: 'text-rose-400',    bgSoft: 'bg-rose-500/10',    border: 'border-rose-500/30' },
 };

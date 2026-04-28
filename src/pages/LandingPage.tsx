@@ -176,18 +176,18 @@ export default function LandingPage() {
                 key={link.href}
                 onClick={() => scrollToSection(link.href)}
                 className={`text-sm font-semibold transition-colors relative group ${
-                  scrolled ? 'text-slate-600 hover:text-amber-600' : 'text-white/80 hover:text-white'
+                  scrolled ? 'text-slate-600 hover:text-[#7E2A21]' : 'text-white/80 hover:text-white'
                 }`}
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-500 group-hover:w-full transition-all duration-300" />
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#A8442A] group-hover:w-full transition-all duration-300" />
               </button>
             ))}
             <a
               href={buildWhatsappUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-sm font-bold text-white shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-105 transition-all"
+              className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#A8442A] to-[#A8442A] text-sm font-bold text-white shadow-lg shadow-[#A8442A]/25 hover:shadow-[#A8442A]/40 hover:scale-105 transition-all"
             >
               Reservar Ahora
             </a>
@@ -204,7 +204,7 @@ export default function LandingPage() {
               <button
                 key={link.href}
                 onClick={() => scrollToSection(link.href)}
-                className="block w-full text-left text-base font-semibold text-slate-700 hover:text-amber-600 py-2"
+                className="block w-full text-left text-base font-semibold text-slate-700 hover:text-[#7E2A21] py-2"
               >
                 {link.label}
               </button>
@@ -213,7 +213,7 @@ export default function LandingPage() {
               href={buildWhatsappUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-center px-6 py-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-sm font-bold text-white mt-4"
+              className="block text-center px-6 py-3 rounded-full bg-gradient-to-r from-[#A8442A] to-[#A8442A] text-sm font-bold text-white mt-4"
             >
               Reservar Ahora
             </a>
@@ -245,7 +245,7 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto px-6 w-full">
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-sm font-medium text-white mb-6">
-                <MapPin size={14} className="text-amber-400" /> Vélez, Santander — Colombia
+                <MapPin size={14} className="text-[#C84B2C]" /> Vélez, Santander — Colombia
               </div>
 
               {HERO_SLIDES.map((slide, idx) => (
@@ -257,7 +257,7 @@ export default function LandingPage() {
                 >
                   <h1 className="text-5xl sm:text-6xl md:text-7xl font-black leading-[0.95] tracking-tight text-white mb-4">
                     {slide.title}{' '}
-                    <span className="text-amber-400">{slide.subtitle}</span>
+                    <span className="text-[#C84B2C]">{slide.subtitle}</span>
                   </h1>
                   <p className="text-lg sm:text-xl text-white/80 max-w-lg mb-8 leading-relaxed">
                     {slide.desc}
@@ -268,7 +268,7 @@ export default function LandingPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={() => scrollToSection('#experiencias')}
-                  className="px-8 py-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-base shadow-2xl shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-105 transition-all flex items-center justify-center gap-2"
+                  className="px-8 py-4 rounded-full bg-gradient-to-r from-[#A8442A] to-[#A8442A] text-white font-bold text-base shadow-2xl shadow-[#A8442A]/30 hover:shadow-[#A8442A]/50 hover:scale-105 transition-all flex items-center justify-center gap-2"
                 >
                   Explorar Experiencias <ArrowRight size={18} />
                 </button>
@@ -293,7 +293,7 @@ export default function LandingPage() {
                   onClick={() => setCurrentSlide(idx)}
                   className={`transition-all duration-300 rounded-full ${
                     idx === currentSlide
-                      ? 'w-10 h-2 bg-amber-400'
+                      ? 'w-10 h-2 bg-[#C84B2C]'
                       : 'w-2 h-2 bg-white/40 hover:bg-white/60'
                   }`}
                 />
@@ -328,7 +328,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-0 bg-white rounded-2xl shadow-xl shadow-black/10 p-6 md:p-0 md:divide-x divide-slate-100">
             {STATS.map(stat => (
               <div key={stat.label} className="flex items-center gap-4 md:px-8 md:py-6">
-                <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-[#FBE4D9] text-[#A8442A] flex items-center justify-center shrink-0">
                   <stat.icon size={22} />
                 </div>
                 <div>
@@ -345,11 +345,11 @@ export default function LandingPage() {
       <section id="experiencias" className="py-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-amber-50 text-amber-600 text-xs font-bold uppercase tracking-wider mb-4">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#FBE4D9] text-[#7E2A21] text-xs font-bold uppercase tracking-wider mb-4">
               Nuestras Experiencias
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-800">
-              Vive algo <span className="text-amber-500">inolvidable</span>
+              Vive algo <span className="text-[#A8442A]">inolvidable</span>
             </h2>
             <p className="text-slate-500 mt-4 max-w-xl mx-auto text-lg">
               Cada experiencia está diseñada para conectarte con lo mejor de Vélez y su provincia.
@@ -358,7 +358,7 @@ export default function LandingPage() {
 
           {featuredProducts.length === 0 ? (
             <div className="max-w-xl mx-auto text-center py-16 px-8 rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/50">
-              <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-5">
+              <div className="w-16 h-16 rounded-2xl bg-[#FBE4D9] text-[#A8442A] flex items-center justify-center mx-auto mb-5">
                 <Mountain size={28} />
               </div>
               <h3 className="text-xl font-bold text-slate-800 mb-2">
@@ -371,7 +371,7 @@ export default function LandingPage() {
                 href={buildWhatsappUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-sm shadow-lg shadow-amber-500/25 hover:scale-105 transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#A8442A] to-[#A8442A] text-white font-bold text-sm shadow-lg shadow-[#A8442A]/25 hover:scale-105 transition-all"
               >
                 <MessageCircle size={16} /> Contactar por WhatsApp
               </a>
@@ -404,14 +404,14 @@ export default function LandingPage() {
                         {meta?.label || 'Experiencia'}
                       </div>
                       {product.base_price > 0 && (
-                        <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-amber-500 text-white text-xs font-black shadow-lg">
+                        <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-[#A8442A] text-white text-xs font-black shadow-lg">
                           desde {product.currency} {product.base_price.toLocaleString()}
                         </div>
                       )}
                     </div>
 
                     <div className="p-6 space-y-3 flex-1 flex flex-col">
-                      <h3 className="text-lg font-bold text-slate-800 group-hover:text-amber-600 transition-colors line-clamp-2 min-h-[3.5rem]">
+                      <h3 className="text-lg font-bold text-slate-800 group-hover:text-[#7E2A21] transition-colors line-clamp-2 min-h-[3.5rem]">
                         {product.name}
                       </h3>
                       <p className="text-sm text-slate-500 leading-relaxed line-clamp-3 flex-1">
@@ -420,10 +420,10 @@ export default function LandingPage() {
 
                       <div className="flex items-center gap-4 pt-2">
                         <span className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-                          <Clock size={14} className="text-amber-500" /> {formatDurationHuman(product.duration_minutes)}
+                          <Clock size={14} className="text-[#A8442A]" /> {formatDurationHuman(product.duration_minutes)}
                         </span>
                         <span className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-                          <Users size={14} className="text-amber-500" /> {capacityLabel} pax
+                          <Users size={14} className="text-[#A8442A]" /> {capacityLabel} pax
                         </span>
                       </div>
 
@@ -474,7 +474,7 @@ export default function LandingPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm flex items-center gap-1">
-                  <Star size={12} className="text-amber-500" fill="currentColor" />
+                  <Star size={12} className="text-[#A8442A]" fill="currentColor" />
                   <span className="text-xs font-bold text-slate-700">{dest.rating}</span>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
@@ -497,11 +497,11 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <span className="inline-block px-4 py-1.5 rounded-full bg-amber-50 text-amber-600 text-xs font-bold uppercase tracking-wider mb-4">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-[#FBE4D9] text-[#7E2A21] text-xs font-bold uppercase tracking-wider mb-4">
                 Por qué elegirnos
               </span>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-800 mb-6">
-                Turismo con <span className="text-amber-500">alma local</span>
+                Turismo con <span className="text-[#A8442A]">alma local</span>
               </h2>
               <p className="text-slate-500 text-lg leading-relaxed mb-10">
                 Somos de aquí. Conocemos cada sendero, cada historia, cada sabor.
@@ -516,7 +516,7 @@ export default function LandingPage() {
                   { icon: TreePine, title: 'Turismo Responsable', desc: 'Trabajamos con comunidades locales y respetamos el medio ambiente.' },
                 ].map(item => (
                   <div key={item.title} className="flex gap-4 group">
-                    <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-white transition-all">
+                    <div className="w-12 h-12 rounded-xl bg-[#FBE4D9] text-[#A8442A] flex items-center justify-center shrink-0 group-hover:bg-[#A8442A] group-hover:text-white transition-all">
                       <item.icon size={22} />
                     </div>
                     <div>
@@ -568,12 +568,12 @@ export default function LandingPage() {
               <div key={t.name} className="p-8 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 space-y-4">
                 <div className="flex gap-1">
                   {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} size={16} className="text-amber-400" fill="currentColor" />
+                    <Star key={i} size={16} className="text-[#C84B2C]" fill="currentColor" />
                   ))}
                 </div>
                 <p className="text-slate-600 leading-relaxed">"{t.text}"</p>
                 <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#C84B2C] to-[#A8442A] flex items-center justify-center text-white text-xs font-bold">
                     {t.avatar}
                   </div>
                   <div>
@@ -598,7 +598,7 @@ export default function LandingPage() {
               alt="Montañas"
               className="w-full h-80 object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-amber-600/90 to-orange-500/85" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#7E2A21]/90 to-[#A8442A]/85" />
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
               <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
                 Tu próxima aventura empieza aquí
@@ -610,7 +610,7 @@ export default function LandingPage() {
                 href={buildWhatsappUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-10 py-4 rounded-full bg-white text-amber-600 font-bold text-lg shadow-2xl hover:scale-105 transition-all flex items-center gap-3"
+                className="px-10 py-4 rounded-full bg-white text-[#7E2A21] font-bold text-lg shadow-2xl hover:scale-105 transition-all flex items-center gap-3"
               >
                 <MessageCircle size={20} /> Escríbenos por WhatsApp
               </a>
@@ -624,11 +624,11 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             <div>
-              <span className="inline-block px-4 py-1.5 rounded-full bg-amber-50 text-amber-600 text-xs font-bold uppercase tracking-wider mb-4">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-[#FBE4D9] text-[#7E2A21] text-xs font-bold uppercase tracking-wider mb-4">
                 Contacto
               </span>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-slate-800 mb-6">
-                Hablemos de tu <span className="text-amber-500">próximo viaje</span>
+                Hablemos de tu <span className="text-[#A8442A]">próximo viaje</span>
               </h2>
               <p className="text-slate-500 text-lg leading-relaxed mb-10">
                 Estamos listos para ayudarte a planear la experiencia perfecta en Vélez, Santander.
@@ -636,7 +636,7 @@ export default function LandingPage() {
 
               <div className="space-y-6">
                 <a href={`tel:+${LANDING_WHATSAPP_NUMBER}`} className="flex items-center gap-4 group">
-                  <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white transition-all">
+                  <div className="w-12 h-12 rounded-xl bg-[#FBE4D9] text-[#A8442A] flex items-center justify-center group-hover:bg-[#A8442A] group-hover:text-white transition-all">
                     <Phone size={20} />
                   </div>
                   <div>
@@ -646,7 +646,7 @@ export default function LandingPage() {
                 </a>
 
                 <a href="mailto:info@solyvida.co" className="flex items-center gap-4 group">
-                  <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white transition-all">
+                  <div className="w-12 h-12 rounded-xl bg-[#FBE4D9] text-[#A8442A] flex items-center justify-center group-hover:bg-[#A8442A] group-hover:text-white transition-all">
                     <Mail size={20} />
                   </div>
                   <div>
@@ -656,7 +656,7 @@ export default function LandingPage() {
                 </a>
 
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-[#FBE4D9] text-[#A8442A] flex items-center justify-center">
                     <MapPin size={20} />
                   </div>
                   <div>
@@ -667,10 +667,10 @@ export default function LandingPage() {
               </div>
 
               <div className="flex gap-3 mt-10">
-                <a href="#" className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-amber-500 hover:border-amber-200 transition-all shadow-sm">
+                <a href="#" className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-[#A8442A] hover:border-[#E8A083] transition-all shadow-sm">
                   <Instagram size={18} />
                 </a>
-                <a href="#" className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-amber-500 hover:border-amber-200 transition-all shadow-sm">
+                <a href="#" className="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-[#A8442A] hover:border-[#E8A083] transition-all shadow-sm">
                   <Facebook size={18} />
                 </a>
               </div>
@@ -696,7 +696,7 @@ export default function LandingPage() {
                       name="name"
                       required
                       placeholder="Tu nombre"
-                      className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all"
+                      className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#C84B2C] focus:ring-2 focus:ring-[#F4C7B0] transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -705,7 +705,7 @@ export default function LandingPage() {
                       name="email"
                       type="email"
                       placeholder="tu@email.com"
-                      className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all"
+                      className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#C84B2C] focus:ring-2 focus:ring-[#F4C7B0] transition-all"
                     />
                   </div>
                 </div>
@@ -713,7 +713,7 @@ export default function LandingPage() {
                   <label className="text-xs font-semibold text-slate-500">Personas</label>
                   <select
                     name="personas"
-                    className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all"
+                    className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-[#C84B2C] focus:ring-2 focus:ring-[#F4C7B0] transition-all"
                   >
                     <option value="1-2">1-2 personas</option>
                     <option value="3-5">3-5 personas</option>
@@ -728,12 +728,12 @@ export default function LandingPage() {
                     rows={4}
                     required
                     placeholder="Cuéntanos qué te gustaría hacer en Vélez..."
-                    className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all resize-none"
+                    className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-[#C84B2C] focus:ring-2 focus:ring-[#F4C7B0] transition-all resize-none"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-sm shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-[1.02] transition-all"
+                  className="w-full py-4 rounded-xl bg-gradient-to-r from-[#A8442A] to-[#A8442A] text-white font-bold text-sm shadow-lg shadow-[#A8442A]/25 hover:shadow-[#A8442A]/40 hover:scale-[1.02] transition-all"
                 >
                   Enviar por WhatsApp
                 </button>
@@ -765,7 +765,7 @@ export default function LandingPage() {
                   <button
                     key={link.href}
                     onClick={() => scrollToSection(link.href)}
-                    className="block text-sm text-slate-400 hover:text-amber-400 transition-colors"
+                    className="block text-sm text-slate-400 hover:text-[#C84B2C] transition-colors"
                   >
                     {link.label}
                   </button>
@@ -781,8 +781,8 @@ export default function LandingPage() {
                 <p>Vélez, Santander — Colombia</p>
               </div>
               <div className="flex gap-3 mt-4">
-                <a href="#" className="text-slate-500 hover:text-amber-400 transition-colors"><Instagram size={18} /></a>
-                <a href="#" className="text-slate-500 hover:text-amber-400 transition-colors"><Facebook size={18} /></a>
+                <a href="#" className="text-slate-500 hover:text-[#C84B2C] transition-colors"><Instagram size={18} /></a>
+                <a href="#" className="text-slate-500 hover:text-[#C84B2C] transition-colors"><Facebook size={18} /></a>
               </div>
             </div>
           </div>
@@ -889,22 +889,22 @@ function ProductDetailModal({ product, onClose }: { product: Product; onClose: (
           {/* Stats rápidos */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div className="p-3 rounded-xl bg-slate-50 text-center">
-              <Clock size={18} className="mx-auto text-amber-500 mb-1" />
+              <Clock size={18} className="mx-auto text-[#A8442A] mb-1" />
               <p className="text-[10px] text-slate-500 font-bold uppercase">Duración</p>
               <p className="text-sm font-bold text-slate-800">{formatDurationHuman(product.duration_minutes)}</p>
             </div>
             <div className="p-3 rounded-xl bg-slate-50 text-center">
-              <Users size={18} className="mx-auto text-amber-500 mb-1" />
+              <Users size={18} className="mx-auto text-[#A8442A] mb-1" />
               <p className="text-[10px] text-slate-500 font-bold uppercase">Capacidad</p>
               <p className="text-sm font-bold text-slate-800">{capacityLabel}</p>
             </div>
             {product.base_price > 0 && (
-              <div className="p-3 rounded-xl bg-amber-50 text-center border border-amber-100">
-                <p className="text-[10px] text-amber-600 font-bold uppercase">Desde</p>
-                <p className="text-base font-black text-amber-700">
+              <div className="p-3 rounded-xl bg-[#FBE4D9] text-center border border-[#F4C7B0]">
+                <p className="text-[10px] text-[#7E2A21] font-bold uppercase">Desde</p>
+                <p className="text-base font-black text-[#6B1F18]">
                   {product.currency} {product.base_price.toLocaleString()}
                 </p>
-                <p className="text-[9px] text-amber-600/80">por persona</p>
+                <p className="text-[9px] text-[#7E2A21]/80">por persona</p>
               </div>
             )}
           </div>
@@ -941,7 +941,7 @@ function ProductDetailModal({ product, onClose }: { product: Product; onClose: (
               <div className="space-y-2">
                 {itinerary.map((step, i) => (
                   <div key={i} className="flex gap-3 p-3 rounded-xl bg-slate-50">
-                    <div className="shrink-0 px-2.5 py-1 rounded-lg bg-white text-amber-600 font-bold text-xs self-start">
+                    <div className="shrink-0 px-2.5 py-1 rounded-lg bg-white text-[#7E2A21] font-bold text-xs self-start">
                       {step.time}
                     </div>
                     <p className="text-sm text-slate-700 leading-relaxed">{step.activity}</p>

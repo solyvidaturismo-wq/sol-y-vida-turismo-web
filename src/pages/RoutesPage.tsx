@@ -104,7 +104,7 @@ export default function RoutesPage() {
              </button>
              <button 
                onClick={() => setActiveStatus('pausado')}
-               className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeStatus === 'pausado' ? 'bg-amber-500/20 text-amber-400' : 'text-slate-500 hover:text-slate-300'}`}
+               className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeStatus === 'pausado' ? 'bg-[#A8442A]/20 text-[#C84B2C]' : 'text-slate-500 hover:text-slate-300'}`}
              >
                Pausados
              </button>
@@ -152,7 +152,7 @@ export default function RoutesPage() {
                      {route.pricing.currency} {route.pricing.base_price_per_pax.toFixed(2)}
                    </div>
                    <div className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest text-right border ${
-                    route.status === 'activo' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                    route.status === 'activo' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-[#A8442A]/10 text-[#C84B2C] border-[#A8442A]/20'
                    }`}>
                      {route.status}
                    </div>
@@ -206,7 +206,7 @@ export default function RoutesPage() {
                    REVISAR RUTA <ArrowUpRight size={14} />
                  </span>
                  <div className="flex items-center gap-2">
-                    <button onClick={() => navigate(`/rutas/${route.id}/editar`)} className="p-2 text-slate-600 hover:text-sky-400 transition-colors" aria-label="Editar"><Edit2 size={16}/></button>
+                    <button onClick={() => navigate(`/rutas/${route.id}/editar`)} className="p-2 text-slate-600 hover:text-[#D6A55C] transition-colors" aria-label="Editar"><Edit2 size={16}/></button>
                     <button onClick={() => handleDelete(route.id, route.name)} className="p-2 text-slate-600 hover:text-rose-400 transition-colors" aria-label="Eliminar"><Trash2 size={16}/></button>
                  </div>
               </div>
@@ -253,7 +253,7 @@ export default function RoutesPage() {
                     </td>
                     <td className="px-6 py-4">
                        <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${
-                         r.status === 'activo' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                         r.status === 'activo' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-[#A8442A]/10 text-[#C84B2C] border-[#A8442A]/20'
                        }`}>
                          {r.status}
                        </span>
@@ -261,7 +261,7 @@ export default function RoutesPage() {
                     <td className="px-6 py-4 text-right pr-6">
                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
                           <Link to={`/rutas/${r.id}/detalle`} className="p-2 text-slate-400 hover:text-white"><ExternalLink size={14}/></Link>
-                          <button onClick={() => navigate(`/rutas/${r.id}/editar`)} className="p-2 text-slate-400 hover:text-sky-400" aria-label="Editar"><Edit2 size={14}/></button>
+                          <button onClick={() => navigate(`/rutas/${r.id}/editar`)} className="p-2 text-slate-400 hover:text-[#D6A55C]" aria-label="Editar"><Edit2 size={14}/></button>
                           <button onClick={() => handleDelete(r.id, r.name)} className="p-2 text-slate-400 hover:text-rose-400" aria-label="Eliminar"><Trash2 size={14}/></button>
                        </div>
                     </td>

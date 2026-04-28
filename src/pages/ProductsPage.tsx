@@ -83,12 +83,12 @@ export default function ProductsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-            <Package className="text-sky-500" />
+            <Package className="text-[#D6A55C]" />
             Catálogo de Productos
           </h1>
           <p className="text-slate-400 text-sm font-medium">Atractivos, Hoteles, Transporte y Servicios del inventario.</p>
         </div>
-        <Link to="/productos/nuevo" className="btn-primary flex items-center gap-2 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500">
+        <Link to="/productos/nuevo" className="btn-primary flex items-center gap-2 bg-gradient-to-r from-[#D6A55C] to-[#B07E3C] hover:from-[#D6A55C] hover:to-[#D6A55C]">
           <Plus size={18} />
           Nuevo Producto
         </Link>
@@ -97,9 +97,9 @@ export default function ProductsPage() {
       {/* Stats Quick View */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
          {[
-           { label: 'En Inventario', val: products.length, icon: Package, borderClass: 'border-sky-500', iconClass: 'text-sky-400' },
+           { label: 'En Inventario', val: products.length, icon: Package, borderClass: 'border-[#D6A55C]', iconClass: 'text-[#D6A55C]' },
            { label: 'Promedio Precio', val: `$${Math.round(products.reduce((a, b) => a + b.base_price, 0) / (products.length || 1))}`, icon: DollarSign, borderClass: 'border-emerald-500', iconClass: 'text-emerald-400' },
-           { label: 'Categorías', val: new Set(products.map(p => p.category)).size, icon: Tag, borderClass: 'border-amber-500', iconClass: 'text-amber-400' },
+           { label: 'Categorías', val: new Set(products.map(p => p.category)).size, icon: Tag, borderClass: 'border-[#A8442A]', iconClass: 'text-[#C84B2C]' },
            { label: 'Sin Proveedor', val: products.filter(p => !p.supplier_id).length, icon: AlertTriangle, borderClass: 'border-rose-500', iconClass: 'text-rose-400' },
          ].map((stat, i) => (
            <div key={i} className={`glass-card p-4 border-l-4 ${stat.borderClass}`}>
@@ -120,7 +120,7 @@ export default function ProductsPage() {
             <input 
               type="text" 
               placeholder="Buscar productos..."
-              className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/40 transition-all font-medium"
+              className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#D6A55C]/40 transition-all font-medium"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -139,12 +139,12 @@ export default function ProductsPage() {
             onClick={() => setOnlyFeatured(v => !v)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all border ${
               onlyFeatured
-                ? 'bg-amber-500/15 text-amber-400 border-amber-500/40'
+                ? 'bg-[#A8442A]/15 text-[#C84B2C] border-[#A8442A]/40'
                 : 'bg-white/5 text-slate-400 border-white/5 hover:text-white'
             }`}
             title="Mostrar solo productos publicados en el landing /velez"
           >
-            <Star size={14} className={onlyFeatured ? 'fill-amber-400' : ''} />
+            <Star size={14} className={onlyFeatured ? 'fill-[#C84B2C]' : ''} />
             En landing
           </button>
         </div>
@@ -152,14 +152,14 @@ export default function ProductsPage() {
         <div className="flex items-center gap-2">
            <button
              onClick={() => setViewMode('grid')}
-             className={`p-2.5 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-sky-500 text-slate-900 shadow-lg shadow-sky-500/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
+             className={`p-2.5 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-[#D6A55C] text-slate-900 shadow-lg shadow-[#D6A55C]/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
              aria-label="Vista cuadrícula"
            >
              <LayoutGrid size={20} />
            </button>
            <button
              onClick={() => setViewMode('list')}
-             className={`p-2.5 rounded-xl transition-all ${viewMode === 'list' ? 'bg-sky-500 text-slate-900 shadow-lg shadow-sky-500/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
+             className={`p-2.5 rounded-xl transition-all ${viewMode === 'list' ? 'bg-[#D6A55C] text-slate-900 shadow-lg shadow-[#D6A55C]/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
              aria-label="Vista lista"
            >
              <ListIcon size={20} />
@@ -175,7 +175,7 @@ export default function ProductsPage() {
             const supplier = suppliers.find(s => s.id === product.supplier_id);
             
             return (
-              <div key={product.id} className="glass-card group flex flex-col hover:border-sky-500/30 transition-all duration-300 transform-gpu hover:-translate-y-1 relative">
+              <div key={product.id} className="glass-card group flex flex-col hover:border-[#D6A55C]/30 transition-all duration-300 transform-gpu hover:-translate-y-1 relative">
                  {/* Toggle landing (fuera del Link para no navegar) */}
                  <button
                    type="button"
@@ -188,8 +188,8 @@ export default function ProductsPage() {
                    title={product.is_featured ? 'Visible en landing — click para ocultar' : 'Publicar en landing /velez'}
                    className={`absolute top-3 right-3 z-10 w-9 h-9 rounded-xl flex items-center justify-center backdrop-blur-md border transition-all ${
                      product.is_featured
-                       ? 'bg-amber-500 text-white border-amber-300 shadow-lg shadow-amber-500/40'
-                       : 'bg-black/40 text-white/80 border-white/10 hover:bg-amber-500/30 hover:text-amber-300'
+                       ? 'bg-[#A8442A] text-white border-[#E08C6F] shadow-lg shadow-[#A8442A]/40'
+                       : 'bg-black/40 text-white/80 border-white/10 hover:bg-[#A8442A]/30 hover:text-[#E08C6F]'
                    } disabled:opacity-50`}
                  >
                    <Star size={16} className={product.is_featured ? 'fill-white' : ''} />
@@ -213,11 +213,11 @@ export default function ProductsPage() {
 
                     {/* Meta tag */}
                     <div className="absolute bottom-3 left-3 flex items-center gap-2">
-                       <span className="px-2 py-0.5 rounded-md bg-sky-500/80 text-white text-[9px] font-black uppercase tracking-widest backdrop-blur-sm">
+                       <span className="px-2 py-0.5 rounded-md bg-[#D6A55C]/80 text-white text-[9px] font-black uppercase tracking-widest backdrop-blur-sm">
                          {meta?.label || product.category}
                        </span>
                        {product.is_featured && (
-                         <span className="px-2 py-0.5 rounded-md bg-amber-500/90 text-white text-[9px] font-black uppercase tracking-widest backdrop-blur-sm flex items-center gap-1">
+                         <span className="px-2 py-0.5 rounded-md bg-[#A8442A]/90 text-white text-[9px] font-black uppercase tracking-widest backdrop-blur-sm flex items-center gap-1">
                            <Star size={10} className="fill-white" /> Landing
                          </span>
                        )}
@@ -238,7 +238,7 @@ export default function ProductsPage() {
                        <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider">
                           <span className="text-slate-600">Duración</span>
                           <span className="text-slate-300 flex items-center gap-1">
-                             <Clock size={12} className="text-sky-500" /> {product.duration_minutes} min
+                             <Clock size={12} className="text-[#D6A55C]" /> {product.duration_minutes} min
                           </span>
                        </div>
                        <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider">
@@ -265,7 +265,7 @@ export default function ProductsPage() {
                       DETALLES <ExternalLink size={12} />
                     </span>
                     <div className="flex items-center gap-2">
-                       <button onClick={() => navigate(`/productos/${product.id}/editar`)} className="p-2 text-slate-600 hover:text-sky-400 transition-colors" aria-label="Editar"><Edit2 size={16}/></button>
+                       <button onClick={() => navigate(`/productos/${product.id}/editar`)} className="p-2 text-slate-600 hover:text-[#D6A55C] transition-colors" aria-label="Editar"><Edit2 size={16}/></button>
                        <button onClick={() => handleDelete(product.id, product.name)} className="p-2 text-slate-600 hover:text-rose-400 transition-colors" aria-label="Eliminar"><Trash2 size={16}/></button>
                     </div>
                  </div>
@@ -318,15 +318,15 @@ export default function ProductsPage() {
                                disabled={togglingId === p.id}
                                title={p.is_featured ? 'Quitar del landing' : 'Publicar en landing'}
                                className={`p-2 transition-colors disabled:opacity-50 ${
-                                 p.is_featured ? 'text-amber-400' : 'text-slate-600 hover:text-amber-400'
+                                 p.is_featured ? 'text-[#C84B2C]' : 'text-slate-600 hover:text-[#C84B2C]'
                                }`}
                                aria-label="Toggle landing"
                              >
-                               <Star size={14} className={p.is_featured ? 'fill-amber-400' : ''} />
+                               <Star size={14} className={p.is_featured ? 'fill-[#C84B2C]' : ''} />
                              </button>
                              <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
                                <Link to={`/productos/${p.id}/detalle`} className="p-2 text-slate-400 hover:text-white"><ExternalLink size={14}/></Link>
-                               <button onClick={() => navigate(`/productos/${p.id}/editar`)} className="p-2 text-slate-400 hover:text-sky-400" aria-label="Editar"><Edit2 size={14}/></button>
+                               <button onClick={() => navigate(`/productos/${p.id}/editar`)} className="p-2 text-slate-400 hover:text-[#D6A55C]" aria-label="Editar"><Edit2 size={14}/></button>
                                <button onClick={() => handleDelete(p.id, p.name)} className="p-2 text-slate-400 hover:text-rose-400" aria-label="Eliminar"><Trash2 size={14}/></button>
                              </div>
                           </div>

@@ -65,7 +65,7 @@ export default function SuppliersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-            <Users className="text-amber-500" />
+            <Users className="text-[#A8442A]" />
             Directorio de Proveedores
           </h1>
           <p className="text-slate-400 text-sm font-medium">Gestiona tus partners, hoteles y operadores turísticos.</p>
@@ -84,7 +84,7 @@ export default function SuppliersPage() {
             <input 
               type="text" 
               placeholder="Buscar por nombre o contacto..."
-              className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 transition-all font-medium"
+              className="w-full bg-slate-900/50 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#A8442A]/40 transition-all font-medium"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -104,14 +104,14 @@ export default function SuppliersPage() {
         <div className="flex items-center gap-2">
            <button
              onClick={() => setViewMode('grid')}
-             className={`p-2.5 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
+             className={`p-2.5 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-[#A8442A] text-slate-900 shadow-lg shadow-[#A8442A]/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
              aria-label="Vista cuadrícula"
            >
              <LayoutGrid size={20} />
            </button>
            <button
              onClick={() => setViewMode('list')}
-             className={`p-2.5 rounded-xl transition-all ${viewMode === 'list' ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
+             className={`p-2.5 rounded-xl transition-all ${viewMode === 'list' ? 'bg-[#A8442A] text-slate-900 shadow-lg shadow-[#A8442A]/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
              aria-label="Vista lista"
            >
              <ListIcon size={20} />
@@ -127,7 +127,7 @@ export default function SuppliersPage() {
             return (
               <div
                 key={supplier.id}
-                className="glass-card group overflow-hidden border border-white/5 flex flex-col hover:border-amber-500/30 transition-all duration-300 transform-gpu hover:-translate-y-1"
+                className="glass-card group overflow-hidden border border-white/5 flex flex-col hover:border-[#A8442A]/30 transition-all duration-300 transform-gpu hover:-translate-y-1"
               >
                 <Link to={`/proveedores/${supplier.id}/detalle`} className="flex-1 flex flex-col cursor-pointer">
                 {/* Visual Header */}
@@ -162,7 +162,7 @@ export default function SuppliersPage() {
                 {/* Content */}
                 <div className="p-5 pt-8 flex-1">
                   <div className="flex items-center gap-1.5 mb-1">
-                    <span className="text-[10px] font-bold text-amber-500/80 uppercase tracking-widest leading-none">
+                    <span className="text-[10px] font-bold text-[#A8442A]/80 uppercase tracking-widest leading-none">
                       {meta?.emoji} {meta?.label}
                     </span>
                     {supplier.rating >= 4.5 && <ShieldCheck size={12} className="text-emerald-400" />}
@@ -188,13 +188,13 @@ export default function SuppliersPage() {
                   <div className="grid grid-cols-2 gap-2 mb-6 p-2 rounded-xl bg-white/5 border border-white/5">
                      <div className="text-center">
                        <p className="text-[9px] font-bold text-slate-500 uppercase">Rating</p>
-                       <div className="flex items-center justify-center gap-1 text-xs font-black text-amber-500">
+                       <div className="flex items-center justify-center gap-1 text-xs font-black text-[#A8442A]">
                          <Star size={10} fill="currentColor" /> {supplier.rating}
                        </div>
                      </div>
                      <div className="text-center border-l border-white/5">
                        <p className="text-[9px] font-bold text-slate-500 uppercase">Comisión</p>
-                       <p className="text-xs font-black text-sky-400">{supplier.commission_pct}%</p>
+                       <p className="text-xs font-black text-[#D6A55C]">{supplier.commission_pct}%</p>
                      </div>
                   </div>
                 </div>
@@ -208,7 +208,7 @@ export default function SuppliersPage() {
                    <div className="flex items-center gap-1">
                       <button
                         onClick={() => navigate(`/proveedores/${supplier.id}/editar`)}
-                        className="p-2 text-slate-500 hover:text-sky-400 transition-colors"
+                        className="p-2 text-slate-500 hover:text-[#D6A55C] transition-colors"
                         aria-label="Editar proveedor"
                       >
                          <Edit2 size={16} />
@@ -269,7 +269,7 @@ export default function SuppliersPage() {
                        </div>
                     </td>
                     <td className="px-6 py-4">
-                       <span className="text-sm font-black text-sky-400">{supplier.commission_pct}%</span>
+                       <span className="text-sm font-black text-[#D6A55C]">{supplier.commission_pct}%</span>
                     </td>
                     <td className="px-6 py-4">
                        <span className={`px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${
@@ -280,7 +280,7 @@ export default function SuppliersPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                          <button onClick={() => navigate(`/proveedores/${supplier.id}/editar`)} className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white hover:bg-sky-500/20" aria-label="Editar"><Edit2 size={14}/></button>
+                          <button onClick={() => navigate(`/proveedores/${supplier.id}/editar`)} className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white hover:bg-[#D6A55C]/20" aria-label="Editar"><Edit2 size={14}/></button>
                           <button onClick={() => handleDelete(supplier.id, supplier.name)} className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white hover:bg-rose-500/20" aria-label="Eliminar"><Trash2 size={14}/></button>
                        </div>
                     </td>

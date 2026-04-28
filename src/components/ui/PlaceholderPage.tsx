@@ -14,9 +14,9 @@ export const PlaceholderPage: React.FC<PlaceholderPageProps> = ({
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center text-center space-y-8 animate-page-enter">
        <div className="relative">
-          <div className="absolute inset-0 bg-amber-500/20 blur-[80px] rounded-full" />
+          <div className="absolute inset-0 bg-[#A8442A]/20 blur-[80px] rounded-full" />
           <div className="relative w-32 h-32 rounded-[40px] bg-slate-900 border border-white/10 flex items-center justify-center shadow-2xl">
-             <Construction className="text-amber-500 animate-bounce" size={48} />
+             <Construction className="text-[#A8442A] animate-bounce" size={48} />
           </div>
        </div>
        <div className="space-y-4 max-w-md">

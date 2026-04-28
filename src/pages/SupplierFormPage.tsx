@@ -204,7 +204,7 @@ export default function SupplierFormPage() {
         <div className="lg:col-span-2 space-y-8">
            <div className="glass-card p-8 space-y-6">
               <div className="flex items-center gap-3 mb-2">
-                 <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                 <div className="w-8 h-8 rounded-lg bg-[#A8442A]/10 text-[#A8442A] flex items-center justify-center">
                     <Building2 size={18} />
                  </div>
                  <h2 className="text-xl font-black text-white">Identidad del Proveedor</h2>
@@ -266,7 +266,7 @@ export default function SupplierFormPage() {
            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="glass-card p-6 space-y-6">
                  <div className="flex items-center gap-2 mb-2">
-                    <MapPin size={18} className="text-amber-500" />
+                    <MapPin size={18} className="text-[#A8442A]" />
                     <h3 className="text-lg font-black text-white">Ubicación</h3>
                  </div>
                  <div className="space-y-4">
@@ -298,7 +298,7 @@ export default function SupplierFormPage() {
 
               <div className="glass-card p-6 space-y-6">
                  <div className="flex items-center gap-2 mb-2">
-                    <ShieldCheck size={18} className="text-amber-500" />
+                    <ShieldCheck size={18} className="text-[#A8442A]" />
                     <h3 className="text-lg font-black text-white">Contacto Principal</h3>
                  </div>
                  <div className="space-y-4">
@@ -319,9 +319,9 @@ export default function SupplierFormPage() {
 
            {/* Dynamic Fields Section */}
            {SUPPLIER_CATEGORIES[selectedCategory] && (
-             <div className="glass-card p-8 space-y-6 border-l-4 border-amber-500/50">
+             <div className="glass-card p-8 space-y-6 border-l-4 border-[#A8442A]/50">
                 <div className="flex items-center gap-3">
-                   <div className="w-8 h-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center">
+                   <div className="w-8 h-8 rounded-lg bg-[#A8442A]/10 text-[#C84B2C] flex items-center justify-center">
                       <Zap size={18} />
                    </div>
                    <div>
@@ -346,7 +346,7 @@ export default function SupplierFormPage() {
         <div className="space-y-8">
            <div className="glass-card p-6 space-y-6">
               <h3 className="text-lg font-black text-white flex items-center gap-2">
-                 <ImageIcon size={20} className="text-amber-500" /> Branding
+                 <ImageIcon size={20} className="text-[#A8442A]" /> Branding
               </h3>
 
               <div className="space-y-6">
@@ -371,8 +371,8 @@ export default function SupplierFormPage() {
            </div>
 
            {/* Tip Card */}
-           <div className="p-6 rounded-[32px] bg-amber-500/5 border border-amber-500/20 space-y-3">
-              <div className="flex items-center gap-2 text-amber-500 font-bold text-xs uppercase tracking-widest">
+           <div className="p-6 rounded-[32px] bg-[#A8442A]/5 border border-[#A8442A]/20 space-y-3">
+              <div className="flex items-center gap-2 text-[#A8442A] font-bold text-xs uppercase tracking-widest">
                  <CheckCircle2 size={16} /> Tip de Operación
               </div>
               <p className="text-xs text-slate-400 leading-relaxed font-medium italic">

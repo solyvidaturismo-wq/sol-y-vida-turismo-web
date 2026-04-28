@@ -17,7 +17,7 @@ function SettingsSection({ title, subtitle, icon: Icon, children }: any) {
   return (
     <div className="glass-card p-8 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-700">
        <div className="flex items-start gap-4 pb-6 border-b border-white/5">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center shrink-0 border border-indigo-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-[#D6A55C]/10 text-[#D6A55C] flex items-center justify-center shrink-0 border border-[#D6A55C]/20">
              <Icon size={24} />
           </div>
           <div>
@@ -36,12 +36,12 @@ function ToggleRow({ label, desc, enabled, onToggle }: any) {
   return (
     <div className="flex items-center justify-between group">
        <div className="space-y-1">
-          <p className="text-sm font-black text-white group-hover:text-indigo-400 transition-colors uppercase tracking-tight">{label}</p>
+          <p className="text-sm font-black text-white group-hover:text-[#D6A55C] transition-colors uppercase tracking-tight">{label}</p>
           <p className="text-[11px] font-medium text-slate-500">{desc}</p>
        </div>
        <button
          onClick={onToggle}
-         className={`w-12 h-6 rounded-full relative transition-all duration-300 border ${enabled ? 'bg-indigo-500 border-indigo-400 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-slate-800 border-white/10'}`}
+         className={`w-12 h-6 rounded-full relative transition-all duration-300 border ${enabled ? 'bg-[#D6A55C] border-[#D6A55C] shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-slate-800 border-white/10'}`}
        >
           <div className={`absolute top-1 h-3.5 w-3.5 rounded-full bg-white transition-all duration-300 ${enabled ? 'right-1' : 'left-1'}`} />
        </button>
@@ -89,7 +89,7 @@ export default function ConfiguracionPage() {
       {/* Header */}
       <div className="flex items-end gap-6 pb-2 border-b border-white/5">
          <div className="w-16 h-16 rounded-[28px] bg-slate-900 border border-white/10 flex items-center justify-center shadow-2xl">
-            <Settings className="text-indigo-400 animate-spin-slow" size={32} />
+            <Settings className="text-[#D6A55C] animate-spin-slow" size={32} />
          </div>
          <div>
             <h1 className="text-4xl font-black text-white tracking-tighter">Panel de Control General</h1>
@@ -156,7 +156,7 @@ export default function ConfiguracionPage() {
                     />
                     <div className="p-6 rounded-3xl bg-slate-950/50 border border-white/5 space-y-4">
                        <div className="flex items-center gap-2 text-white font-black text-xs uppercase tracking-widest">
-                          <Key size={16} className="text-indigo-400" /> API Keys de Producción
+                          <Key size={16} className="text-[#D6A55C]" /> API Keys de Producción
                        </div>
                        <div className="space-y-2">
                           <input type="password" value="sb_p_***********************" readOnly className="form-input w-full text-xs font-mono opacity-50 select-none bg-slate-900 border-white/5" />
@@ -194,7 +194,7 @@ export default function ConfiguracionPage() {
          {/* Sidebar Stats (Right 1 col) */}
          <div className="space-y-8">
             <div className="glass-card p-8 space-y-6">
-               <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Inventario Actual</p>
+               <p className="text-[10px] font-black text-[#D6A55C] uppercase tracking-widest">Inventario Actual</p>
                <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
                      <span className="text-xs font-bold text-slate-400">Proveedores</span>
@@ -217,7 +217,7 @@ export default function ConfiguracionPage() {
 
             <div className="glass-card p-8 space-y-4">
                <div className="flex items-center gap-3">
-                  <Package size={20} className="text-indigo-400" />
+                  <Package size={20} className="text-[#D6A55C]" />
                   <h4 className="text-sm font-black text-white uppercase tracking-widest">Versión de la App</h4>
                </div>
                <div className="space-y-2">

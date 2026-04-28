@@ -87,8 +87,8 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
 
   const getIcon = (type: string) => {
     switch (type) {
-      case 'supplier': return <Users size={16} className="text-amber-500" />;
-      case 'product': return <Package size={16} className="text-sky-500" />;
+      case 'supplier': return <Users size={16} className="text-[#A8442A]" />;
+      case 'product': return <Package size={16} className="text-[#D6A55C]" />;
       case 'route': return <Map size={16} className="text-emerald-500" />;
       default: return null;
     }
@@ -137,10 +137,10 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
                 {getIcon(result.type)}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-white truncate group-hover:text-amber-400 transition-colors">{result.name}</p>
+                <p className="text-sm font-bold text-white truncate group-hover:text-[#C84B2C] transition-colors">{result.name}</p>
                 <p className="text-[10px] text-slate-500 font-medium truncate">{result.subtitle}</p>
               </div>
-              <ArrowRight size={14} className="text-slate-700 group-hover:text-amber-500 transition-colors shrink-0" />
+              <ArrowRight size={14} className="text-slate-700 group-hover:text-[#A8442A] transition-colors shrink-0" />
             </button>
           ))}
         </div>

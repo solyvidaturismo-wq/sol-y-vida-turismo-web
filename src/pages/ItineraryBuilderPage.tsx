@@ -251,7 +251,7 @@ function ItineraryCard({
                 </p>
                 <div className="flex items-center gap-2 mt-1.5 text-[10px]" style={{ color: 'var(--color-text-muted)' }}>
                   {resolvedProduct.duration_minutes > 0 && <span>⏱️ {resolvedProduct.duration_minutes} min</span>}
-                  {resolvedProduct.base_price > 0 && <span className="font-bold text-amber-400">💰 ${resolvedProduct.base_price} {resolvedProduct.currency}</span>}
+                  {resolvedProduct.base_price > 0 && <span className="font-bold text-[#C84B2C]">💰 ${resolvedProduct.base_price} {resolvedProduct.currency}</span>}
                 </div>
               </div>
             </div>
@@ -312,7 +312,7 @@ function ItineraryCard({
                 type="checkbox"
                 checked={item.is_optional}
                 onChange={onToggleOptional}
-                className="accent-amber-400 w-3.5 h-3.5"
+                className="accent-[#C84B2C] w-3.5 h-3.5"
               />
               ¿Opcional?
             </label>

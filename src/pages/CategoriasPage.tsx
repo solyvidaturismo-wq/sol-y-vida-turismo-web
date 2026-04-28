@@ -42,7 +42,7 @@ export default function CategoriasPage() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-white/5">
          <div>
             <h1 className="text-4xl font-black text-white tracking-tighter flex items-center gap-4">
-               <Layers className="text-amber-500" size={36} /> Directorio de Categorías
+               <Layers className="text-[#A8442A]" size={36} /> Directorio de Categorías
             </h1>
             <p className="text-slate-400 font-medium max-w-xl">Análisis estructural del inventario por tipo de servicio y especialización.</p>
          </div>
@@ -78,12 +78,12 @@ export default function CategoriasPage() {
                     </div>
                     <div className="flex justify-between items-center">
                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">P. Promedio</span>
-                       <span className="text-sm font-black text-sky-400">$ {cat.avgPrice}</span>
+                       <span className="text-sm font-black text-[#D6A55C]">$ {cat.avgPrice}</span>
                     </div>
                  </div>
                  <Link 
                    to={`/explorar?category=${cat.key}`}
-                   className="mt-8 flex items-center justify-center w-full py-2.5 rounded-xl bg-white/5 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:bg-amber-500 hover:text-slate-900 transition-all gap-2"
+                   className="mt-8 flex items-center justify-center w-full py-2.5 rounded-xl bg-white/5 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:bg-[#A8442A] hover:text-slate-900 transition-all gap-2"
                  >
                     Ver Inventario <ChevronRight size={14} />
                  </Link>
@@ -96,7 +96,7 @@ export default function CategoriasPage() {
          {/* Detailed Table of Relationships */}
          <div className="lg:col-span-2 space-y-6">
             <h2 className="text-2xl font-black text-white px-2 flex items-center gap-3">
-               <Activity className="text-amber-500" /> Matriz de Clasificación
+               <Activity className="text-[#A8442A]" /> Matriz de Clasificación
             </h2>
             <div className="glass-card overflow-hidden">
                <table className="w-full text-left">
@@ -134,7 +134,7 @@ export default function CategoriasPage() {
                              </div>
                           </td>
                           <td className="px-12 py-5 text-right">
-                             <div className="flex items-center justify-end gap-1.5 text-amber-500 font-black text-sm">
+                             <div className="flex items-center justify-end gap-1.5 text-[#A8442A] font-black text-sm">
                                 <Star size={14} fill="currentColor" /> {cat.avgRating}
                              </div>
                           </td>
@@ -149,19 +149,19 @@ export default function CategoriasPage() {
          <div className="space-y-6">
             <h2 className="text-2xl font-black text-white px-2">Insights de Negocio</h2>
             
-            <div className="glass-card p-8 bg-amber-500/5 border-amber-500/20 relative overflow-hidden group">
-               <Zap size={60} className="absolute -right-4 -bottom-4 text-amber-500/10 group-hover:scale-125 transition-transform" />
+            <div className="glass-card p-8 bg-[#A8442A]/5 border-[#A8442A]/20 relative overflow-hidden group">
+               <Zap size={60} className="absolute -right-4 -bottom-4 text-[#A8442A]/10 group-hover:scale-125 transition-transform" />
                <h4 className="text-lg font-black text-white mb-4">Oportunidad de Expansión</h4>
                <p className="text-xs text-slate-400 font-medium leading-relaxed mb-6">
-                 Basado en la densidad actual de categorías, tu inventario de <span className="text-amber-500 font-black">Restauración</span> es el más bajo. Considera agregar 3-5 partners gastronómicos en Cuzco para equilibrar tus rutas.
+                 Basado en la densidad actual de categorías, tu inventario de <span className="text-[#A8442A] font-black">Restauración</span> es el más bajo. Considera agregar 3-5 partners gastronómicos en Cuzco para equilibrar tus rutas.
                </p>
                <div className="p-4 rounded-3xl bg-slate-950/50 border border-white/5">
                   <div className="flex justify-between items-center mb-1">
                      <span className="text-[10px] font-black text-slate-500 uppercase">GAP ANALYTICS</span>
-                     <span className="text-xs font-black text-amber-500">-24%</span>
+                     <span className="text-xs font-black text-[#A8442A]">-24%</span>
                   </div>
                   <div className="h-1 w-full bg-slate-900 rounded-full overflow-hidden">
-                     <div className="h-full bg-amber-500" style={{ width: '76%' }} />
+                     <div className="h-full bg-[#A8442A]" style={{ width: '76%' }} />
                   </div>
                </div>
             </div>

@@ -103,7 +103,7 @@ export default function ImageUpload({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="w-32 h-32 rounded-xl border-2 border-dashed border-sky-300 dark:border-sky-700 hover:border-sky-500 bg-sky-50 dark:bg-sky-500/5 hover:bg-sky-100 dark:hover:bg-sky-500/10 transition-colors flex flex-col items-center justify-center gap-2 text-sky-600 dark:text-sky-400"
+            className="w-32 h-32 rounded-xl border-2 border-dashed border-[#E8B872] dark:border-[#B07E3C] hover:border-[#D6A55C] bg-[#FBE4D9] dark:bg-[#D6A55C]/5 hover:bg-[#F4C7B0] dark:hover:bg-[#D6A55C]/10 transition-colors flex flex-col items-center justify-center gap-2 text-[#B07E3C] dark:text-[#D6A55C]"
           >
             <Upload size={24} />
             <span className="text-[10px] font-bold px-2 text-center">Subir Imagen</span>

@@ -101,7 +101,7 @@ export function Sidebar() {
                   <>
                     <span className="flex-1 truncate">{item.label}</span>
                     {getBadgeCount(item.badgeField) !== null && (
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-white/5 text-gray-400 group-hover:text-amber-400 transition-colors">
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-white/5 text-gray-400 group-hover:text-[#C84B2C] transition-colors">
                         {getBadgeCount(item.badgeField)}
                       </span>
                     )}
@@ -134,14 +134,14 @@ export function Sidebar() {
         {/* Toggle Button */}
         <button
           onClick={() => setSidebarOpen(!isOpen)}
-          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-amber-500 text-slate-900 flex items-center justify-center hover:scale-110 transition-transform shadow-lg border-2 border-slate-900"
+          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-[#A8442A] text-slate-900 flex items-center justify-center hover:scale-110 transition-transform shadow-lg border-2 border-slate-900"
         >
           {isOpen ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
         </button>
       </div>
 
       {/* Decorative Blur */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-orange-500/5 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#A8442A]/5 to-transparent pointer-events-none" />
     </aside>
   );
 }

@@ -70,7 +70,7 @@ export default function DashboardPage() {
   if (loading && products.length === 0) {
     return (
       <div className="h-96 flex flex-col items-center justify-center gap-4 animate-pulse">
-        <div className="w-12 h-12 rounded-full border-4 border-amber-500/30 border-t-amber-500 animate-spin" />
+        <div className="w-12 h-12 rounded-full border-4 border-[#A8442A]/30 border-t-[#A8442A] animate-spin" />
         <p className="text-gray-500 font-bold tracking-widest text-xs uppercase">Sincronizando Sistema...</p>
       </div>
     );
@@ -143,14 +143,14 @@ export default function DashboardPage() {
                <TrendingUp size={24} className="text-emerald-400" />
                Rutas Top en Sol y Vida
              </h2>
-             <Link to="/reportes" className="text-sm font-bold text-amber-500 hover:text-amber-400 transition-colors">
+             <Link to="/reportes" className="text-sm font-bold text-[#A8442A] hover:text-[#C84B2C] transition-colors">
                Ver Analíticas
              </Link>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {popularRoutes.map((route) => (
-              <div key={route.id} className="glass-card group overflow-hidden border border-white/5 transition-all hover:border-amber-500/30">
+              <div key={route.id} className="glass-card group overflow-hidden border border-white/5 transition-all hover:border-[#A8442A]/30">
                  <div className="h-32 bg-slate-800 relative overflow-hidden">
                     {route.images?.[0] ? (
                       <img src={route.images[0]} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -161,7 +161,7 @@ export default function DashboardPage() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
                     <div className="absolute bottom-3 left-4">
-                       <p className="text-[10px] font-bold text-amber-500 uppercase tracking-widest">{route.destination}</p>
+                       <p className="text-[10px] font-bold text-[#A8442A] uppercase tracking-widest">{route.destination}</p>
                        <h4 className="text-white font-black text-lg leading-tight truncate">{route.name}</h4>
                     </div>
                  </div>
@@ -177,7 +177,7 @@ export default function DashboardPage() {
                           <p className="text-lg font-black text-emerald-400">${(route.pricing.base_price_per_pax * route.booking_count).toLocaleString()}</p>
                        </div>
                     </div>
-                    <Link to={`/rutas/${route.id}/detalle`} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-300 hover:bg-amber-500 hover:text-slate-900 transition-all">
+                    <Link to={`/rutas/${route.id}/detalle`} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-300 hover:bg-[#A8442A] hover:text-slate-900 transition-all">
                        <ArrowUpRight size={20} />
                     </Link>
                  </div>
@@ -186,7 +186,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Quick Shortcuts */}
-          <div className="glass-card p-6 bg-amber-500/5 border border-amber-500/20">
+          <div className="glass-card p-6 bg-[#A8442A]/5 border border-[#A8442A]/20">
              <h3 className="text-lg font-black text-white mb-4">Accesos de Gestión Rápida</h3>
              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
@@ -198,7 +198,7 @@ export default function DashboardPage() {
                   <Link 
                     key={idx} 
                     to={item.to}
-                    className="p-4 rounded-2xl bg-slate-900/50 border border-white/5 text-center flex flex-col items-center gap-2 hover:bg-amber-500 transition-all group"
+                    className="p-4 rounded-2xl bg-slate-900/50 border border-white/5 text-center flex flex-col items-center gap-2 hover:bg-[#A8442A] transition-all group"
                   >
                     <span className="text-2xl group-hover:scale-125 transition-transform">{item.icon}</span>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter group-hover:text-slate-900">{item.label}</span>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
 
            <div className="glass-card p-0 overflow-hidden divide-y divide-white/5">
               <div className="p-5 flex items-center gap-4 bg-white/5">
-                 <div className="w-10 h-10 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center">
+                 <div className="w-10 h-10 rounded-xl bg-[#A8442A]/20 text-[#C84B2C] flex items-center justify-center">
                     <AlertCircle size={20} />
                  </div>
                  <div>
@@ -224,11 +224,11 @@ export default function DashboardPage() {
               </div>
 
               <div className="p-5 space-y-4">
-                 <h4 className="text-[10px] font-bold text-amber-500 uppercase tracking-widest">Resumen de Inventario</h4>
+                 <h4 className="text-[10px] font-bold text-[#A8442A] uppercase tracking-widest">Resumen de Inventario</h4>
 
                  <div className="space-y-4">
                     <div className="flex gap-3">
-                       <div className="mt-0.5 w-6 h-6 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 shrink-0">
+                       <div className="mt-0.5 w-6 h-6 rounded-lg bg-[#A8442A]/10 flex items-center justify-center text-[#C84B2C] shrink-0">
                           <Users size={12} />
                        </div>
                        <div>
@@ -237,7 +237,7 @@ export default function DashboardPage() {
                        </div>
                     </div>
                     <div className="flex gap-3">
-                       <div className="mt-0.5 w-6 h-6 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400 shrink-0">
+                       <div className="mt-0.5 w-6 h-6 rounded-lg bg-[#D6A55C]/10 flex items-center justify-center text-[#D6A55C] shrink-0">
                           <Package size={12} />
                        </div>
                        <div>
@@ -268,10 +268,10 @@ export default function DashboardPage() {
                  </div>
               </div>
 
-              <div className="p-5 bg-gradient-to-br from-indigo-500/10 to-transparent">
+              <div className="p-5 bg-gradient-to-br from-[#D6A55C]/10 to-transparent">
                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-[10px] font-black text-indigo-400 uppercase">Registros Totales</p>
-                    <p className="text-[10px] font-black text-indigo-400">{totalRecords}</p>
+                    <p className="text-[10px] font-black text-[#D6A55C] uppercase">Registros Totales</p>
+                    <p className="text-[10px] font-black text-[#D6A55C]">{totalRecords}</p>
                  </div>
                  <div className="grid grid-cols-3 gap-2 mt-3">
                     <div className="text-center p-2 rounded-xl bg-white/5">
@@ -292,11 +292,11 @@ export default function DashboardPage() {
 
            {/* Quick Stats Grid */}
            <div className="grid grid-cols-2 gap-4">
-              <div className="glass-card p-4 border-l-4 border-amber-500">
+              <div className="glass-card p-4 border-l-4 border-[#A8442A]">
                  <p className="text-[10px] font-bold text-slate-500 uppercase">Cat. Más Usada</p>
                  <p className="text-sm font-black text-white">{topCategory}</p>
               </div>
-              <div className="glass-card p-4 border-l-4 border-sky-500">
+              <div className="glass-card p-4 border-l-4 border-[#D6A55C]">
                  <p className="text-[10px] font-bold text-slate-500 uppercase">Sin Proveedor</p>
                  <p className="text-sm font-black text-white">{productsWithoutSupplier}</p>
               </div>
