@@ -1,16 +1,15 @@
 import {
-  LayoutDashboard, 
-  Users, 
-  Package, 
-  Map, 
-  ChevronLeft, 
+  LayoutDashboard,
+  Users,
+  Package,
+  Map,
+  ChevronLeft,
   ChevronRight,
   Settings,
   PieChart,
   Layers,
   Search,
-  LogOut,
-  Sun
+  LogOut
 } from 'lucide-react';
 import { useAppStore, useSidebarOpen, useSuppliers, useProducts, useRoutes } from '../../store/useAppStore';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -69,13 +68,13 @@ export function Sidebar() {
     >
       {/* Brand Logo */}
       <div className="p-6 flex items-center gap-3 overflow-hidden">
-        <div className="min-w-[40px] h-10 rounded-xl gradient-sun flex items-center justify-center shadow-lg shadow-orange-500/20">
-          <Sun className="text-white w-6 h-6" />
+        <div className="min-w-[40px] h-10 rounded-xl bg-white/95 flex items-center justify-center shadow-lg shadow-[#7E2A21]/30 overflow-hidden p-1">
+          <img src="/logo.png" alt="Inventario Turístico de Vélez" className="w-full h-full object-contain" />
         </div>
         {isOpen && (
-          <div className="flex flex-col animate-page-enter">
-            <span className="font-extrabold text-white text-lg leading-tight tracking-tight">SOL Y VIDA</span>
-            <span className="text-[10px] font-bold text-orange-400/80 tracking-widest uppercase">Turismo</span>
+          <div className="flex flex-col animate-page-enter leading-tight">
+            <span className="font-extrabold text-white text-[15px] tracking-tight">Inventario Turístico</span>
+            <span className="text-[10px] font-bold text-[#E8B872] tracking-widest uppercase">de Vélez</span>
           </div>
         )}
       </div>

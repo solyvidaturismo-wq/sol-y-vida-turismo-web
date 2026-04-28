@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Sun, Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
+import { Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const { user, signIn, loading: authLoading } = useAuth();
@@ -40,11 +40,10 @@ export default function LoginPage() {
       <div className="w-full max-w-md relative">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-sun shadow-lg shadow-orange-500/20 mb-4">
-            <Sun className="text-white w-8 h-8" />
+          <div className="inline-flex items-center justify-center mb-4">
+            <img src="/logo.png" alt="Inventario Turístico de Vélez" className="h-32 w-auto object-contain" />
           </div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">SOL Y VIDA</h1>
-          <p className="text-xs font-bold text-orange-400/80 tracking-widest uppercase mt-1">Sistema de Gestión Turística</p>
+          <p className="text-xs font-bold text-[#E8B872] tracking-widest uppercase mt-1">Sistema de Gestión Turística</p>
         </div>
 
         {/* Login Card */}
@@ -118,7 +117,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-slate-600 mt-6">
-          Sol y Vida Turismo &copy; {new Date().getFullYear()}
+          Inventario Turístico de Vélez &copy; {new Date().getFullYear()}
         </p>
       </div>
     </div>

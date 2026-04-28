@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   MapPin, Clock, Users, Star, ChevronDown, Mountain,
   TreePine, Heart, Phone, Mail, Instagram, Facebook,
-  ArrowRight, Menu, X, Compass, Sun, Shield,
+  ArrowRight, Menu, X, Compass, Shield,
   ChevronLeft, ChevronRight, Play, MessageCircle, CheckCircle2
 } from 'lucide-react';
 import { useProducts } from '../store/useAppStore';
@@ -163,12 +163,12 @@ export default function LandingPage() {
       }`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <button onClick={() => scrollToSection('#inicio')} className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:shadow-amber-500/40 transition-all">
-              <Sun size={22} className="text-white" />
+            <div className="w-11 h-11 rounded-2xl bg-white/95 flex items-center justify-center shadow-lg shadow-[#7E2A21]/20 group-hover:shadow-[#7E2A21]/40 transition-all overflow-hidden p-1">
+              <img src="/logo.png" alt="Inventario Turístico de Vélez" className="w-full h-full object-contain" />
             </div>
-            <div className="hidden sm:block">
-              <p className={`text-xs font-bold tracking-tight leading-none transition-colors ${scrolled ? 'text-slate-500' : 'text-white/70'}`}>Sol y Vida</p>
-              <p className={`text-base font-black tracking-tight leading-none transition-colors ${scrolled ? 'text-slate-800' : 'text-white'}`}>Turismo</p>
+            <div className="hidden sm:block leading-tight">
+              <p className={`text-xs font-bold tracking-tight transition-colors ${scrolled ? 'text-slate-500' : 'text-white/80'}`}>Inventario Turístico</p>
+              <p className={`text-base font-black tracking-tight transition-colors ${scrolled ? 'text-[#7E2A21]' : 'text-white'}`}>de Vélez</p>
             </div>
           </button>
 
@@ -751,12 +751,12 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-                  <Sun size={18} className="text-white" />
+                <div className="w-10 h-10 rounded-xl bg-white/95 flex items-center justify-center overflow-hidden p-1">
+                  <img src="/logo.png" alt="Inventario Turístico de Vélez" className="w-full h-full object-contain" />
                 </div>
-                <div>
-                  <p className="text-sm font-bold text-white leading-none">Sol y Vida</p>
-                  <p className="text-xs text-slate-400">Turismo — Vélez, Santander</p>
+                <div className="leading-tight">
+                  <p className="text-sm font-bold text-white">Inventario Turístico</p>
+                  <p className="text-xs text-slate-400">de Vélez — Santander</p>
                 </div>
               </div>
               <p className="text-sm text-slate-400 leading-relaxed">
@@ -795,7 +795,7 @@ export default function LandingPage() {
 
           <div className="pt-8 border-t border-slate-800 text-center">
             <p className="text-xs text-slate-500">
-              &copy; {new Date().getFullYear()} Sol y Vida Turismo. Todos los derechos reservados.
+              &copy; {new Date().getFullYear()} Inventario Turístico de Vélez. Todos los derechos reservados.
             </p>
           </div>
         </div>
