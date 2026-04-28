@@ -1,14 +1,13 @@
 import { useState, useMemo } from 'react';
 import { useProducts, useSuppliers } from '../store/useAppStore';
-import { 
-  Search, 
-  MapPin, 
-  Filter, 
-  Grid, 
-  List, 
-  Star, 
-  Clock, 
-  ChevronRight, 
+import {
+  Search,
+  Filter,
+  Grid,
+  List,
+  Star,
+  Clock,
+  ChevronRight,
   Compass,
   Zap,
   Tag,
@@ -42,7 +41,7 @@ export default function ExplorarPage() {
       .sort((a, b) => {
         if (sortBy === 'price_asc') return a.base_price - b.base_price;
         if (sortBy === 'price_desc') return b.base_price - a.base_price;
-        return b.rating - a.rating;
+        return (b as any).rating - (a as any).rating;
       });
   }, [products, query, activeCategory, activePriceRange, sortBy]);
 
@@ -219,7 +218,7 @@ export default function ExplorarPage() {
                              </div>
                              <div className="flex items-center gap-2 text-slate-400 text-xs font-bold justify-end">
                                 <Star size={14} className="text-amber-500 fill-amber-500" />
-                                {product.rating}
+                                {(product as any).rating || '-'}
                              </div>
                           </div>
 
@@ -255,7 +254,7 @@ export default function ExplorarPage() {
                           <div>
                              <div className="flex items-center gap-3 mb-1">
                                <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest">{product.category}</span>
-                               <span className="flex items-center gap-1 text-[10px] font-bold text-slate-600"><Star size={10} fill="currentColor" /> {product.rating}</span>
+                               <span className="flex items-center gap-1 text-[10px] font-bold text-slate-600"><Star size={10} fill="currentColor" /> {(product as any).rating || '-'}</span>
                              </div>
                              <h3 className="text-lg font-black text-white group-hover:text-amber-500 transition-colors uppercase tracking-tight">{product.name}</h3>
                              <p className="text-xs text-slate-500 font-medium line-clamp-1">{product.short_description || 'Sin descripción disponible.'}</p>

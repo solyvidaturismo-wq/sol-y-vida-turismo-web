@@ -1,5 +1,4 @@
-import React from 'react';
-import { 
+import {
   LayoutDashboard, 
   Users, 
   Package, 
@@ -14,7 +13,8 @@ import {
   Sun
 } from 'lucide-react';
 import { useAppStore, useSidebarOpen, useSuppliers, useProducts, useRoutes } from '../../store/useAppStore';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 const NAV_GROUPS = [
   {
@@ -45,6 +45,8 @@ const NAV_GROUPS = [
 export function Sidebar() {
   const isOpen = useSidebarOpen();
   const setSidebarOpen = useAppStore((s) => s.setSidebarOpen);
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
   
   // Badge counts
   const suppliers = useSuppliers();
@@ -121,9 +123,10 @@ export function Sidebar() {
 
       {/* Bottom Actions */}
       <div className="p-4 border-t border-white/5 space-y-2">
-        <button 
-          onClick={() => {}} 
+        <button
+          onClick={async () => { await signOut(); navigate('/login'); }}
           className="nav-item w-full group"
+          aria-label="Cerrar sesión"
         >
           <LogOut className={`w-5 h-5 ${!isOpen ? 'mx-auto' : ''}`} />
           {isOpen && <span>Cerrar Sesión</span>}

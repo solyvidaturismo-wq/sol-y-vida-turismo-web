@@ -9,6 +9,8 @@ export type SupplierCategory =
   | 'hostal'
   | 'lodge'
   | 'gastronomia'
+  | 'comida_rapida'
+  | 'finca_turistica'
   | 'agencia_transporte'
   | 'guia_turismo'
   | 'operadora'
@@ -19,8 +21,10 @@ export type ProductCategory =
   | 'excursion'
   | 'transfer'
   | 'gastronomia'
+  | 'comida_rapida'
   | 'actividad_aventura'
   | 'tour_cultural'
+  | 'finca_turistica'
   | 'paquete_combo'
   | 'libre';
 
@@ -120,16 +124,44 @@ export interface Product {
   updated_at: string;
 }
 
-// ---- Modelo: ItineraryItem (elemento de ruta) ----
+// ---- Modelo: Tag (etiqueta de perfil/audiencia — tabla tags) ----
+
+export interface Tag {
+  id: string;              // ej: 'parejas', 'aventura'
+  label: string;
+  emoji: string;
+  group_id: string;        // ej: 'tipo_grupo', 'interes'
+  group_label: string;
+  group_color: string;     // ej: 'sky', 'violet'
+  created_at?: string;
+}
+
+// ---- Modelo: RouteItem (item de itinerario — tabla route_items) ----
+
+export interface RouteItem {
+  id: string;
+  route_id: string;
+  product_id: string | null;
+  day: number;
+  item_order: number;
+  time_start?: string;
+  time_end?: string;
+  notes?: string;
+  is_optional: boolean;
+  included_in_price: boolean;
+  created_at?: string;
+}
+
+// ---- Modelo: ItineraryItem (legacy — para compatibilidad) ----
 
 export interface ItineraryItem {
-  id: string;              // UUID único dentro de la ruta
-  ref_id: string;          // ID del Supplier o Product referenciado
+  id: string;
+  ref_id: string;
   ref_type: 'supplier' | 'product';
-  day: number;             // Día del itinerario (1, 2, 3...)
-  order: number;           // Orden dentro del día
-  time_start?: string;     // "09:00"
-  time_end?: string;       // "12:00"
+  day: number;
+  order: number;
+  time_start?: string;
+  time_end?: string;
   notes?: string;
   is_optional: boolean;
   included_in_price: boolean;
@@ -201,6 +233,9 @@ export interface AppState {
   suppliers: Supplier[];
   products: Product[];
   routes: Route[];
+  tags: Tag[];
+  routeItems: RouteItem[];
+  productTags: { product_id: string; tag_id: string }[];
 }
 
 // ---- Metadata de Categorías (para badges, colores, etc) ----

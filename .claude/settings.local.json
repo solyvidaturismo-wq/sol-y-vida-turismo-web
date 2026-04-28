@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh api:*)",
+      "Bash(npx tsc:*)",
+      "Bash(grep \"SUPPLIER_CATEGORY_META\\\\|PRODUCT_CATEGORY_META\" src/pages/*.tsx src/config/categoryFields.ts)",
+      "Bash(grep -n \"PRODUCT_CATEGORY_META\\\\|SUPPLIER_CATEGORY_META\\\\|PRODUCT_DYNAMIC_FIELDS\\\\|SUPPLIER_DYNAMIC_FIELDS\\\\|ColorOption\" src/pages/*.tsx src/components/ui/DynamicFields.tsx -A 2)",
+      "Bash(npx vite:*)"
+    ]
+  }
+}

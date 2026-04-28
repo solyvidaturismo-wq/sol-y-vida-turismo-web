@@ -1,26 +1,29 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { useAppStore, useSuppliers } from '../store/useAppStore';
-import { 
-  ArrowLeft, 
-  Save, 
-  Package, 
-  ImageIcon, 
-  Plus, 
-  Trash2, 
-  Clock, 
-  Users, 
-  Star,
+import {
+  ArrowLeft,
+  Save,
+  Package,
+  ImageIcon,
+  Plus,
+  Trash2,
+  Clock,
   Zap,
   Tag,
-  Calendar,
   DollarSign,
-  Search,
-  ChevronRight,
-  GripVertical
+  MapPin,
+  Calendar,
+  Sun,
+  Moon,
+  Sunset
 } from 'lucide-react';
-import { PRODUCT_CATEGORY_META, PRODUCT_DYNAMIC_FIELDS } from '../config/categoryFields';
+import { PRODUCT_CATEGORY_META, PRODUCT_CATEGORIES } from '../config/categoryFields';
+import { COLOMBIA_DEPARTMENTS, getMunicipalitiesByDepartment } from '../config/colombiaLocations';
+import DynamicFormSection from '../components/ui/DynamicFormSection';
+import { PROFILE_TAG_GROUPS, PROFILE_COLOR_MAP, PROFILE_TAG_MAP } from '../config/profileTags';
+import { toast } from '../store/useToastStore';
 
 type PriceTier = {
   name: string;
@@ -46,14 +49,27 @@ type ProductFormValues = {
   rating: number;
   sku: string;
   images: string[];
+  duration_type: 'minutos' | 'horas' | 'dia_completo' | 'medio_dia' | 'varios_dias';
+  duration_hours: number;
+  duration_days: number;
+  schedule_type: 'flexible' | 'horario_fijo' | 'manana' | 'tarde' | 'noche';
   availability: {
     min_pax: number;
     max_capacity: number;
     seasonal: boolean;
     instant_booking: boolean;
+    start_time: string;
+    end_time: string;
+    days_of_week: boolean[];
   };
   price_tiers: PriceTier[];
   activity_itinerary: ItineraryStep[];
+  profile_tags: string[];
+  location: {
+    department: string;
+    city: string;
+    country: string;
+  };
   extended_data: Record<string, any>;
 };
 
@@ -61,7 +77,7 @@ export default function ProductFormPage() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { products, addProduct, updateProduct } = useAppStore();
+  const { products, addProduct, updateProduct, getProductTags } = useAppStore();
   const suppliers = useSuppliers();
   
   const isEditing = !!id;
@@ -75,17 +91,26 @@ export default function ProductFormPage() {
       status: 'activo',
       currency: 'USD',
       base_price: 0,
+      duration_type: 'horas',
       duration_minutes: 60,
+      duration_hours: 1,
+      duration_days: 1,
+      schedule_type: 'flexible',
       rating: 4.5,
       images: [''],
       availability: {
         min_pax: 1,
         max_capacity: 0,
         seasonal: false,
-        instant_booking: true
+        instant_booking: true,
+        start_time: '',
+        end_time: '',
+        days_of_week: [false, true, true, true, true, true, true] // Dom off, Lun-Sab on
       },
       price_tiers: [],
       activity_itinerary: [],
+      profile_tags: [],
+      location: { department: '', city: '', country: 'Colombia' },
       extended_data: {}
     }
   });
@@ -105,29 +130,158 @@ export default function ProductFormPage() {
     name: "activity_itinerary"
   });
 
+  const [saving, setSaving] = useState(false);
   const selectedCategory = watch('category');
+  const selectedDepartment = watch('location.department');
+  const durationType = watch('duration_type');
+  const scheduleType = watch('schedule_type');
+  const profileTags = watch('profile_tags') || [];
+
+  const toggleProfileTag = (tagId: string) => {
+    const current = profileTags;
+    if (current.includes(tagId)) {
+      setValue('profile_tags', current.filter((t: string) => t !== tagId), { shouldDirty: true });
+    } else {
+      setValue('profile_tags', [...current, tagId], { shouldDirty: true });
+    }
+  };
+
+  useEffect(() => {
+    if (!isEditing) {
+      setValue('location.city', '');
+    }
+  }, [selectedDepartment, setValue, isEditing]);
 
   useEffect(() => {
     if (isEditing) {
       const existing = products.find(p => p.id === id);
       if (existing) {
-        Object.entries(existing).forEach(([key, val]) => {
-          setValue(key as any, val);
+        setValue('name', existing.name || '');
+        setValue('category', existing.category || 'excursion');
+        setValue('status', (existing.status as any) || 'activo');
+        setValue('supplier_id', existing.supplier_id || '');
+        setValue('description', existing.description || '');
+        setValue('short_description', existing.short_description || '');
+        setValue('base_price', existing.base_price ?? 0);
+        setValue('currency', existing.currency || 'USD');
+        setValue('images', existing.images?.length ? existing.images : ['']);
+        setValue('price_tiers', (existing.price_tiers as any) || []);
+        setValue('activity_itinerary', (existing.activity_itinerary as any) || []);
+
+        // days_of_week se guarda como number[] (índices activos) — reconstruir boolean[7]
+        const daysBool = [false, false, false, false, false, false, false];
+        (existing.availability?.days_of_week || []).forEach((d: number) => {
+          if (d >= 0 && d <= 6) daysBool[d] = true;
         });
+        setValue('availability', {
+          min_pax: existing.availability?.min_pax ?? 1,
+          max_capacity: existing.availability?.max_capacity ?? 0,
+          seasonal: (existing.availability as any)?.seasonal ?? false,
+          instant_booking: (existing.availability as any)?.instant_booking ?? true,
+          start_time: existing.availability?.start_time || '',
+          end_time: existing.availability?.end_time || '',
+          days_of_week: daysBool as any,
+        });
+
+        // Inferir duration_type a partir de duration_minutes guardado
+        const mins = existing.duration_minutes ?? 60;
+        if (mins === 240) {
+          setValue('duration_type', 'medio_dia');
+        } else if (mins === 480) {
+          setValue('duration_type', 'dia_completo');
+        } else if (mins > 480 && mins % 480 === 0) {
+          setValue('duration_type', 'varios_dias');
+          setValue('duration_days', mins / 480);
+        } else if (mins >= 60 && mins % 60 === 0) {
+          setValue('duration_type', 'horas');
+          setValue('duration_hours', mins / 60);
+        } else {
+          setValue('duration_type', 'minutos');
+          setValue('duration_minutes', mins);
+        }
+
+        // Separar schedule_type y location del resto de custom_fields
+        const cf: Record<string, any> = existing.custom_fields || {};
+        const {
+          schedule_type,
+          location_department,
+          location_city,
+          location_country,
+          ...rest
+        } = cf;
+        setValue('schedule_type', schedule_type || 'flexible');
+        setValue('location', {
+          department: location_department || '',
+          city: location_city || '',
+          country: location_country || 'Colombia',
+        });
+        setValue('extended_data', rest);
+
+        // Restaurar profile_tags desde la tabla pivote
+        const savedTags = getProductTags(existing.id);
+        setValue('profile_tags', savedTags || []);
       }
     }
-  }, [id, products, setValue, isEditing]);
+  }, [id, products, setValue, isEditing, getProductTags]);
 
   const onSubmit = async (data: ProductFormValues) => {
+    if (data.base_price < 0) {
+      toast.error('El precio base no puede ser negativo');
+      return;
+    }
+    if (data.duration_minutes < 1) {
+      toast.error('La duración debe ser al menos 1 minuto');
+      return;
+    }
+    if (data.availability.max_capacity > 0 && data.availability.min_pax > data.availability.max_capacity) {
+      toast.error('El mínimo de pasajeros no puede superar la capacidad máxima');
+      return;
+    }
+
+    setSaving(true);
     try {
+      const { extended_data, rating, sku, location, duration_type, duration_hours, duration_days, schedule_type, profile_tags: formProfileTags, ...rest } = data;
+
+      // Compute duration_minutes from the duration type
+      let computedDuration = rest.duration_minutes;
+      if (duration_type === 'horas') computedDuration = duration_hours * 60;
+      else if (duration_type === 'dia_completo') computedDuration = 480; // 8h
+      else if (duration_type === 'medio_dia') computedDuration = 240; // 4h
+      else if (duration_type === 'varios_dias') computedDuration = duration_days * 480;
+
+      // Map days_of_week booleans to number array
+      const daysArray = (rest.availability.days_of_week as unknown as boolean[])
+        .map((checked, i) => checked ? i : -1)
+        .filter(i => i >= 0);
+
+      const payload = {
+        ...rest,
+        tags: (rest as any).tags || [],
+        is_featured: (rest as any).is_featured ?? false,
+        duration_minutes: computedDuration,
+        availability: {
+          ...rest.availability,
+          days_of_week: daysArray,
+        },
+        custom_fields: {
+          ...extended_data,
+          schedule_type,
+          location_department: location.department,
+          location_city: location.city,
+          location_country: location.country,
+        },
+      };
       if (isEditing) {
-        await updateProduct(id!, data);
+        await updateProduct(id!, payload as any, formProfileTags);
       } else {
-        await addProduct(data);
+        await addProduct(payload as any, formProfileTags);
       }
+      toast.success(isEditing ? 'Producto actualizado' : 'Producto creado exitosamente');
       navigate('/productos');
     } catch (err: any) {
-      alert('Error: ' + err.message);
+      toast.error('Error al guardar: ' + err.message);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -146,8 +300,13 @@ export default function ProductFormPage() {
         </div>
         <div className="flex items-center gap-3">
            <button type="button" onClick={() => navigate('/productos')} className="text-slate-500 font-black hover:text-white transition-all text-xs uppercase tracking-widest px-4">Descartar</button>
-           <button type="submit" className="btn-primary shadow-lg shadow-sky-500/20 bg-gradient-to-r from-sky-500 to-indigo-600 flex items-center gap-2 px-10">
-              <Save size={18} /> {isEditing ? 'Publicar Cambios' : 'Registrar Producto'}
+           <button type="submit" disabled={saving} className="btn-primary shadow-lg shadow-sky-500/20 bg-gradient-to-r from-sky-500 to-indigo-600 flex items-center gap-2 px-10 disabled:opacity-50">
+              {saving ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <Save size={18} />
+              )}
+              {saving ? 'Guardando...' : isEditing ? 'Publicar Cambios' : 'Registrar Producto'}
            </button>
         </div>
       </div>
@@ -165,7 +324,8 @@ export default function ProductFormPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nombre del Producto / Servicio</label>
-                    <input {...register('name', { required: true })} className="form-input w-full" placeholder="Ej: Machu Picchu Premium Day" />
+                    <input {...register('name', { required: 'El nombre es obligatorio', minLength: { value: 3, message: 'Mínimo 3 caracteres' } })} className={`form-input w-full ${errors.name ? 'border-rose-500' : ''}`} placeholder="Ej: Machu Picchu Premium Day" />
+                    {errors.name && <p className="text-[10px] text-rose-500 font-bold mt-1">{errors.name.message}</p>}
                  </div>
                  <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Categoría</label>
@@ -197,41 +357,90 @@ export default function ProductFormPage() {
               </div>
            </div>
 
-           {/* Dynamic Category Fields */}
-           <div className="glass-card p-8 border-l-4 border-sky-500/50 bg-sky-500/5 space-y-6">
-              <div className="flex items-center gap-3">
-                 <div className="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center"><Zap size={18} /></div>
+           {/* Profile Tags */}
+           <div className="glass-card p-8 space-y-6 border-l-4 border-violet-500/30">
+              <div className="flex items-center gap-3 mb-2">
+                 <div className="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-400 flex items-center justify-center">
+                    <Tag size={18} />
+                 </div>
                  <div>
-                    <h2 className="text-xl font-black text-white">Especificaciones Técnicas</h2>
-                    <p className="text-[10px] text-slate-500 font-bold uppercase">Categoría: {selectedCategory}</p>
+                    <h2 className="text-xl font-black text-white">Perfil de Audiencia</h2>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase">Define para quién es este producto — se usa como filtro en el constructor de rutas</p>
                  </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                 {PRODUCT_DYNAMIC_FIELDS[selectedCategory]?.map((field: any) => (
-                   <div key={field.name} className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{field.label}</label>
-                      {field.type === 'select' ? (
-                        <select {...register(`extended_data.${field.name}`)} className="form-input w-full text-sm">
-                           {field.options.map((opt: string) => <option key={opt} value={opt}>{opt}</option>)}
-                        </select>
-                      ) : field.type === 'checkbox' ? (
-                        <div className="flex items-center gap-2 p-3 bg-white/5 rounded-xl border border-white/5">
-                           <input type="checkbox" {...register(`extended_data.${field.name}`)} className="w-5 h-5 accent-sky-500" />
-                           <span className="text-slate-300 text-sm font-bold">{field.label}</span>
+              <div className="space-y-5">
+                 {PROFILE_TAG_GROUPS.map(group => {
+                   const colors = PROFILE_COLOR_MAP[group.color];
+                   return (
+                     <div key={group.id} className="space-y-2">
+                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                          <span>{group.emoji}</span> {group.label}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {group.tags.map(tag => {
+                            const isActive = profileTags.includes(tag.id);
+                            return (
+                              <button
+                                key={tag.id}
+                                type="button"
+                                onClick={() => toggleProfileTag(tag.id)}
+                                className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${
+                                  isActive
+                                    ? `${colors.bgSoft} ${colors.text} ${colors.border} ring-1 ring-current`
+                                    : 'bg-white/5 text-slate-500 border-white/5 hover:bg-white/10 hover:text-slate-300'
+                                }`}
+                              >
+                                {tag.emoji} {tag.label}
+                              </button>
+                            );
+                          })}
                         </div>
-                      ) : (
-                        <input 
-                           type={field.type === 'number' ? 'number' : 'text'} 
-                           {...register(`extended_data.${field.name}`, field.type === 'number' ? { valueAsNumber: true } : {})}
-                           placeholder={field.placeholder}
-                           className="form-input w-full text-sm"
-                        />
-                      )}
-                   </div>
-                 ))}
+                     </div>
+                   );
+                 })}
               </div>
+
+              {profileTags.length > 0 && (
+                <div className="pt-4 border-t border-white/5">
+                  <p className="text-[10px] font-black text-slate-600 uppercase mb-2">Seleccionados ({profileTags.length})</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {profileTags.map((tagId: string) => {
+                      const info = PROFILE_TAG_MAP[tagId];
+                      if (!info) return null;
+                      const colors = PROFILE_COLOR_MAP[info.groupColor];
+                      return (
+                        <span key={tagId} className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black ${colors.bgSoft} ${colors.text}`}>
+                          {info.emoji} {info.label}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
            </div>
+
+           {/* Dynamic Category Fields */}
+           {PRODUCT_CATEGORIES[selectedCategory] && (
+             <div className="glass-card p-8 border-l-4 border-sky-500/50 bg-sky-500/5 space-y-6">
+                <div className="flex items-center gap-3">
+                   <div className="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center"><Zap size={18} /></div>
+                   <div>
+                      <h2 className="text-xl font-black text-white">Especificaciones Técnicas</h2>
+                      <p className="text-[10px] text-slate-500 font-bold uppercase">
+                        {PRODUCT_CATEGORIES[selectedCategory].emoji} {PRODUCT_CATEGORIES[selectedCategory].label} &mdash; {PRODUCT_CATEGORIES[selectedCategory].description}
+                      </p>
+                   </div>
+                </div>
+
+                <DynamicFormSection
+                  sections={PRODUCT_CATEGORIES[selectedCategory].sections}
+                  register={register}
+                  watch={watch}
+                  prefix="extended_data"
+                />
+             </div>
+           )}
 
            {/* Itinerary Steps */}
            <div className="glass-card p-8 space-y-6">
@@ -286,8 +495,10 @@ export default function ProductFormPage() {
                  <div className="space-y-1">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Moneda</label>
                     <select {...register('currency')} className="form-input w-full font-bold">
-                       <option value="USD">USD</option>
-                       <option value="PEN">PEN</option>
+                       <option value="USD">USD — Dólar</option>
+                       <option value="PEN">PEN — Sol Peruano</option>
+                       <option value="COP">COP — Peso Colombiano</option>
+                       <option value="EUR">EUR — Euro</option>
                     </select>
                  </div>
               </div>
@@ -312,20 +523,166 @@ export default function ProductFormPage() {
               </div>
            </div>
 
-           {/* Section 2: Operativity */}
+           {/* Section 2: Duration & Schedule */}
            <div className="glass-card p-6 space-y-6">
               <h3 className="text-lg font-black text-white flex items-center gap-2">
-                 <Zap size={20} className="text-amber-500" /> Disponibilidad
+                 <Clock size={20} className="text-amber-500" /> Duración y Horario
               </h3>
-              
+
+              {/* Duration Type */}
+              <div className="space-y-2">
+                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Tipo de Duración</label>
+                 <div className="grid grid-cols-2 gap-2">
+                    {([
+                      { value: 'minutos', label: 'Minutos', icon: '⏱' },
+                      { value: 'horas', label: 'Horas', icon: '🕐' },
+                      { value: 'medio_dia', label: 'Medio Día', icon: '🌅' },
+                      { value: 'dia_completo', label: 'Día Completo', icon: '☀️' },
+                      { value: 'varios_dias', label: 'Varios Días', icon: '📅' },
+                    ] as const).map(opt => (
+                      <label
+                        key={opt.value}
+                        className={`flex items-center gap-2 p-3 rounded-xl border cursor-pointer transition-all text-xs font-bold ${
+                          durationType === opt.value
+                            ? 'border-amber-500/50 bg-amber-500/10 text-amber-400'
+                            : 'border-white/5 bg-white/5 text-slate-400 hover:bg-white/10'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          {...register('duration_type')}
+                          value={opt.value}
+                          className="sr-only"
+                        />
+                        <span>{opt.icon}</span>
+                        <span>{opt.label}</span>
+                      </label>
+                    ))}
+                 </div>
+              </div>
+
+              {/* Conditional duration input */}
+              {durationType === 'minutos' && (
+                <div className="space-y-1">
+                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Duración en Minutos</label>
+                   <div className="relative">
+                      <Clock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
+                      <input type="number" {...register('duration_minutes', { valueAsNumber: true })} className="form-input w-full pl-10" placeholder="60" />
+                   </div>
+                </div>
+              )}
+              {durationType === 'horas' && (
+                <div className="space-y-1">
+                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Duración en Horas</label>
+                   <div className="relative">
+                      <Clock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
+                      <input type="number" step="0.5" {...register('duration_hours', { valueAsNumber: true })} className="form-input w-full pl-10" placeholder="3" />
+                   </div>
+                </div>
+              )}
+              {durationType === 'varios_dias' && (
+                <div className="space-y-1">
+                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Cantidad de Días</label>
+                   <div className="relative">
+                      <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
+                      <input type="number" {...register('duration_days', { valueAsNumber: true })} className="form-input w-full pl-10" placeholder="3" min={1} />
+                   </div>
+                </div>
+              )}
+              {(durationType === 'medio_dia' || durationType === 'dia_completo') && (
+                <div className="p-3 rounded-xl bg-amber-500/5 border border-amber-500/10">
+                   <p className="text-[10px] text-amber-400/80 font-bold">
+                     {durationType === 'medio_dia' ? '~4 horas de actividad' : '~8 horas de actividad (jornada completa)'}
+                   </p>
+                </div>
+              )}
+
+              {/* Schedule Type */}
+              <div className="space-y-2 pt-2 border-t border-white/5">
+                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Horario de Operación</label>
+                 <div className="grid grid-cols-1 gap-2">
+                    {([
+                      { value: 'flexible', label: 'Horario Flexible', desc: 'Se coordina con el cliente', Icon: Clock },
+                      { value: 'manana', label: 'Solo Mañana', desc: '6:00 AM — 12:00 PM', Icon: Sun },
+                      { value: 'tarde', label: 'Solo Tarde', desc: '12:00 PM — 6:00 PM', Icon: Sunset },
+                      { value: 'noche', label: 'Nocturno', desc: '6:00 PM — 12:00 AM', Icon: Moon },
+                      { value: 'horario_fijo', label: 'Horario Específico', desc: 'Definir hora inicio y fin', Icon: Calendar },
+                    ] as const).map(opt => (
+                      <label
+                        key={opt.value}
+                        className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+                          scheduleType === opt.value
+                            ? 'border-sky-500/50 bg-sky-500/10'
+                            : 'border-white/5 bg-white/5 hover:bg-white/10'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          {...register('schedule_type')}
+                          value={opt.value}
+                          className="sr-only"
+                        />
+                        <opt.Icon size={16} className={scheduleType === opt.value ? 'text-sky-400' : 'text-slate-600'} />
+                        <div className="flex-1">
+                           <p className={`text-xs font-bold ${scheduleType === opt.value ? 'text-white' : 'text-slate-400'}`}>{opt.label}</p>
+                           <p className="text-[10px] text-slate-600">{opt.desc}</p>
+                        </div>
+                      </label>
+                    ))}
+                 </div>
+              </div>
+
+              {/* Fixed time inputs */}
+              {scheduleType === 'horario_fijo' && (
+                <div className="grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-top-2">
+                   <div className="space-y-1">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Hora Inicio</label>
+                      <input type="time" {...register('availability.start_time')} className="form-input w-full text-sm" />
+                   </div>
+                   <div className="space-y-1">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Hora Fin</label>
+                      <input type="time" {...register('availability.end_time')} className="form-input w-full text-sm" />
+                   </div>
+                </div>
+              )}
+
+              {/* Days of Week */}
+              <div className="space-y-2 pt-2 border-t border-white/5">
+                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Días Disponibles</label>
+                 <div className="flex gap-1">
+                    {['D', 'L', 'M', 'Mi', 'J', 'V', 'S'].map((day, i) => (
+                      <label key={i} className="flex-1">
+                        <input
+                          type="checkbox"
+                          {...register(`availability.days_of_week.${i}`)}
+                          className="sr-only peer"
+                        />
+                        <div className="text-center py-2 rounded-lg text-[10px] font-black cursor-pointer transition-all border
+                          peer-checked:bg-sky-500/20 peer-checked:border-sky-500/50 peer-checked:text-sky-400
+                          bg-white/5 border-white/5 text-slate-600 hover:bg-white/10"
+                        >
+                          {day}
+                        </div>
+                      </label>
+                    ))}
+                 </div>
+              </div>
+           </div>
+
+           {/* Section 3: Capacity & Options */}
+           <div className="glass-card p-6 space-y-6">
+              <h3 className="text-lg font-black text-white flex items-center gap-2">
+                 <Zap size={20} className="text-sky-400" /> Capacidad y Opciones
+              </h3>
+
               <div className="grid grid-cols-2 gap-4">
                  <div className="space-y-1">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Min. PAX</label>
-                    <input type="number" {...register('availability.min_pax')} className="form-input w-full" />
+                    <input type="number" {...register('availability.min_pax', { valueAsNumber: true })} className="form-input w-full" />
                  </div>
                  <div className="space-y-1">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Máx. Capacidad</label>
-                    <input type="number" {...register('availability.max_capacity')} className="form-input w-full" />
+                    <input type="number" {...register('availability.max_capacity', { valueAsNumber: true })} className="form-input w-full" />
                  </div>
               </div>
 
@@ -345,12 +702,39 @@ export default function ProductFormPage() {
                     </div>
                  </label>
               </div>
+           </div>
 
-              <div className="space-y-2">
-                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Duración (Minutos)</label>
-                 <div className="relative">
-                    <Clock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
-                    <input type="number" {...register('duration_minutes')} className="form-input w-full pl-10" />
+           {/* Location */}
+           <div className="glass-card p-6 space-y-6">
+              <h3 className="text-lg font-black text-white flex items-center gap-2">
+                 <MapPin size={20} className="text-emerald-400" /> Ubicación
+              </h3>
+              <div className="space-y-4">
+                 <div className="space-y-1">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Departamento</label>
+                    <select {...register('location.department')} className="form-input w-full text-sm">
+                       <option value="">Seleccionar Departamento...</option>
+                       {COLOMBIA_DEPARTMENTS.map(dep => (
+                         <option key={dep.name} value={dep.name}>{dep.name}</option>
+                       ))}
+                    </select>
+                 </div>
+                 <div className="space-y-1">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Municipio</label>
+                    <select
+                      {...register('location.city')}
+                      className="form-input w-full text-sm"
+                      disabled={!selectedDepartment}
+                    >
+                       <option value="">Seleccionar Municipio...</option>
+                       {getMunicipalitiesByDepartment(selectedDepartment).map(mun => (
+                         <option key={mun} value={mun}>{mun}</option>
+                       ))}
+                    </select>
+                 </div>
+                 <div className="space-y-1">
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">País</label>
+                    <input {...register('location.country')} className="form-input w-full text-sm" readOnly />
                  </div>
               </div>
            </div>

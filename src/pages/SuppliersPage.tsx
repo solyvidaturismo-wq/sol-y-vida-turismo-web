@@ -1,11 +1,9 @@
 import { useState, useMemo } from 'react';
 import { useSuppliers, useAppStore } from '../store/useAppStore';
-import { 
-  Users, 
-  Search, 
-  Filter, 
-  Plus, 
-  MoreVertical,
+import {
+  Users,
+  Search,
+  Plus,
   Mail,
   Phone,
   LayoutGrid,
@@ -19,6 +17,10 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { SUPPLIER_CATEGORY_META } from '../config/categoryFields';
+import { toast } from '../store/useToastStore';
+import Pagination from '../components/ui/Pagination';
+
+const PAGE_SIZE = 20;
 
 export default function SuppliersPage() {
   const suppliers = useSuppliers();
@@ -28,23 +30,31 @@ export default function SuppliersPage() {
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [page, setPage] = useState(1);
 
   // Filtering logic
   const filteredSuppliers = useMemo(() => {
+    setPage(1);
     return suppliers.filter(s => {
-      const matchesQuery = s.name.toLowerCase().includes(query.toLowerCase()) || 
+      const matchesQuery = s.name.toLowerCase().includes(query.toLowerCase()) ||
                           s.contact.name.toLowerCase().includes(query.toLowerCase());
       const matchesCategory = activeCategory === 'all' || s.category === activeCategory;
       return matchesQuery && matchesCategory;
     });
   }, [suppliers, query, activeCategory]);
 
+  const paginatedSuppliers = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return filteredSuppliers.slice(start, start + PAGE_SIZE);
+  }, [filteredSuppliers, page]);
+
   const handleDelete = async (id: string, name: string) => {
-    if (confirm(`¿Estás seguro de que deseas eliminar a ${name}? Esta acción no se puede deshacer.`)) {
+    if (confirm(`¿Eliminar a "${name}"? Los productos asociados quedarán huérfanos.`)) {
       try {
         await deleteSupplier(id);
+        toast.success(`Proveedor "${name}" eliminado`);
       } catch (err: any) {
-        alert('Error al eliminar: ' + err.message);
+        toast.error('Error al eliminar: ' + err.message);
       }
     }
   };
@@ -92,15 +102,17 @@ export default function SuppliersPage() {
         </div>
 
         <div className="flex items-center gap-2">
-           <button 
+           <button
              onClick={() => setViewMode('grid')}
              className={`p-2.5 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
+             aria-label="Vista cuadrícula"
            >
              <LayoutGrid size={20} />
            </button>
-           <button 
+           <button
              onClick={() => setViewMode('list')}
              className={`p-2.5 rounded-xl transition-all ${viewMode === 'list' ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
+             aria-label="Vista lista"
            >
              <ListIcon size={20} />
            </button>
@@ -110,13 +122,14 @@ export default function SuppliersPage() {
       {/* Grid View */}
       {viewMode === 'grid' && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredSuppliers.map((supplier) => {
+          {paginatedSuppliers.map((supplier) => {
             const meta = SUPPLIER_CATEGORY_META[supplier.category];
             return (
-              <div 
+              <div
                 key={supplier.id}
                 className="glass-card group overflow-hidden border border-white/5 flex flex-col hover:border-amber-500/30 transition-all duration-300 transform-gpu hover:-translate-y-1"
               >
+                <Link to={`/proveedores/${supplier.id}/detalle`} className="flex-1 flex flex-col cursor-pointer">
                 {/* Visual Header */}
                 <div className="h-24 bg-slate-800 relative">
                   {supplier.banner_image ? (
@@ -185,25 +198,25 @@ export default function SuppliersPage() {
                      </div>
                   </div>
                 </div>
+                </Link>
 
                 {/* Actions Footer */}
                 <div className="px-5 py-4 border-t border-white/5 flex items-center justify-between bg-white/[0.02]">
-                   <Link 
-                     to={`/proveedores/${supplier.id}/detalle`} 
-                     className="text-xs font-black text-slate-400 hover:text-white transition-colors flex items-center gap-1.5"
-                   >
+                   <span className="text-xs font-black text-slate-400 flex items-center gap-1.5">
                      VER PERFIL <ExternalLink size={12} />
-                   </Link>
+                   </span>
                    <div className="flex items-center gap-1">
-                      <button 
+                      <button
                         onClick={() => navigate(`/proveedores/${supplier.id}/editar`)}
                         className="p-2 text-slate-500 hover:text-sky-400 transition-colors"
+                        aria-label="Editar proveedor"
                       >
                          <Edit2 size={16} />
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleDelete(supplier.id, supplier.name)}
                         className="p-2 text-slate-500 hover:text-rose-400 transition-colors"
+                        aria-label="Eliminar proveedor"
                       >
                          <Trash2 size={16} />
                       </button>
@@ -231,7 +244,7 @@ export default function SuppliersPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {filteredSuppliers.map((supplier) => (
+                {paginatedSuppliers.map((supplier) => (
                   <tr key={supplier.id} className="hover:bg-white/[0.02] transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -267,8 +280,8 @@ export default function SuppliersPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                          <button onClick={() => navigate(`/proveedores/${supplier.id}/editar`)} className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white hover:bg-sky-500/20"><Edit2 size={14}/></button>
-                          <button onClick={() => handleDelete(supplier.id, supplier.name)} className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white hover:bg-rose-500/20"><Trash2 size={14}/></button>
+                          <button onClick={() => navigate(`/proveedores/${supplier.id}/editar`)} className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white hover:bg-sky-500/20" aria-label="Editar"><Edit2 size={14}/></button>
+                          <button onClick={() => handleDelete(supplier.id, supplier.name)} className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white hover:bg-rose-500/20" aria-label="Eliminar"><Trash2 size={14}/></button>
                        </div>
                     </td>
                   </tr>
@@ -278,6 +291,9 @@ export default function SuppliersPage() {
           </div>
         </div>
       )}
+
+      {/* Pagination */}
+      <Pagination currentPage={page} totalItems={filteredSuppliers.length} pageSize={PAGE_SIZE} onPageChange={setPage} />
 
       {/* Empty State */}
       {filteredSuppliers.length === 0 && (

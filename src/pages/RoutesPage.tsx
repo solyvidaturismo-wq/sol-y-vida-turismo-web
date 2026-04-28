@@ -1,16 +1,14 @@
 import { useState, useMemo } from 'react';
-import { useRoutes, useAppStore } from '../store/useAppStore';
-import { 
-  Map, 
-  Search, 
-  Filter, 
-  Plus, 
-  Trash2, 
-  Edit2, 
+import { useRoutes, useRouteItems, useAppStore } from '../store/useAppStore';
+import {
+  Map,
+  Search,
+  Plus,
+  Trash2,
+  Edit2,
   ExternalLink,
   MapPin,
   Calendar,
-  Users,
   Compass,
   ArrowUpRight,
   LayoutGrid,
@@ -18,32 +16,45 @@ import {
   Archive
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from '../store/useToastStore';
+import Pagination from '../components/ui/Pagination';
+
+const PAGE_SIZE = 20;
 
 export default function RoutesPage() {
   const routes = useRoutes();
+  const allRouteItems = useRouteItems();
   const deleteRoute = useAppStore(s => s.deleteRoute);
   const navigate = useNavigate();
 
   const [query, setQuery] = useState('');
   const [activeStatus, setActiveStatus] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [page, setPage] = useState(1);
 
   // Filtering
   const filteredRoutes = useMemo(() => {
+    setPage(1);
     return routes.filter(r => {
-      const matchesQuery = r.name.toLowerCase().includes(query.toLowerCase()) || 
+      const matchesQuery = r.name.toLowerCase().includes(query.toLowerCase()) ||
                           r.destination.toLowerCase().includes(query.toLowerCase());
       const matchesStatus = activeStatus === 'all' || r.status === activeStatus;
       return matchesQuery && matchesStatus;
     });
   }, [routes, query, activeStatus]);
 
+  const paginatedRoutes = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return filteredRoutes.slice(start, start + PAGE_SIZE);
+  }, [filteredRoutes, page]);
+
   const handleDelete = async (id: string, name: string) => {
     if (confirm(`¿Eliminar la ruta "${name}"? Todas las planeaciones asociadas se verán afectadas.`)) {
       try {
         await deleteRoute(id);
+        toast.success(`Ruta "${name}" eliminada`);
       } catch (err: any) {
-        alert('Error: ' + err.message);
+        toast.error('Error al eliminar: ' + err.message);
       }
     }
   };
@@ -101,15 +112,17 @@ export default function RoutesPage() {
         </div>
 
         <div className="flex items-center gap-2">
-           <button 
+           <button
              onClick={() => setViewMode('grid')}
              className={`p-2.5 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-emerald-500 text-slate-900 shadow-lg shadow-emerald-500/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
+             aria-label="Vista cuadrícula"
            >
              <LayoutGrid size={20} />
            </button>
-           <button 
+           <button
              onClick={() => setViewMode('list')}
              className={`p-2.5 rounded-xl transition-all ${viewMode === 'list' ? 'bg-emerald-500 text-slate-900 shadow-lg shadow-emerald-500/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
+             aria-label="Vista lista"
            >
              <ListIcon size={20} />
            </button>
@@ -119,8 +132,9 @@ export default function RoutesPage() {
       {/* Grid View */}
       {viewMode === 'grid' && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredRoutes.map((route) => (
+          {paginatedRoutes.map((route) => (
             <div key={route.id} className="glass-card group overflow-hidden border border-white/5 hover:border-emerald-500/30 transition-all duration-300 transform-gpu hover:-translate-y-1 flex flex-col">
+              <Link to={`/rutas/${route.id}/detalle`} className="flex-1 flex flex-col cursor-pointer">
               {/* Image Banner */}
               <div className="h-44 bg-slate-800 relative overflow-hidden">
                 {route.images?.[0] ? (
@@ -166,7 +180,7 @@ export default function RoutesPage() {
                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Servicios</p>
                        <div className="flex items-center gap-2 text-white font-bold text-sm">
                           <Plus size={14} className="text-emerald-500" />
-                          {route.itinerary.length} Items
+                          {allRouteItems.filter(ri => ri.route_id === route.id).length} Items
                        </div>
                     </div>
                  </div>
@@ -184,18 +198,16 @@ export default function RoutesPage() {
                     ))}
                  </div>
               </div>
+              </Link>
 
               {/* Action area */}
               <div className="px-5 py-4 border-t border-white/5 flex items-center justify-between bg-white/[0.01]">
-                 <Link 
-                   to={`/rutas/${route.id}/detalle`}
-                   className="text-[10px] font-black text-slate-500 hover:text-emerald-300 transition-colors uppercase tracking-widest flex items-center gap-1.5"
-                 >
+                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
                    REVISAR RUTA <ArrowUpRight size={14} />
-                 </Link>
+                 </span>
                  <div className="flex items-center gap-2">
-                    <button onClick={() => navigate(`/rutas/${route.id}/editar`)} className="p-2 text-slate-600 hover:text-sky-400 transition-colors"><Edit2 size={16}/></button>
-                    <button onClick={() => handleDelete(route.id, route.name)} className="p-2 text-slate-600 hover:text-rose-400 transition-colors"><Trash2 size={16}/></button>
+                    <button onClick={() => navigate(`/rutas/${route.id}/editar`)} className="p-2 text-slate-600 hover:text-sky-400 transition-colors" aria-label="Editar"><Edit2 size={16}/></button>
+                    <button onClick={() => handleDelete(route.id, route.name)} className="p-2 text-slate-600 hover:text-rose-400 transition-colors" aria-label="Eliminar"><Trash2 size={16}/></button>
                  </div>
               </div>
             </div>
@@ -218,7 +230,7 @@ export default function RoutesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {filteredRoutes.map(r => (
+                {paginatedRoutes.map(r => (
                   <tr key={r.id} className="hover:bg-white/[0.01] transition-colors group">
                     <td className="px-6 py-4">
                        <div className="flex items-center gap-3">
@@ -249,8 +261,8 @@ export default function RoutesPage() {
                     <td className="px-6 py-4 text-right pr-6">
                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
                           <Link to={`/rutas/${r.id}/detalle`} className="p-2 text-slate-400 hover:text-white"><ExternalLink size={14}/></Link>
-                          <button onClick={() => navigate(`/rutas/${r.id}/editar`)} className="p-2 text-slate-400 hover:text-sky-400"><Edit2 size={14}/></button>
-                          <button onClick={() => handleDelete(r.id, r.name)} className="p-2 text-slate-400 hover:text-rose-400"><Trash2 size={14}/></button>
+                          <button onClick={() => navigate(`/rutas/${r.id}/editar`)} className="p-2 text-slate-400 hover:text-sky-400" aria-label="Editar"><Edit2 size={14}/></button>
+                          <button onClick={() => handleDelete(r.id, r.name)} className="p-2 text-slate-400 hover:text-rose-400" aria-label="Eliminar"><Trash2 size={14}/></button>
                        </div>
                     </td>
                   </tr>
@@ -259,6 +271,9 @@ export default function RoutesPage() {
            </table>
         </div>
       )}
+
+      {/* Pagination */}
+      <Pagination currentPage={page} totalItems={filteredRoutes.length} pageSize={PAGE_SIZE} onPageChange={setPage} />
 
       {/* Empty View */}
       {filteredRoutes.length === 0 && (

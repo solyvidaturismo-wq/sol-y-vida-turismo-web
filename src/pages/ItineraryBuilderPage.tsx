@@ -32,15 +32,21 @@ import {
   Clock,
   Package,
   Building2,
-  StickyNote,
   ChevronDown,
   ChevronRight,
   Layers,
   Save,
   CheckCheck,
+  Users,
+  Filter,
+  DollarSign,
+  TrendingUp,
 } from 'lucide-react';
-import { useAppStore } from '../store/useAppStore';
+import { useAppStore, useProductTags } from '../store/useAppStore';
 import { PRODUCT_CATEGORY_META, SUPPLIER_CATEGORY_META } from '../config/categoryFields';
+import {
+  PROFILE_TAG_GROUPS, PROFILE_COLOR_MAP, PROFILE_TAG_MAP,
+} from '../config/profileTags';
 import type { ItineraryItem } from '../types';
 
 // ---- Types ----
@@ -456,6 +462,7 @@ export default function ItineraryBuilderPage() {
   const reorderItinerary = useAppStore(s => s.reorderItinerary);
   const products = useAppStore(s => s.products);
   const suppliers = useAppStore(s => s.suppliers);
+  const allProductTags = useProductTags();
 
   const route = useAppStore(s => id ? s.routes.find(r => r.id === id) : undefined);
 
@@ -463,6 +470,14 @@ export default function ItineraryBuilderPage() {
   const [catalogFilter, setCatalogFilter] = useState<'all' | 'product' | 'supplier'>('all');
   const [activeDrag, setActiveDrag] = useState<ActiveDrag | null>(null);
   const [saved, setSaved] = useState(false);
+  const [activeProfileFilters, setActiveProfileFilters] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
+
+  const toggleFilter = (tagId: string) => {
+    setActiveProfileFilters(prev =>
+      prev.includes(tagId) ? prev.filter(t => t !== tagId) : [...prev, tagId]
+    );
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
@@ -510,7 +525,16 @@ export default function ItineraryBuilderPage() {
   const filteredCatalog = catalogEntries.filter(e => {
     const matchSearch = !search || e.name.toLowerCase().includes(search.toLowerCase());
     const matchKind = catalogFilter === 'all' || e.kind === catalogFilter;
-    return matchSearch && matchKind;
+    if (!matchSearch || !matchKind) return false;
+
+    // Apply profile tag filters (only for products)
+    if (activeProfileFilters.length > 0) {
+      if (e.kind === 'supplier') return false; // suppliers don't have profile tags
+      const pt = allProductTags.filter(pt => pt.product_id === e.id).map(pt => pt.tag_id);
+      if (!activeProfileFilters.every(f => pt.includes(f))) return false;
+    }
+
+    return true;
   });
 
   // Resolve item display data
@@ -584,7 +608,7 @@ export default function ItineraryBuilderPage() {
         included_in_price: true,
         time_start: entry.start_time || undefined,
         time_end: entry.end_time || undefined,
-      }).catch(err => console.error('Error adding itinerary item:', err));
+      } as any).catch(err => console.error('Error adding itinerary item:', err));
       return;
     }
 
@@ -603,7 +627,7 @@ export default function ItineraryBuilderPage() {
           included_in_price: true,
           time_start: activeData.entry.start_time || undefined,
           time_end: activeData.entry.end_time || undefined,
-        }).catch(err => console.error('Error adding itinerary item:', err));
+        } as any).catch(err => console.error('Error adding itinerary item:', err));
       }
       return;
     }
@@ -630,7 +654,7 @@ export default function ItineraryBuilderPage() {
         ...route.itinerary.filter(i => i.day !== activeItem.day),
         ...reordered,
       ];
-      reorderItinerary(id, newItinerary).catch(err => console.error('Error reordering itinerary:', err));
+      reorderItinerary(id, newItinerary as any).catch(err => console.error('Error reordering itinerary:', err));
       return;
     }
 
@@ -646,7 +670,7 @@ export default function ItineraryBuilderPage() {
           ? { ...i, day: targetDay, order: targetDayItems.length + 1 }
           : i
       );
-      reorderItinerary(id, newItinerary).catch(err => console.error('Error moving item between days:', err));
+      reorderItinerary(id, newItinerary as any).catch(err => console.error('Error moving item between days:', err));
     }
   };
 
@@ -770,32 +794,97 @@ export default function ItineraryBuilderPage() {
         </div>
       </div>
 
-      {/* Stats bar */}
-      <div
-        className="flex items-center gap-6 px-5 py-3 rounded-2xl mb-4 text-xs flex-wrap"
-        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
-      >
-        <div className="flex items-center gap-1.5" style={{ color: 'var(--color-text-muted)' }}>
-          <Layers size={13} />
-          <strong style={{ color: 'var(--color-text-secondary)' }}>{route.itinerary.length}</strong> items en el itinerario
-        </div>
-        <div className="flex items-center gap-1.5" style={{ color: 'var(--color-text-muted)' }}>
-          <Package size={13} />
-          <strong style={{ color: 'var(--color-text-secondary)' }}>
-            {route.itinerary.filter(i => i.ref_type === 'product').length}
-          </strong> productos
-        </div>
-        <div className="flex items-center gap-1.5" style={{ color: 'var(--color-text-muted)' }}>
-          <Building2 size={13} />
-          <strong style={{ color: 'var(--color-text-secondary)' }}>
-            {route.itinerary.filter(i => i.ref_type === 'supplier').length}
-          </strong> proveedores
-        </div>
-        <div className="flex items-center gap-1.5" style={{ color: 'var(--color-text-muted)' }}>
-          <StickyNote size={13} />
-          Arrastra desde el catálogo hacia un día
-        </div>
-      </div>
+      {/* Stats & Pricing bar */}
+      {(() => {
+        const itineraryProducts = (route.itinerary || [])
+          .filter(i => i.ref_type === 'product')
+          .map(i => products.find(p => p.id === i.ref_id))
+          .filter(Boolean);
+
+        const totalCost = itineraryProducts.reduce((sum, p) => sum + (p!.base_price || 0), 0);
+        const currency = route.pricing?.currency || 'COP';
+        const sellingPrice = route.pricing?.base_price_per_pax || 0;
+        const margin = sellingPrice > 0 ? ((sellingPrice - totalCost) / sellingPrice * 100) : 0;
+
+        return (
+          <div
+            className="flex items-center gap-4 px-5 py-3 rounded-2xl mb-4 text-xs flex-wrap justify-between"
+            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+          >
+            <div className="flex items-center gap-5 flex-wrap">
+              <div className="flex items-center gap-1.5" style={{ color: 'var(--color-text-muted)' }}>
+                <Layers size={13} />
+                <strong style={{ color: 'var(--color-text-secondary)' }}>{route.itinerary.length}</strong> items
+              </div>
+              <div className="flex items-center gap-1.5" style={{ color: 'var(--color-text-muted)' }}>
+                <Package size={13} />
+                <strong style={{ color: 'var(--color-text-secondary)' }}>
+                  {route.itinerary.filter(i => i.ref_type === 'product').length}
+                </strong> productos
+              </div>
+              <div className="flex items-center gap-1.5" style={{ color: 'var(--color-text-muted)' }}>
+                <Building2 size={13} />
+                <strong style={{ color: 'var(--color-text-secondary)' }}>
+                  {route.itinerary.filter(i => i.ref_type === 'supplier').length}
+                </strong> proveedores
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 flex-wrap">
+              {/* Costo total del itinerario */}
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl" style={{ background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.15)' }}>
+                <DollarSign size={13} style={{ color: '#38bdf8' }} />
+                <span style={{ color: 'var(--color-text-muted)' }}>Costo:</span>
+                <strong style={{ color: '#38bdf8' }}>{currency} {totalCost.toLocaleString()}</strong>
+              </div>
+
+              {/* Precio de venta */}
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)' }}>
+                <DollarSign size={13} style={{ color: '#10b981' }} />
+                <span style={{ color: 'var(--color-text-muted)' }}>Venta:</span>
+                <strong style={{ color: '#10b981' }}>{currency} {sellingPrice.toLocaleString()}</strong>
+              </div>
+
+              {/* Margen */}
+              {sellingPrice > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl" style={{
+                  background: margin >= 20 ? 'rgba(16,185,129,0.08)' : margin >= 0 ? 'rgba(245,158,11,0.08)' : 'rgba(244,63,94,0.08)',
+                  border: `1px solid ${margin >= 20 ? 'rgba(16,185,129,0.15)' : margin >= 0 ? 'rgba(245,158,11,0.15)' : 'rgba(244,63,94,0.15)'}`,
+                }}>
+                  <TrendingUp size={13} style={{ color: margin >= 20 ? '#10b981' : margin >= 0 ? '#f59e0b' : '#f43f5e' }} />
+                  <strong style={{ color: margin >= 20 ? '#10b981' : margin >= 0 ? '#f59e0b' : '#f43f5e' }}>
+                    {margin.toFixed(0)}%
+                  </strong>
+                  <span style={{ color: 'var(--color-text-muted)' }}>margen</span>
+                </div>
+              )}
+
+              {/* Botón para actualizar precio de venta al costo */}
+              {totalCost > 0 && totalCost !== sellingPrice && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await updateRoute(id!, {
+                        pricing: { ...route.pricing, base_price_per_pax: totalCost },
+                      } as any);
+                      setSaved(true);
+                      setTimeout(() => setSaved(false), 2000);
+                    } catch (err) {
+                      console.error('Error updating price:', err);
+                    }
+                  }}
+                  className="text-[10px] font-bold px-3 py-1.5 rounded-xl transition-all hover:opacity-80"
+                  style={{ background: 'rgba(139,92,246,0.1)', color: '#a78bfa', border: '1px solid rgba(139,92,246,0.2)' }}
+                  title="Establece el precio de venta igual al costo del itinerario"
+                >
+                  Igualar a costo
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Main split layout */}
       <div className="flex gap-4" style={{ height: 'calc(100vh - 220px)', minHeight: '480px' }}>
@@ -812,9 +901,25 @@ export default function ItineraryBuilderPage() {
         >
           {/* Catalog header */}
           <div className="p-3 flex flex-col gap-2" style={{ borderBottom: '1px solid var(--color-border)' }}>
-            <p className="text-xs font-bold" style={{ color: 'var(--color-text-secondary)' }}>
-              📋 Catálogo
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-bold" style={{ color: 'var(--color-text-secondary)' }}>
+                📋 Catálogo
+              </p>
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold transition-all"
+                style={{
+                  background: showFilters || activeProfileFilters.length > 0 ? 'rgba(139,92,246,0.15)' : 'transparent',
+                  color: showFilters || activeProfileFilters.length > 0 ? '#a78bfa' : 'var(--color-text-muted)',
+                  border: `1px solid ${showFilters || activeProfileFilters.length > 0 ? 'rgba(139,92,246,0.25)' : 'transparent'}`,
+                }}
+              >
+                <Filter size={10} />
+                {activeProfileFilters.length > 0 && (
+                  <span className="w-4 h-4 rounded-full bg-violet-500 text-white text-[8px] flex items-center justify-center">{activeProfileFilters.length}</span>
+                )}
+              </button>
+            </div>
             <div className="relative">
               <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--color-text-muted)' }} />
               <input
@@ -842,7 +947,69 @@ export default function ItineraryBuilderPage() {
                 </button>
               ))}
             </div>
+
+            {/* Active filter pills */}
+            {activeProfileFilters.length > 0 && !showFilters && (
+              <div className="flex flex-wrap gap-1">
+                {activeProfileFilters.map(tagId => {
+                  const info = PROFILE_TAG_MAP[tagId];
+                  if (!info) return null;
+                  return (
+                    <button key={tagId} onClick={() => toggleFilter(tagId)}
+                      className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[8px] font-bold bg-violet-500/15 text-violet-400 border border-violet-500/20 hover:opacity-80 transition-all">
+                      {info.emoji} {info.label} <XIcon size={8} />
+                    </button>
+                  );
+                })}
+                <button onClick={() => setActiveProfileFilters([])}
+                  className="text-[8px] font-bold text-rose-400 hover:text-rose-300 px-1">✕ Limpiar</button>
+              </div>
+            )}
           </div>
+
+          {/* Profile tag filters panel */}
+          {showFilters && (
+            <div className="p-3 space-y-3 overflow-y-auto max-h-64" style={{ borderBottom: '1px solid var(--color-border)' }}>
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-bold flex items-center gap-1" style={{ color: '#a78bfa' }}>
+                  <Users size={11} /> Filtro por Perfil
+                </p>
+                {activeProfileFilters.length > 0 && (
+                  <button onClick={() => setActiveProfileFilters([])}
+                    className="text-[9px] font-bold text-rose-400 hover:text-rose-300">
+                    Limpiar
+                  </button>
+                )}
+              </div>
+              {PROFILE_TAG_GROUPS.map(group => {
+                const colors = PROFILE_COLOR_MAP[group.color];
+                return (
+                  <div key={group.id} className="space-y-1.5">
+                    <p className="text-[9px] font-bold uppercase tracking-widest flex items-center gap-1" style={{ color: 'var(--color-text-muted)' }}>
+                      {group.emoji} {group.label}
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {group.tags.map(tag => {
+                        const isActive = activeProfileFilters.includes(tag.id);
+                        return (
+                          <button key={tag.id} onClick={() => toggleFilter(tag.id)}
+                            className={`px-2 py-1 rounded-full text-[9px] font-bold border transition-all ${
+                              isActive ? `${colors.bgSoft} ${colors.text} ${colors.border} ring-1 ring-current`
+                              : 'bg-white/5 text-slate-500 border-white/5 hover:bg-white/10 hover:text-slate-300'
+                            }`}>
+                            {tag.emoji} {tag.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+              <p className="text-[8px] text-center" style={{ color: 'var(--color-text-muted)' }}>
+                {filteredCatalog.length} resultado{filteredCatalog.length !== 1 ? 's' : ''}
+              </p>
+            </div>
+          )}
 
           {/* Catalog list */}
           <div className="flex-1 overflow-y-auto p-2 space-y-1.5">

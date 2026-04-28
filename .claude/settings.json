@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl --ssl-no-revoke -s -X POST https://gppncfwhxdmfgkhrtxwj.supabase.co/rest/v1/routes -H 'apikey: sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF' -H 'Authorization: Bearer sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF' -H 'Content-Type: application/json' -H 'Prefer: return=representation' -d '{\"name\":\"__test__\"}')",
+      "Bash(curl --ssl-no-revoke -s \"https://gppncfwhxdmfgkhrtxwj.supabase.co/rest/v1/?apikey=sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF\")",
+      "Bash(node -e ':*)",
+      "Bash(curl --ssl-no-revoke -s https://gppncfwhxdmfgkhrtxwj.supabase.co/rest/v1/ -H 'apikey: sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF')",
+      "Bash(curl --ssl-no-revoke -s -X OPTIONS https://gppncfwhxdmfgkhrtxwj.supabase.co/rest/v1/routes -H 'apikey: sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF' -D -)",
+      "Bash(curl --ssl-no-revoke -s -X POST https://gppncfwhxdmfgkhrtxwj.supabase.co/rest/v1/routes -H 'apikey: sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF' -H 'Authorization: Bearer sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF' -H 'Content-Type: application/json' -H 'Prefer: return=representation' -d '{\"name\":\"test\",\"destination\":\"test\",\"description\":\"test\",\"status\":\"activo\",\"duration_days\":1,\"pricing\":{\"currency\":\"USD\",\"base_price_per_pax\":0},\"tags\":[],\"images\":[],\"view_count\":0,\"booking_count\":0}')",
+      "Bash(curl --ssl-no-revoke -s 'https://gppncfwhxdmfgkhrtxwj.supabase.co/rest/v1/routes?select=*' -H 'apikey: sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF' -H 'Authorization: Bearer sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF')",
+      "Bash(curl --ssl-no-revoke -s 'https://gppncfwhxdmfgkhrtxwj.supabase.co/rest/v1/suppliers?select=id&limit=1' -H 'apikey: sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF' -H 'Authorization: Bearer sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF')",
+      "Bash(curl --ssl-no-revoke -s 'https://gppncfwhxdmfgkhrtxwj.supabase.co/rest/v1/products?select=id&limit=1' -H 'apikey: sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF' -H 'Authorization: Bearer sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF')",
+      "Bash(curl --ssl-no-revoke -s 'https://gppncfwhxdmfgkhrtxwj.supabase.co/rest/v1/route_items?select=id&limit=1' -H 'apikey: sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF' -H 'Authorization: Bearer sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF')",
+      "Bash(curl --ssl-no-revoke -s -X POST https://gppncfwhxdmfgkhrtxwj.supabase.co/rest/v1/routes -H 'apikey: sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF' -H 'Authorization: Bearer sb_publishable_Li_Prk-cWtk2ObEkRF2mMw_Z5gXWzPF' -H 'Content-Type: application/json' -H 'Prefer: return=representation' -d '{\"name\":\"Test Route\",\"destination\":\"Vélez\",\"description\":\"Test\",\"status\":\"activo\",\"duration_days\":2,\"pricing\":{\"currency\":\"COP\",\"base_price_per_pax\":50000},\"tags\":[],\"images\":[]}')"
+    ]
+  }
+}

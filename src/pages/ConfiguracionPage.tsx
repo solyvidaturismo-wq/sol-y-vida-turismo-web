@@ -1,26 +1,17 @@
 import { useState } from 'react';
-import { 
-  Settings, 
-  User, 
-  Database, 
-  Shield, 
-  Bell, 
-  Palette, 
-  Cloud, 
-  RefreshCcw, 
-  Trash2, 
-  CheckCircle2,
-  HardDrive,
-  Globe,
-  Zap,
-  ArrowRight,
-  Monitor,
-  Smartphone,
-  Info,
-  Package,
-  Key
+import {
+  Settings,
+  Database,
+  Shield,
+  Palette,
+  Cloud,
+  RefreshCcw,
+  Trash2,
+  Key,
+  Package
 } from 'lucide-react';
-import { useAppStore } from '../store/useAppStore';
+import { useAppStore, useSuppliers, useProducts, useRoutes } from '../store/useAppStore';
+import { toast } from '../store/useToastStore';
 
 function SettingsSection({ title, subtitle, icon: Icon, children }: any) {
   return (
@@ -48,7 +39,7 @@ function ToggleRow({ label, desc, enabled, onToggle }: any) {
           <p className="text-sm font-black text-white group-hover:text-indigo-400 transition-colors uppercase tracking-tight">{label}</p>
           <p className="text-[11px] font-medium text-slate-500">{desc}</p>
        </div>
-       <button 
+       <button
          onClick={onToggle}
          className={`w-12 h-6 rounded-full relative transition-all duration-300 border ${enabled ? 'bg-indigo-500 border-indigo-400 shadow-[0_0_10px_rgba(99,102,241,0.5)]' : 'bg-slate-800 border-white/10'}`}
        >
@@ -59,21 +50,37 @@ function ToggleRow({ label, desc, enabled, onToggle }: any) {
 }
 
 export default function ConfiguracionPage() {
-  const resetData = useAppStore(s => s.resetData);
-  const loading = useAppStore(s => s.loading);
+  const theme = useAppStore(s => s.theme);
+  const toggleTheme = useAppStore(s => s.toggleTheme);
+  const fetchData = useAppStore(s => s.fetchData);
 
-  const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(true);
+  const suppliers = useSuppliers();
+  const products = useProducts();
+  const routes = useRoutes();
+
   const [syncAuto, setSyncAuto] = useState(true);
   const [showConfirmReset, setShowConfirmReset] = useState(false);
+  const [syncing, setSyncing] = useState(false);
 
-  const handleReset = () => {
+  const handleReset = async () => {
     if (showConfirmReset) {
-      resetData();
+      await fetchData();
       setShowConfirmReset(false);
-      alert('Sistema reiniciado correctamente.');
+      toast.success('Sistema reiniciado correctamente');
     } else {
       setShowConfirmReset(true);
+    }
+  };
+
+  const handleForceSync = async () => {
+    setSyncing(true);
+    try {
+      await fetchData();
+      toast.success('Sincronización completada');
+    } catch {
+      toast.error('Error al sincronizar');
+    } finally {
+      setSyncing(false);
     }
   };
 
@@ -93,48 +100,30 @@ export default function ConfiguracionPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
          {/* Main Settings (Left 2 cols) */}
          <div className="lg:col-span-2 space-y-10">
-            
-            <SettingsSection 
-              title="Apariencia y UI" 
+
+            <SettingsSection
+              title="Apariencia y UI"
               subtitle="Personaliza el entorno visual de trabajo de tu dashboard."
               icon={Palette}
             >
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <ToggleRow 
-                    label="Modo Oscuro Glassmorphism" 
-                    desc="Activa el diseño premium con efectos de transparencia."
-                    enabled={darkMode}
-                    onToggle={() => setDarkMode(!darkMode)}
+                  <ToggleRow
+                    label="Modo Oscuro"
+                    desc="Activa el diseño oscuro con efectos glassmorphism."
+                    enabled={theme === 'dark'}
+                    onToggle={toggleTheme}
                   />
-                  <ToggleRow 
-                    label="Animaciones de Interfaz" 
+                  <ToggleRow
+                    label="Animaciones de Interfaz"
                     desc="Transiciones suaves entre páginas y elementos."
                     enabled={true}
-                    onToggle={() => {}}
+                    onToggle={() => toast.info('Las animaciones están siempre activas en esta versión')}
                   />
-                  <ToggleRow 
-                    label="Badge de Contador en Sidebar" 
-                    desc="Muestra el total de items en el menú de navegación."
-                    enabled={true}
-                    onToggle={() => {}}
-                  />
-                  <div className="space-y-2">
-                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Acento de Color de la Marca</p>
-                     <div className="flex gap-2">
-                        {['#f59e0b', '#38bdf8', '#ef4444', '#10b981', '#6366f1'].map(color => (
-                          <button 
-                            key={color} 
-                            className={`w-8 h-8 rounded-full border-2 transition-all hover:scale-110 ${color === '#f59e0b' ? 'border-white scale-110' : 'border-transparent'}`}
-                            style={{ backgroundColor: color }}
-                          />
-                        ))}
-                     </div>
-                  </div>
                </div>
             </SettingsSection>
 
-            <SettingsSection 
-              title="Sincronización Supabase" 
+            <SettingsSection
+              title="Sincronización Supabase"
               subtitle="Controla la persistencia de datos y el estado de la nube."
               icon={Database}
             >
@@ -149,14 +138,18 @@ export default function ConfiguracionPage() {
                            <p className="text-xs font-bold text-slate-500">Sincronización en tiempo real activa.</p>
                         </div>
                      </div>
-                     <button className="flex items-center gap-2 text-[10px] font-black text-emerald-400 uppercase tracking-widest hover:text-white transition-colors">
-                        <RefreshCcw size={12} className={loading ? 'animate-spin' : ''} /> Forzar Re-Sync
+                     <button
+                       onClick={handleForceSync}
+                       disabled={syncing}
+                       className="flex items-center gap-2 text-[10px] font-black text-emerald-400 uppercase tracking-widest hover:text-white transition-colors disabled:opacity-50"
+                     >
+                        <RefreshCcw size={12} className={syncing ? 'animate-spin' : ''} /> Forzar Re-Sync
                      </button>
                   </div>
 
                   <div className="space-y-6">
-                    <ToggleRow 
-                        label="Sincronización Automática" 
+                    <ToggleRow
+                        label="Sincronización Automática"
                         desc="Guarda cambios en la nube instantáneamente al editar cualquier campo."
                         enabled={syncAuto}
                         onToggle={() => setSyncAuto(!syncAuto)}
@@ -174,8 +167,8 @@ export default function ConfiguracionPage() {
                </div>
             </SettingsSection>
 
-            <SettingsSection 
-              title="Gestión de Datos Críticos" 
+            <SettingsSection
+              title="Gestión de Datos Críticos"
               subtitle="Operaciones de mantenimiento y limpieza del sistema."
               icon={Shield}
             >
@@ -187,7 +180,7 @@ export default function ConfiguracionPage() {
                      <h4 className="text-sm font-black text-white uppercase tracking-tight">Reiniciar Sistema a Fábrica</h4>
                      <p className="text-xs font-medium text-slate-500 max-w-md">Esta acción eliminará todos los proveedores, productos y rutas cargadas localmente. <span className="text-rose-400 font-bold">No afecta a la base de datos de producción.</span></p>
                   </div>
-                  <button 
+                  <button
                     onClick={handleReset}
                     className={`px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all ${showConfirmReset ? 'bg-rose-500 text-white shadow-xl shadow-rose-500/20' : 'bg-white/5 text-rose-500 hover:bg-rose-500 hover:text-white'}`}
                   >
@@ -200,57 +193,47 @@ export default function ConfiguracionPage() {
 
          {/* Sidebar Stats (Right 1 col) */}
          <div className="space-y-8">
-            <div className="glass-card p-0 overflow-hidden group">
-               <div className="h-32 bg-slate-800 relative">
-                  <Monitor size={120} className="absolute -right-8 -bottom-8 text-white/[0.02] rotate-12" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-transparent" />
-                  <div className="absolute bottom-6 left-6 flex items-center gap-3">
-                     <div className="w-12 h-12 rounded-2xl bg-slate-950 flex items-center justify-center text-white border border-white/10">
-                        <Smartphone size={24} />
-                     </div>
-                     <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Dispositivo</p>
-                        <p className="text-sm font-black text-white uppercase">Sol y Vida Web v1.2</p>
-                     </div>
+            <div className="glass-card p-8 space-y-6">
+               <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Inventario Actual</p>
+               <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
+                     <span className="text-xs font-bold text-slate-400">Proveedores</span>
+                     <span className="text-sm font-black text-white">{suppliers.length}</span>
                   </div>
-               </div>
-               <div className="p-8 space-y-6">
-                  <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">Información del Sistema</p>
-                  <div className="space-y-4">
-                     {[
-                       { label: 'Uso de Memoria', val: '42 MB', icon: HardDrive },
-                       { label: 'Región Servidor', val: 'us-east-1', icon: Globe },
-                       { label: 'Uptime', val: '99.99%', icon: Zap },
-                     ].map(item => (
-                       <div key={item.label} className="flex items-center justify-between group/item">
-                          <div className="flex items-center gap-3">
-                             <item.icon size={16} className="text-slate-600 group-hover/item:text-indigo-400 transition-colors" />
-                             <span className="text-xs font-bold text-slate-500">{item.label}</span>
-                          </div>
-                          <span className="text-xs font-black text-white">{item.val}</span>
-                       </div>
-                     ))}
+                  <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
+                     <span className="text-xs font-bold text-slate-400">Productos</span>
+                     <span className="text-sm font-black text-white">{products.length}</span>
                   </div>
-                  
-                  <div className="pt-6 border-t border-white/5">
-                     <button className="w-full py-3 rounded-2xl bg-indigo-500/10 text-indigo-400 text-[10px] font-black uppercase tracking-widest hover:bg-indigo-500 hover:text-white transition-all flex items-center justify-center gap-2">
-                        Ver Logs de Auditoría <ArrowRight size={14} />
-                     </button>
+                  <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
+                     <span className="text-xs font-bold text-slate-400">Rutas</span>
+                     <span className="text-sm font-black text-white">{routes.length}</span>
+                  </div>
+                  <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5">
+                     <span className="text-xs font-bold text-slate-400">Reservas Totales</span>
+                     <span className="text-sm font-black text-emerald-400">{routes.reduce((a, r) => a + r.booking_count, 0)}</span>
                   </div>
                </div>
             </div>
 
-            <div className="glass-card p-8 bg-amber-500/5 border-amber-500/20">
-               <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center"><Info size={16} /></div>
-                  <h4 className="text-sm font-black text-white uppercase tracking-widest">Update Disponible</h4>
+            <div className="glass-card p-8 space-y-4">
+               <div className="flex items-center gap-3">
+                  <Package size={20} className="text-indigo-400" />
+                  <h4 className="text-sm font-black text-white uppercase tracking-widest">Versión de la App</h4>
                </div>
-               <p className="text-xs text-slate-400 leading-relaxed font-medium mb-4">
-                  Se ha detectado una nueva versión del core (v1.3) con soporte para itinerarios en PDF.
-               </p>
-               <button className="text-[10px] font-black text-amber-500 hover:text-amber-400 uppercase flex items-center gap-1">
-                  ACTUALIZAR AHORA <ChevronRight size={14} />
-               </button>
+               <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                     <span className="text-slate-500 font-bold">Frontend</span>
+                     <span className="text-white font-black">v1.2.0</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                     <span className="text-slate-500 font-bold">Backend</span>
+                     <span className="text-white font-black">Supabase</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                     <span className="text-slate-500 font-bold">Tema</span>
+                     <span className="text-white font-black capitalize">{theme}</span>
+                  </div>
+               </div>
             </div>
 
             <div className="text-center">

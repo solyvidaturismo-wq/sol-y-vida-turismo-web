@@ -1,23 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useAppStore } from '../store/useAppStore';
-import { 
-  ArrowLeft, 
-  Save, 
-  Building2, 
-  Mail, 
-  Phone, 
-  Globe, 
-  MapPin, 
+import {
+  ArrowLeft,
+  Save,
+  Building2,
+  Mail,
+  Phone,
+  MapPin,
   ShieldCheck,
-  Star,
-  Info,
   Image as ImageIcon,
   CheckCircle2,
-  AlertCircle
+  Zap
 } from 'lucide-react';
-import { SUPPLIER_CATEGORY_META, SUPPLIER_DYNAMIC_FIELDS } from '../config/categoryFields';
+import { SUPPLIER_CATEGORY_META, SUPPLIER_CATEGORIES } from '../config/categoryFields';
+import { COLOMBIA_DEPARTMENTS, getMunicipalitiesByDepartment } from '../config/colombiaLocations';
+import DynamicFormSection from '../components/ui/DynamicFormSection';
+import { toast } from '../store/useToastStore';
 
 type SupplierFormValues = {
   name: string;
@@ -33,6 +33,7 @@ type SupplierFormValues = {
   };
   address: {
     street: string;
+    department: string;
     city: string;
     country: string;
   };
@@ -58,39 +59,100 @@ export default function SupplierFormPage() {
     commission_pct: 10,
     rating: 4.5,
     contact: { name: '', email: '', phone: '' },
-    address: { street: '', city: 'Cuzco', country: 'Perú' },
+    address: { street: '', department: '', city: '', country: 'Colombia' },
     logo: '',
     banner_image: '',
     extended_data: {}
   };
 
-  const { register, handleSubmit, control, watch, setValue, formState: { errors, isDirty } } = useForm<SupplierFormValues>({
+  const [saving, setSaving] = useState(false);
+
+  const { register, handleSubmit, watch, setValue, formState: { errors, isDirty } } = useForm<SupplierFormValues>({
     defaultValues
   });
 
   const selectedCategory = watch('category');
+  const selectedDepartment = watch('address.department');
+
+  useEffect(() => {
+    if (!isEditing) {
+      setValue('address.city', '');
+    }
+  }, [selectedDepartment, setValue, isEditing]);
 
   useEffect(() => {
     if (isEditing) {
       const existing = suppliers.find(s => s.id === id);
       if (existing) {
-        Object.entries(existing).forEach(([key, val]) => {
-          setValue(key as any, val);
+        setValue('name', existing.name || '');
+        setValue('category', existing.category || 'hotel');
+        setValue('status', (existing.status as any) || 'activo');
+        setValue('description', existing.notes || '');
+        setValue('commission_pct', existing.commission_pct ?? 10);
+        setValue('rating', existing.rating ?? 4.5);
+        setValue('contact', {
+          name: existing.contact?.name || '',
+          email: existing.contact?.email || '',
+          phone: existing.contact?.phone || '',
         });
+        setValue('address', {
+          street: existing.location?.address || '',
+          department: existing.location?.region || '',
+          city: existing.location?.city || '',
+          country: existing.location?.country || 'Colombia',
+        });
+        setValue('logo', existing.logo || '');
+        setValue('banner_image', existing.banner_image || '');
+        setValue('extended_data', existing.custom_fields || {});
       }
     }
   }, [id, suppliers, setValue, isEditing]);
 
   const onSubmit = async (data: SupplierFormValues) => {
+    // Validaciones manuales
+    if (!data.contact.email && !data.contact.phone) {
+      toast.error('Debe ingresar al menos un email o teléfono de contacto');
+      return;
+    }
+    if (data.contact.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact.email)) {
+      toast.error('El email de contacto no es válido');
+      return;
+    }
+    if (data.commission_pct < 0 || data.commission_pct > 100) {
+      toast.error('La comisión debe estar entre 0 y 100');
+      return;
+    }
+    if (data.rating < 1 || data.rating > 5) {
+      toast.error('El rating debe estar entre 1 y 5');
+      return;
+    }
+
+    setSaving(true);
     try {
+      const { extended_data, address, description, ...rest } = data;
+      const payload = {
+        ...rest,
+        location: {
+          city: address.city,
+          country: address.country,
+          region: address.department || address.city,
+          address: address.street,
+        },
+        notes: description,
+        tags: [],
+        custom_fields: extended_data || {},
+      };
       if (isEditing) {
-        await updateSupplier(id, data);
+        await updateSupplier(id, payload as any);
       } else {
-        await addSupplier(data);
+        await addSupplier(payload as any);
       }
+      toast.success(isEditing ? 'Proveedor actualizado' : 'Proveedor creado exitosamente');
       navigate('/proveedores');
     } catch (err: any) {
-      alert('Error al guardar: ' + err.message);
+      toast.error('Error al guardar: ' + err.message);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -121,13 +183,17 @@ export default function SupplierFormPage() {
           >
             Cancelar
           </button>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="btn-primary flex items-center gap-2 px-8"
-            disabled={!isDirty && isEditing}
+            disabled={saving || (!isDirty && isEditing)}
           >
-            <Save size={18} />
-            {isEditing ? 'Actualizar' : 'Guardar Partner'}
+            {saving ? (
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <Save size={18} />
+            )}
+            {saving ? 'Guardando...' : isEditing ? 'Actualizar' : 'Guardar Partner'}
           </button>
         </div>
       </div>
@@ -146,11 +212,12 @@ export default function SupplierFormPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nombre Comercial</label>
-                    <input 
-                      {...register('name', { required: true })}
+                    <input
+                      {...register('name', { required: 'El nombre es obligatorio', minLength: { value: 3, message: 'Mínimo 3 caracteres' } })}
                       placeholder="Ej: Hotel Monasterio Cusco"
                       className={`form-input w-full ${errors.name ? 'border-rose-500' : ''}`}
                     />
+                    {errors.name && <p className="text-[10px] text-rose-500 font-bold mt-1">{errors.name.message}</p>}
                  </div>
                  <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Categoría</label>
@@ -185,11 +252,11 @@ export default function SupplierFormPage() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Comisión %</label>
-                    <input type="number" {...register('commission_pct', { valueAsNumber: true })} className="form-input w-full" />
+                    <input type="number" {...register('commission_pct', { valueAsNumber: true, min: 0, max: 100 })} className={`form-input w-full ${errors.commission_pct ? 'border-rose-500' : ''}`} />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Rating</label>
-                    <input type="number" step="0.1" {...register('rating', { valueAsNumber: true })} className="form-input w-full" />
+                    <input type="number" step="0.1" {...register('rating', { valueAsNumber: true, min: 1, max: 5 })} className={`form-input w-full ${errors.rating ? 'border-rose-500' : ''}`} />
                   </div>
               </div>
            </div>
@@ -203,9 +270,27 @@ export default function SupplierFormPage() {
                  </div>
                  <div className="space-y-4">
                     <input {...register('address.street')} placeholder="Dirección" className="form-input w-full text-sm" />
-                    <div className="grid grid-cols-2 gap-4">
-                      <input {...register('address.city')} placeholder="Ciudad" className="form-input w-full text-sm" />
-                      <input {...register('address.country')} placeholder="País" className="form-input w-full text-sm" />
+                    <div className="space-y-4">
+                      <select
+                        {...register('address.department')}
+                        className="form-input w-full text-sm"
+                      >
+                        <option value="">Seleccionar Departamento...</option>
+                        {COLOMBIA_DEPARTMENTS.map(dep => (
+                          <option key={dep.name} value={dep.name}>{dep.name}</option>
+                        ))}
+                      </select>
+                      <select
+                        {...register('address.city')}
+                        className="form-input w-full text-sm"
+                        disabled={!selectedDepartment}
+                      >
+                        <option value="">Seleccionar Municipio...</option>
+                        {getMunicipalitiesByDepartment(selectedDepartment).map(mun => (
+                          <option key={mun} value={mun}>{mun}</option>
+                        ))}
+                      </select>
+                      <input {...register('address.country')} placeholder="País" className="form-input w-full text-sm" readOnly />
                     </div>
                  </div>
               </div>
@@ -232,53 +317,28 @@ export default function SupplierFormPage() {
            </div>
 
            {/* Dynamic Fields Section */}
-           <div className="glass-card p-8 space-y-6 border-l-4 border-amber-500/50">
-              <div className="flex items-center gap-3">
-                 <div className="w-8 h-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center">
-                    <Zap size={18} />
-                 </div>
-                 <div>
-                    <h2 className="text-xl font-black text-white text-gradient">Detalles Específicos</h2>
-                    <p className="text-[10px] text-slate-500 font-bold uppercase">Atributos personalizados para la categoría {selectedCategory}</p>
-                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                 {SUPPLIER_DYNAMIC_FIELDS[selectedCategory]?.map((field: any) => (
-                   <div key={field.name} className="space-y-2">
-                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{field.label}</label>
-                      {field.type === 'select' ? (
-                        <select 
-                          {...register(`extended_data.${field.name}`)}
-                          className="form-input w-full text-sm"
-                        >
-                          {field.options.map((opt: any) => (
-                            <option key={opt} value={opt}>{opt}</option>
-                          ))}
-                        </select>
-                      ) : field.type === 'checkbox' ? (
-                        <div className="flex items-center gap-2 p-3 bg-white/5 rounded-xl border border-white/5">
-                           <input type="checkbox" {...register(`extended_data.${field.name}`)} className="w-5 h-5 accent-amber-500" />
-                           <span className="text-slate-300 text-sm font-bold">{field.label}</span>
-                        </div>
-                      ) : field.type === 'number' ? (
-                        <input 
-                           type="number"
-                           {...register(`extended_data.${field.name}`, { valueAsNumber: true })}
-                           className="form-input w-full text-sm"
-                        />
-                      ) : (
-                        <input 
-                           type="text"
-                           {...register(`extended_data.${field.name}`)}
-                           placeholder={field.placeholder}
-                           className="form-input w-full text-sm"
-                        />
-                      )}
+           {SUPPLIER_CATEGORIES[selectedCategory] && (
+             <div className="glass-card p-8 space-y-6 border-l-4 border-amber-500/50">
+                <div className="flex items-center gap-3">
+                   <div className="w-8 h-8 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center">
+                      <Zap size={18} />
                    </div>
-                 ))}
-              </div>
-           </div>
+                   <div>
+                      <h2 className="text-xl font-black text-white">Detalles Específicos</h2>
+                      <p className="text-[10px] text-slate-500 font-bold uppercase">
+                        {SUPPLIER_CATEGORIES[selectedCategory].emoji} {SUPPLIER_CATEGORIES[selectedCategory].label} &mdash; {SUPPLIER_CATEGORIES[selectedCategory].description}
+                      </p>
+                   </div>
+                </div>
+
+                <DynamicFormSection
+                  sections={SUPPLIER_CATEGORIES[selectedCategory].sections}
+                  register={register}
+                  watch={watch}
+                  prefix="extended_data"
+                />
+             </div>
+           )}
         </div>
 
         {/* Sidebar: Assets */}

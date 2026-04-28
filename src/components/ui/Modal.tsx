@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
@@ -12,17 +12,47 @@ interface ModalProps {
 
 export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, maxWidth = '2xl' }) => {
   const [isRendered, setIsRendered] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (isOpen) {
       setIsRendered(true);
       document.body.style.overflow = 'hidden';
+      // Focus the close button when modal opens
+      setTimeout(() => closeButtonRef.current?.focus(), 100);
     } else {
       setTimeout(() => setIsRendered(false), 300);
       document.body.style.overflow = 'unset';
     }
     return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen]);
+
+  // ESC to close + focus trap
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onClose();
+      return;
+    }
+
+    if (e.key === 'Tab' && dialogRef.current) {
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }, [onClose]);
 
   if (!isRendered) return null;
 
@@ -36,23 +66,35 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
   };
 
   return createPortal(
-    <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      onKeyDown={handleKeyDown}
+    >
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" 
+      <div
+        className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
         onClick={onClose}
+        aria-hidden="true"
       />
-      
+
       {/* Content */}
-      <div className={`
-        relative w-full ${maxWidthClasses[maxWidth]} bg-slate-900 rounded-[40px] border border-white/10 shadow-2xl overflow-hidden transform transition-all duration-300
-        ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-8'}
-      `}>
+      <div
+        ref={dialogRef}
+        className={`
+          relative w-full ${maxWidthClasses[maxWidth]} bg-slate-900 rounded-[40px] border border-white/10 shadow-2xl overflow-hidden transform transition-all duration-300
+          ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-8'}
+        `}
+      >
          <div className="flex items-center justify-between p-8 border-b border-white/5">
             <h3 className="text-2xl font-black text-white uppercase tracking-tighter">{title}</h3>
-            <button 
+            <button
+              ref={closeButtonRef}
               onClick={onClose}
               className="p-2 rounded-2xl bg-white/5 text-slate-500 hover:text-white transition-all hover:rotate-90"
+              aria-label="Cerrar modal"
             >
                <X size={20} />
             </button>

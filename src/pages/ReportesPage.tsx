@@ -1,21 +1,17 @@
 import { useMemo } from 'react';
 import { useProducts, useSuppliers, useRoutes } from '../store/useAppStore';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  BarChart3, 
-  DollarSign, 
-  Users, 
-  Map, 
-  Package, 
-  Calendar,
+import {
+  TrendingUp,
+  TrendingDown,
+  BarChart3,
+  DollarSign,
+  Users,
+  MapPin,
   Layers,
   Activity,
   ArrowUpRight,
   ShieldCheck,
-  Target,
-  Zap,
-  Star
+  Target
 } from 'lucide-react';
 import { PRODUCT_CATEGORY_META } from '../config/categoryFields';
 
@@ -91,36 +87,33 @@ export default function ReportesPage() {
 
       {/* KPI Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-         <KPIBlock 
-            title="Valor Inventario (Ref)" 
-            value={`$${metrics.estimatedRevenue.toLocaleString()}`} 
+         <KPIBlock
+            title="Valor Inventario (Ref)"
+            value={`$${metrics.estimatedRevenue.toLocaleString()}`}
             sub="Revenue potencial generado"
-            color="#a78bfa" 
+            color="#a78bfa"
             icon={DollarSign}
-            trend={{ val: 18.5 }}
          />
-         <KPIBlock 
-            title="Reservas Totales" 
-            value={metrics.totalBookings} 
+         <KPIBlock
+            title="Reservas Totales"
+            value={metrics.totalBookings}
             sub="Paquetes vendidos"
-            color="#34d399" 
+            color="#34d399"
             icon={Activity}
-            trend={{ val: 5.2 }}
          />
-         <KPIBlock 
-            title="Ticket Promedio" 
-            value={`$${metrics.avgRoutePrice}`} 
+         <KPIBlock
+            title="Ticket Promedio"
+            value={`$${metrics.avgRoutePrice}`}
             sub="Promedio p/pax por ruta"
-            color="#fbbf24" 
+            color="#fbbf24"
             icon={Target}
          />
-         <KPIBlock 
-            title="Suministro Activo" 
-            value={`${metrics.activeSuppliers}/${suppliers.length}`} 
+         <KPIBlock
+            title="Suministro Activo"
+            value={`${metrics.activeSuppliers}/${suppliers.length}`}
             sub="Partners en operación"
-            color="#60a5fa" 
+            color="#60a5fa"
             icon={Users}
-            trend={{ val: -2.1 }}
          />
       </div>
 
@@ -201,12 +194,23 @@ export default function ReportesPage() {
                                 $ {(route.booking_count * route.pricing.base_price_per_pax).toLocaleString()}
                              </td>
                              <td className="px-8 py-4">
-                                <div className="flex items-center gap-2">
-                                   <div className="h-1 w-12 bg-slate-900 rounded-full overflow-hidden border border-white/5">
-                                      <div className="h-full bg-emerald-500" style={{ width: '85%' }} />
-                                   </div>
-                                   <span className="text-[10px] font-black text-slate-400">85%</span>
-                                </div>
+                                {(() => {
+                                  const cost = route.itinerary.reduce((acc: number, item: any) => {
+                                    const p = products.find(pr => pr.id === item.product_id);
+                                    return acc + (p?.base_price || 0);
+                                  }, 0);
+                                  const margin = route.pricing.base_price_per_pax > 0
+                                    ? Math.round(((route.pricing.base_price_per_pax - cost) / route.pricing.base_price_per_pax) * 100)
+                                    : 0;
+                                  return (
+                                    <div className="flex items-center gap-2">
+                                       <div className="h-1 w-12 bg-slate-900 rounded-full overflow-hidden border border-white/5">
+                                          <div className="h-full bg-emerald-500" style={{ width: `${Math.max(0, Math.min(100, margin))}%` }} />
+                                       </div>
+                                       <span className="text-[10px] font-black text-slate-400">{margin}%</span>
+                                    </div>
+                                  );
+                                })()}
                              </td>
                              <td className="px-8 py-4 text-right">
                                 <span className={`badge ${route.status === 'activo' ? 'badge-emerald' : 'badge-amber'} text-[9px]`}>{route.status}</span>
@@ -221,64 +225,64 @@ export default function ReportesPage() {
 
          {/* Sidebar Widgets */}
          <div className="space-y-8">
-            {/* System Health Widget */}
+            {/* Inventory Summary */}
             <div className="glass-card p-8 bg-indigo-500/5 border-indigo-500/20 relative overflow-hidden">
-               <Zap size={60} className="absolute -right-4 -bottom-4 text-indigo-500/10" />
                <h4 className="text-lg font-black text-white mb-6 flex items-center gap-3">
-                  <Star size={20} className="text-indigo-400" /> Calidad Operativa
+                  <Activity size={20} className="text-indigo-400" /> Resumen Operativo
                </h4>
-               <div className="space-y-6">
-                  <div className="text-center p-6 rounded-3xl bg-slate-950/50 border border-white/5">
-                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">CSAT PROMEDIO</p>
-                     <p className="text-5xl font-black text-white tracking-tighter">4.8</p>
-                     <div className="flex justify-center gap-1 mt-2 text-indigo-400">
-                        {[1,2,3,4,5].map(i => <Star key={i} size={14} fill="currentColor" />)}
-                     </div>
+               <div className="space-y-4">
+                  <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl border border-white/5">
+                     <span className="text-[10px] font-black text-slate-400 uppercase">Proveedores Activos</span>
+                     <span className="text-xs font-black text-emerald-400">{metrics.activeSuppliers}/{suppliers.length}</span>
                   </div>
-                  
-                  <div className="space-y-4">
-                     <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl border border-white/5">
-                        <span className="text-[10px] font-black text-slate-400 uppercase">Tasa de Error</span>
-                        <span className="text-xs font-black text-emerald-400">0.05%</span>
-                     </div>
-                     <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl border border-white/5">
-                        <span className="text-[10px] font-black text-slate-400 uppercase">Latency Res.</span>
-                        <span className="text-xs font-black text-emerald-400">120ms</span>
-                     </div>
+                  <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl border border-white/5">
+                     <span className="text-[10px] font-black text-slate-400 uppercase">Productos</span>
+                     <span className="text-xs font-black text-sky-400">{products.length}</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl border border-white/5">
+                     <span className="text-[10px] font-black text-slate-400 uppercase">Rutas Activas</span>
+                     <span className="text-xs font-black text-amber-400">{routes.filter(r => r.status === 'activo').length}</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-white/5 p-3 rounded-2xl border border-white/5">
+                     <span className="text-[10px] font-black text-slate-400 uppercase">Sin Proveedor</span>
+                     <span className="text-xs font-black text-rose-400">{products.filter(p => !p.supplier_id).length}</span>
                   </div>
                </div>
             </div>
 
-            {/* Quick Goals */}
+            {/* Revenue per Route */}
             <div className="glass-card p-8">
-               <h4 className="text-lg font-black text-white mb-6">Objetivos Q2</h4>
-               <div className="space-y-6">
-                  {[
-                    { label: 'Nuevos Partners', current: 12, target: 20, color: 'sky' },
-                    { label: 'Booking Volume', current: 1450, target: 2000, color: 'amber' },
-                    { label: 'Route Expansion', current: 8, target: 15, color: 'emerald' },
-                  ].map((goal, i) => (
-                    <div key={i} className="space-y-2">
-                       <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                          <span className="text-slate-500">{goal.label}</span>
-                          <span className="text-white">{Math.round((goal.current / goal.target) * 100)}%</span>
-                       </div>
-                       <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
-                          <div className={`h-full bg-${goal.color}-500 transition-all duration-1000`} style={{ width: `${(goal.current / goal.target) * 100}%` }} />
-                       </div>
-                    </div>
-                  ))}
+               <h4 className="text-lg font-black text-white mb-6">Revenue por Ruta</h4>
+               <div className="space-y-4">
+                  {routes.sort((a, b) => (b.booking_count * b.pricing.base_price_per_pax) - (a.booking_count * a.pricing.base_price_per_pax)).slice(0, 5).map(route => {
+                    const rev = route.booking_count * route.pricing.base_price_per_pax;
+                    const maxRev = Math.max(...routes.map(r => r.booking_count * r.pricing.base_price_per_pax), 1);
+                    return (
+                      <div key={route.id} className="space-y-1.5">
+                         <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                            <span className="text-slate-400 truncate max-w-[140px]">{route.name}</span>
+                            <span className="text-emerald-400">${rev.toLocaleString()}</span>
+                         </div>
+                         <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
+                            <div className="h-full bg-emerald-500 transition-all duration-1000 rounded-full" style={{ width: `${(rev / maxRev) * 100}%` }} />
+                         </div>
+                      </div>
+                    );
+                  })}
+                  {routes.length === 0 && (
+                    <p className="text-xs text-slate-500 italic text-center py-4">Sin datos de rutas</p>
+                  )}
                </div>
             </div>
 
             {/* Verification Badge */}
             <div className="p-6 rounded-[32px] bg-slate-900 border border-white/5 group">
                 <div className="flex items-center gap-3 text-white font-black text-sm mb-3">
-                   <ShieldCheck size={20} className="text-emerald-500 transition-transform group-hover:scale-110" /> 
+                   <ShieldCheck size={20} className="text-emerald-500 transition-transform group-hover:scale-110" />
                    DATOS VERIFICADOS
                 </div>
                 <p className="text-[10px] text-slate-500 font-bold uppercase leading-relaxed">
-                  Todos los reportes son síncronos con Supabase y reflejan el estado real del inventario al {new Date().toLocaleDateString()}.
+                  Todos los reportes reflejan el estado real del inventario al {new Date().toLocaleDateString()}.
                 </p>
             </div>
          </div>

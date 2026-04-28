@@ -1,20 +1,11 @@
 import { useMemo } from 'react';
-import { useProducts, useSuppliers } from '../store/useAppStore';
-import { 
-  Layers, 
-  ChevronRight, 
-  MapPin, 
-  Calendar, 
-  Users, 
-  TrendingUp, 
+import { useProducts } from '../store/useAppStore';
+import {
+  Layers,
+  ChevronRight,
   Package,
   Activity,
   Zap,
-  Tag,
-  Hotel,
-  Bus,
-  Map,
-  UtensilsCrossed,
   ShieldCheck,
   Star
 } from 'lucide-react';
@@ -23,7 +14,6 @@ import { PRODUCT_CATEGORY_META } from '../config/categoryFields';
 
 export default function CategoriasPage() {
   const products = useProducts();
-  const suppliers = useSuppliers();
 
   // Metrics by category
   const categoriesData = useMemo(() => {
@@ -31,7 +21,7 @@ export default function CategoriasPage() {
       const items = products.filter(p => p.category === key);
       const uniqueSuppliers = new Set(items.map(p => p.supplier_id)).size;
       const avgPrice = Math.round(items.reduce((acc, p) => acc + p.base_price, 0) / (items.length || 1));
-      const avgRating = (items.reduce((acc, p) => acc + (p.rating || 0), 0) / (items.length || 1)).toFixed(1);
+      const avgRating = (items.reduce((acc, p) => acc + ((p as any).rating || 0), 0) / (items.length || 1)).toFixed(1);
 
       return {
         key,

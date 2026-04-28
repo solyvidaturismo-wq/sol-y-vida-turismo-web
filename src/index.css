@@ -58,9 +58,9 @@
     --color-border:         rgba(0, 0, 0, 0.09);
     --color-border-accent:  rgba(245, 158, 11, 0.45);
 
-    --color-text-primary:   #0f172a;
-    --color-text-secondary: #334155;
-    --color-text-muted:     #64748b;
+    --color-text-primary:   #1e293b;
+    --color-text-secondary: #475569;
+    --color-text-muted:     #78859b;
 
     --color-surface-hover:  rgba(0, 0, 0, 0.05);
     --color-surface-input:  rgba(0, 0, 0, 0.04);
@@ -419,3 +419,75 @@
     font-weight: 600;
   }
 }
+
+/* ═══════════════════════════════════════════════════════
+   Light mode overrides — outside @layer so they beat
+   Tailwind utility specificity
+   ═══════════════════════════════════════════════════════ */
+
+/* Títulos principales (text-white → azul pizarra profundo, no negro) */
+[data-theme="light"] .text-white { color: #1e293b !important; }
+/* Subtítulos / texto secundario */
+[data-theme="light"] .text-slate-300 { color: #475569 !important; }
+/* Descripciones / texto de apoyo */
+[data-theme="light"] .text-slate-400 { color: #64748b !important; }
+/* Labels / texto muted */
+[data-theme="light"] .text-slate-500 { color: #78859b !important; }
+[data-theme="light"] .text-slate-600 { color: #64748b !important; }
+[data-theme="light"] .text-slate-700 { color: #475569 !important; }
+[data-theme="light"] .text-gray-400 { color: #64748b !important; }
+[data-theme="light"] .text-gray-500 { color: #78859b !important; }
+
+/* Background surfaces */
+[data-theme="light"] .bg-slate-800 { background-color: #e2e8f0 !important; }
+[data-theme="light"] .bg-slate-900 { background-color: #f1f5f9 !important; }
+[data-theme="light"] .bg-slate-900\/50 { background-color: rgba(241, 245, 249, 0.5) !important; }
+
+/* White-alpha surfaces → dark-alpha */
+[data-theme="light"] .bg-white\/5 { background-color: rgba(0, 0, 0, 0.04) !important; }
+[data-theme="light"] .bg-white\/10 { background-color: rgba(0, 0, 0, 0.06) !important; }
+[data-theme="light"] .bg-white\/\[0\.01\] { background-color: rgba(0, 0, 0, 0.02) !important; }
+[data-theme="light"] .bg-white\/\[0\.02\] { background-color: rgba(0, 0, 0, 0.03) !important; }
+
+/* Borders */
+[data-theme="light"] .border-white\/5 { border-color: rgba(0, 0, 0, 0.08) !important; }
+[data-theme="light"] .border-white\/10 { border-color: rgba(0, 0, 0, 0.12) !important; }
+[data-theme="light"] .divide-white\/5 > * + * { border-color: rgba(0, 0, 0, 0.08) !important; }
+
+/* Gradient overlays on image cards */
+[data-theme="light"] .from-slate-900 { --tw-gradient-from: rgba(241, 245, 249, 0.95) !important; }
+[data-theme="light"] .to-transparent { --tw-gradient-to: transparent !important; }
+
+/* Floating price badges on cards */
+[data-theme="light"] .bg-black\/40 { background-color: rgba(255, 255, 255, 0.88) !important; }
+
+/* Select / option readability */
+[data-theme="light"] select,
+[data-theme="light"] select option {
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+}
+
+/* Table headers */
+[data-theme="light"] thead tr {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Input / textarea placeholders */
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Accent text colors — warm and readable on light */
+[data-theme="light"] .text-indigo-400 { color: #6366f1 !important; }
+[data-theme="light"] .text-emerald-400 { color: #10b981 !important; }
+[data-theme="light"] .text-sky-400 { color: #0ea5e9 !important; }
+[data-theme="light"] .text-rose-400 { color: #f43f5e !important; }
+[data-theme="light"] .text-orange-400 { color: #f97316 !important; }
+[data-theme="light"] .text-amber-500 { color: #d97706 !important; }
+[data-theme="light"] .text-amber-400 { color: #f59e0b !important; }
+
+/* Scrollbar */
+[data-theme="light"] ::-webkit-scrollbar-track { background: #e2e8f0; }
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.5); }

@@ -1,13 +1,13 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { PRODUCT_CATEGORY_META, ColorOption } from '../../config/categoryFields';
+import { PRODUCT_CATEGORY_META, type ColorOption } from '../../config/categoryFields';
 
 interface DynamicFieldsProps {
   category: string;
 }
 
 export const DynamicFields: React.FC<DynamicFieldsProps> = ({ category }) => {
-  const { register, watch, formState: { errors } } = useFormContext();
+  const { register, formState: { errors } } = useFormContext();
   const meta = PRODUCT_CATEGORY_META[category] || { fields: [] };
 
   return (

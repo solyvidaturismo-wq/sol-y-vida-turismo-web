@@ -1,14 +1,13 @@
+import { useMemo } from 'react';
 import { useAppStore, useSuppliers, useProducts, useRoutes } from '../store/useAppStore';
-import { 
-  Users, 
-  Package, 
-  Map, 
-  TrendingUp, 
+import {
+  Users,
+  Package,
+  Map,
+  TrendingUp,
   AlertCircle,
-  Clock,
   ArrowUpRight,
   Plus,
-  CalendarDays,
   Activity
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -59,6 +58,15 @@ export default function DashboardPage() {
   const routes = useRoutes();
   const loading = useAppStore(s => s.loading);
 
+  // Hooks must be called before any conditional return
+  const topCategory = useMemo(() => {
+    if (products.length === 0) return 'N/A';
+    const counts: Record<string, number> = {};
+    products.forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+    return top ? `${top[0]} (${top[1]})` : 'N/A';
+  }, [products]);
+
   if (loading && products.length === 0) {
     return (
       <div className="h-96 flex flex-col items-center justify-center gap-4 animate-pulse">
@@ -72,6 +80,8 @@ export default function DashboardPage() {
   const activeProducts = products.filter(p => p.status === 'activo').length;
   const activeSuppliers = suppliers.filter(s => s.status === 'activo').length;
   const popularRoutes = [...routes].sort((a, b) => b.booking_count - a.booking_count).slice(0, 4);
+  const productsWithoutSupplier = products.filter(p => !p.supplier_id).length;
+  const totalRecords = suppliers.length + products.length + routes.length;
 
   return (
     <div className="space-y-8 animate-page-enter">
@@ -95,34 +105,31 @@ export default function DashboardPage() {
 
       {/* KPI Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="Proveedores" 
-          value={suppliers.length} 
-          icon={Users} 
-          trend="+2 este mes" 
+        <StatCard
+          title="Proveedores"
+          value={suppliers.length}
+          icon={Users}
           color="#f59e0b"
           to="/proveedores"
         />
-        <StatCard 
-          title="Productos" 
-          value={products.length} 
-          icon={Package} 
-          trend="+15%" 
+        <StatCard
+          title="Productos"
+          value={products.length}
+          icon={Package}
           color="#38bdf8"
           to="/productos"
         />
-        <StatCard 
-          title="Rutas Totales" 
-          value={routes.length} 
-          icon={Map} 
+        <StatCard
+          title="Rutas Totales"
+          value={routes.length}
+          icon={Map}
           color="#10b981"
           to="/rutas"
         />
-        <StatCard 
-          title="Reservas Totales" 
-          value={routes.reduce((acc, r) => acc + r.booking_count, 0)} 
-          icon={Activity} 
-          trend="82%" 
+        <StatCard
+          title="Reservas Totales"
+          value={routes.reduce((acc, r) => acc + r.booking_count, 0)}
+          icon={Activity}
           color="#f43f5e"
           to="/reportes"
         />
@@ -204,54 +211,82 @@ export default function DashboardPage() {
         {/* Sidebar Activity */}
         <div className="space-y-6">
            <h2 className="text-xl font-black text-white px-2">Estado del Sistema</h2>
-           
+
            <div className="glass-card p-0 overflow-hidden divide-y divide-white/5">
               <div className="p-5 flex items-center gap-4 bg-white/5">
                  <div className="w-10 h-10 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center">
                     <AlertCircle size={20} />
                  </div>
                  <div>
-                    <p className="text-white font-bold text-sm">Alertas Críticas</p>
-                    <p className="text-xs text-slate-500">{activeSuppliers < suppliers.length ? `Hay ${suppliers.length - activeSuppliers} proveedores inactivos` : 'Todo normal'}</p>
+                    <p className="text-white font-bold text-sm">Alertas</p>
+                    <p className="text-xs text-slate-500">{activeSuppliers < suppliers.length ? `${suppliers.length - activeSuppliers} proveedores inactivos` : 'Todo normal'}</p>
                  </div>
               </div>
 
               <div className="p-5 space-y-4">
-                 <h4 className="text-[10px] font-bold text-amber-500 uppercase tracking-widest">Actividad Reciente</h4>
-                 
+                 <h4 className="text-[10px] font-bold text-amber-500 uppercase tracking-widest">Resumen de Inventario</h4>
+
                  <div className="space-y-4">
-                    {[
-                      { icon: Plus, text: 'Ruta "Cuzco Imperial" creada', time: 'Hace 2h', color: 'emerald' },
-                      { icon: Package, text: 'Producto "Transfer Aeropuerto" actualizado', time: 'Hace 5h', color: 'sky' },
-                      { icon: Users, text: 'Nuevo Proveedor: Hotel Monasterio', time: 'Ayer', color: 'orange' },
-                      { icon: Clock, text: 'Sincronización Supabase completa', time: 'Hace 1 día', color: 'slate' },
-                    ].map((item, idx) => (
-                      <div key={idx} className="flex gap-3">
-                         <div className={`mt-0.5 w-6 h-6 rounded-lg bg-${item.color}-500/10 flex items-center justify-center text-${item.color}-400 shrink-0`}>
-                            <item.icon size={12} />
+                    <div className="flex gap-3">
+                       <div className="mt-0.5 w-6 h-6 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 shrink-0">
+                          <Users size={12} />
+                       </div>
+                       <div>
+                          <p className="text-xs font-bold text-slate-300">{activeSuppliers} proveedores activos</p>
+                          <p className="text-[10px] text-slate-600">de {suppliers.length} registrados</p>
+                       </div>
+                    </div>
+                    <div className="flex gap-3">
+                       <div className="mt-0.5 w-6 h-6 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400 shrink-0">
+                          <Package size={12} />
+                       </div>
+                       <div>
+                          <p className="text-xs font-bold text-slate-300">{activeProducts} productos activos</p>
+                          <p className="text-[10px] text-slate-600">de {products.length} registrados</p>
+                       </div>
+                    </div>
+                    <div className="flex gap-3">
+                       <div className="mt-0.5 w-6 h-6 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+                          <Map size={12} />
+                       </div>
+                       <div>
+                          <p className="text-xs font-bold text-slate-300">{routes.filter(r => r.status === 'activo').length} rutas activas</p>
+                          <p className="text-[10px] text-slate-600">de {routes.length} registradas</p>
+                       </div>
+                    </div>
+                    {productsWithoutSupplier > 0 && (
+                      <div className="flex gap-3">
+                         <div className="mt-0.5 w-6 h-6 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-400 shrink-0">
+                            <AlertCircle size={12} />
                          </div>
                          <div>
-                            <p className="text-xs font-bold text-slate-300">{item.text}</p>
-                            <p className="text-[10px] text-slate-600">{item.time}</p>
+                            <p className="text-xs font-bold text-slate-300">{productsWithoutSupplier} sin proveedor</p>
+                            <p className="text-[10px] text-slate-600">productos huérfanos</p>
                          </div>
                       </div>
-                    ))}
+                    )}
                  </div>
-                 
-                 <button className="w-full py-2.5 rounded-xl bg-white/5 text-[10px] font-bold text-slate-400 uppercase hover:text-white transition-colors">
-                    Ver Registro de Auditoría
-                 </button>
               </div>
 
               <div className="p-5 bg-gradient-to-br from-indigo-500/10 to-transparent">
                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-[10px] font-black text-indigo-400 uppercase">Uso de Almacenamiento</p>
-                    <p className="text-[10px] font-black text-indigo-400">42%</p>
+                    <p className="text-[10px] font-black text-indigo-400 uppercase">Registros Totales</p>
+                    <p className="text-[10px] font-black text-indigo-400">{totalRecords}</p>
                  </div>
-                 <div className="w-full h-1.5 bg-indigo-500/10 rounded-full overflow-hidden">
-                    <div className="h-full w-[42%] bg-indigo-500 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
+                 <div className="grid grid-cols-3 gap-2 mt-3">
+                    <div className="text-center p-2 rounded-xl bg-white/5">
+                       <p className="text-[9px] text-slate-500 font-bold uppercase">Prov.</p>
+                       <p className="text-sm font-black text-white">{suppliers.length}</p>
+                    </div>
+                    <div className="text-center p-2 rounded-xl bg-white/5">
+                       <p className="text-[9px] text-slate-500 font-bold uppercase">Prod.</p>
+                       <p className="text-sm font-black text-white">{products.length}</p>
+                    </div>
+                    <div className="text-center p-2 rounded-xl bg-white/5">
+                       <p className="text-[9px] text-slate-500 font-bold uppercase">Rutas</p>
+                       <p className="text-sm font-black text-white">{routes.length}</p>
+                    </div>
                  </div>
-                 <p className="text-[9px] text-slate-500 mt-2 italic">Basado en tu plan de Supabase gratuito.</p>
               </div>
            </div>
 
@@ -259,11 +294,11 @@ export default function DashboardPage() {
            <div className="grid grid-cols-2 gap-4">
               <div className="glass-card p-4 border-l-4 border-amber-500">
                  <p className="text-[10px] font-bold text-slate-500 uppercase">Cat. Más Usada</p>
-                 <p className="text-sm font-black text-white">Hotel (12)</p>
+                 <p className="text-sm font-black text-white">{topCategory}</p>
               </div>
               <div className="glass-card p-4 border-l-4 border-sky-500">
-                 <p className="text-[10px] font-bold text-slate-500 uppercase">Tickets Abiertos</p>
-                 <p className="text-sm font-black text-white">0</p>
+                 <p className="text-[10px] font-bold text-slate-500 uppercase">Sin Proveedor</p>
+                 <p className="text-sm font-black text-white">{productsWithoutSupplier}</p>
               </div>
            </div>
         </div>

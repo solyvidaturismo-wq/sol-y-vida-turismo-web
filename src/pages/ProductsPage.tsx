@@ -1,50 +1,78 @@
 import { useState, useMemo } from 'react';
 import { useProducts, useAppStore, useSuppliers } from '../store/useAppStore';
-import { 
-  Package, 
-  Search, 
-  Filter, 
-  Plus, 
-  Trash2, 
-  Edit2, 
+import {
+  Package,
+  Search,
+  Plus,
+  Trash2,
+  Edit2,
   ExternalLink,
   LayoutGrid,
   List as ListIcon,
   Tag,
   Clock,
   DollarSign,
-  AlertTriangle
+  AlertTriangle,
+  Star
 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { PRODUCT_CATEGORY_META } from '../config/categoryFields';
+import { toast } from '../store/useToastStore';
+import Pagination from '../components/ui/Pagination';
+
+const PAGE_SIZE = 20;
 
 export default function ProductsPage() {
   const products = useProducts();
   const suppliers = useSuppliers();
   const deleteProduct = useAppStore(s => s.deleteProduct);
+  const updateProduct = useAppStore(s => s.updateProduct);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>(searchParams.get('category') || 'all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [page, setPage] = useState(1);
+  const [onlyFeatured, setOnlyFeatured] = useState(false);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+
+  const handleToggleFeatured = async (id: string, current: boolean, name: string) => {
+    setTogglingId(id);
+    try {
+      await updateProduct(id, { is_featured: !current });
+      toast.success(!current ? `"${name}" visible en el landing` : `"${name}" oculto del landing`);
+    } catch (err: any) {
+      toast.error('Error: ' + err.message);
+    } finally {
+      setTogglingId(null);
+    }
+  };
 
   // Filtering
   const filteredProducts = useMemo(() => {
+    setPage(1);
     return products.filter(p => {
-      const matchesQuery = p.name.toLowerCase().includes(query.toLowerCase()) || 
+      const matchesQuery = p.name.toLowerCase().includes(query.toLowerCase()) ||
                           (p.short_description || '').toLowerCase().includes(query.toLowerCase());
       const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
-      return matchesQuery && matchesCategory;
+      const matchesFeatured = !onlyFeatured || p.is_featured;
+      return matchesQuery && matchesCategory && matchesFeatured;
     });
-  }, [products, query, activeCategory]);
+  }, [products, query, activeCategory, onlyFeatured]);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return filteredProducts.slice(start, start + PAGE_SIZE);
+  }, [filteredProducts, page]);
 
   const handleDelete = async (id: string, name: string) => {
     if (confirm(`¿Eliminar "${name}"? Se quitará de todos los itinerarios.`)) {
       try {
         await deleteProduct(id);
+        toast.success(`Producto "${name}" eliminado`);
       } catch (err: any) {
-        alert('Error: ' + err.message);
+        toast.error('Error al eliminar: ' + err.message);
       }
     }
   };
@@ -69,14 +97,14 @@ export default function ProductsPage() {
       {/* Stats Quick View */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
          {[
-           { label: 'En Inventario', val: products.length, icon: Package, color: 'sky' },
-           { label: 'Promedio Precio', val: `$${Math.round(products.reduce((a, b) => a + b.base_price, 0) / (products.length || 1))}`, icon: DollarSign, color: 'emerald' },
-           { label: 'Categorías', val: new Set(products.map(p => p.category)).size, icon: Tag, color: 'amber' },
-           { label: 'Sin Proveedor', val: products.filter(p => !p.supplier_id).length, icon: AlertTriangle, color: 'rose' },
+           { label: 'En Inventario', val: products.length, icon: Package, borderClass: 'border-sky-500', iconClass: 'text-sky-400' },
+           { label: 'Promedio Precio', val: `$${Math.round(products.reduce((a, b) => a + b.base_price, 0) / (products.length || 1))}`, icon: DollarSign, borderClass: 'border-emerald-500', iconClass: 'text-emerald-400' },
+           { label: 'Categorías', val: new Set(products.map(p => p.category)).size, icon: Tag, borderClass: 'border-amber-500', iconClass: 'text-amber-400' },
+           { label: 'Sin Proveedor', val: products.filter(p => !p.supplier_id).length, icon: AlertTriangle, borderClass: 'border-rose-500', iconClass: 'text-rose-400' },
          ].map((stat, i) => (
-           <div key={i} className="glass-card p-4 border-l-4" style={{ borderColor: `var(--color-${stat.color}-500)` }}>
+           <div key={i} className={`glass-card p-4 border-l-4 ${stat.borderClass}`}>
               <div className="flex items-center gap-3 text-slate-400 mb-1">
-                 <stat.icon size={14} className={`text-${stat.color}-400`} />
+                 <stat.icon size={14} className={stat.iconClass} />
                  <span className="text-[10px] font-bold uppercase tracking-wider">{stat.label}</span>
               </div>
               <p className="text-xl font-black text-white">{stat.val}</p>
@@ -97,7 +125,7 @@ export default function ProductsPage() {
               onChange={(e) => setQuery(e.target.value)}
             />
           </div>
-          <select 
+          <select
             className="bg-slate-900/50 border border-white/10 rounded-xl py-2.5 px-4 text-white text-sm focus:outline-none transition-all font-medium min-w-[180px]"
             value={activeCategory}
             onChange={(e) => setActiveCategory(e.target.value)}
@@ -107,18 +135,32 @@ export default function ProductsPage() {
               <option key={key} value={key}>{meta.emoji} {meta.label}</option>
             ))}
           </select>
+          <button
+            onClick={() => setOnlyFeatured(v => !v)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all border ${
+              onlyFeatured
+                ? 'bg-amber-500/15 text-amber-400 border-amber-500/40'
+                : 'bg-white/5 text-slate-400 border-white/5 hover:text-white'
+            }`}
+            title="Mostrar solo productos publicados en el landing /velez"
+          >
+            <Star size={14} className={onlyFeatured ? 'fill-amber-400' : ''} />
+            En landing
+          </button>
         </div>
 
         <div className="flex items-center gap-2">
-           <button 
+           <button
              onClick={() => setViewMode('grid')}
              className={`p-2.5 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-sky-500 text-slate-900 shadow-lg shadow-sky-500/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
+             aria-label="Vista cuadrícula"
            >
              <LayoutGrid size={20} />
            </button>
-           <button 
+           <button
              onClick={() => setViewMode('list')}
              className={`p-2.5 rounded-xl transition-all ${viewMode === 'list' ? 'bg-sky-500 text-slate-900 shadow-lg shadow-sky-500/20' : 'bg-white/5 text-slate-400 hover:text-white'}`}
+             aria-label="Vista lista"
            >
              <ListIcon size={20} />
            </button>
@@ -128,12 +170,31 @@ export default function ProductsPage() {
       {/* Main View */}
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => {
+          {paginatedProducts.map((product) => {
             const meta = PRODUCT_CATEGORY_META[product.category as keyof typeof PRODUCT_CATEGORY_META];
             const supplier = suppliers.find(s => s.id === product.supplier_id);
             
             return (
-              <div key={product.id} className="glass-card group flex flex-col hover:border-sky-500/30 transition-all duration-300 transform-gpu hover:-translate-y-1">
+              <div key={product.id} className="glass-card group flex flex-col hover:border-sky-500/30 transition-all duration-300 transform-gpu hover:-translate-y-1 relative">
+                 {/* Toggle landing (fuera del Link para no navegar) */}
+                 <button
+                   type="button"
+                   onClick={(e) => {
+                     e.preventDefault();
+                     e.stopPropagation();
+                     handleToggleFeatured(product.id, !!product.is_featured, product.name);
+                   }}
+                   disabled={togglingId === product.id}
+                   title={product.is_featured ? 'Visible en landing — click para ocultar' : 'Publicar en landing /velez'}
+                   className={`absolute top-3 right-3 z-10 w-9 h-9 rounded-xl flex items-center justify-center backdrop-blur-md border transition-all ${
+                     product.is_featured
+                       ? 'bg-amber-500 text-white border-amber-300 shadow-lg shadow-amber-500/40'
+                       : 'bg-black/40 text-white/80 border-white/10 hover:bg-amber-500/30 hover:text-amber-300'
+                   } disabled:opacity-50`}
+                 >
+                   <Star size={16} className={product.is_featured ? 'fill-white' : ''} />
+                 </button>
+                 <Link to={`/productos/${product.id}/detalle`} className="flex-1 flex flex-col cursor-pointer">
                  {/* Visual Area */}
                  <div className="h-44 bg-slate-800 relative overflow-hidden">
                     {product.images?.[0] ? (
@@ -144,7 +205,7 @@ export default function ProductsPage() {
                       </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60" />
-                    
+
                     {/* Floating price */}
                     <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/40 backdrop-blur-md border border-white/10 text-white font-black text-sm">
                        {product.currency} {product.base_price.toFixed(2)}
@@ -155,6 +216,11 @@ export default function ProductsPage() {
                        <span className="px-2 py-0.5 rounded-md bg-sky-500/80 text-white text-[9px] font-black uppercase tracking-widest backdrop-blur-sm">
                          {meta?.label || product.category}
                        </span>
+                       {product.is_featured && (
+                         <span className="px-2 py-0.5 rounded-md bg-amber-500/90 text-white text-[9px] font-black uppercase tracking-widest backdrop-blur-sm flex items-center gap-1">
+                           <Star size={10} className="fill-white" /> Landing
+                         </span>
+                       )}
                     </div>
                  </div>
 
@@ -188,18 +254,16 @@ export default function ProductsPage() {
                        </p>
                     </div>
                  </div>
+                 </Link>
 
                  {/* Actions */}
                  <div className="px-5 py-4 flex items-center justify-between bg-white/[0.01]">
-                    <Link 
-                      to={`/productos/${product.id}/detalle`}
-                      className="text-[10px] font-black text-slate-500 hover:text-sky-300 transition-colors uppercase tracking-widest flex items-center gap-1.5"
-                    >
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
                       DETALLES <ExternalLink size={12} />
-                    </Link>
+                    </span>
                     <div className="flex items-center gap-2">
-                       <button onClick={() => navigate(`/productos/${product.id}/editar`)} className="p-2 text-slate-600 hover:text-sky-400 transition-colors"><Edit2 size={16}/></button>
-                       <button onClick={() => handleDelete(product.id, product.name)} className="p-2 text-slate-600 hover:text-rose-400 transition-colors"><Trash2 size={16}/></button>
+                       <button onClick={() => navigate(`/productos/${product.id}/editar`)} className="p-2 text-slate-600 hover:text-sky-400 transition-colors" aria-label="Editar"><Edit2 size={16}/></button>
+                       <button onClick={() => handleDelete(product.id, product.name)} className="p-2 text-slate-600 hover:text-rose-400 transition-colors" aria-label="Eliminar"><Trash2 size={16}/></button>
                     </div>
                  </div>
               </div>
@@ -220,7 +284,7 @@ export default function ProductsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {filteredProducts.map(p => {
+                {paginatedProducts.map(p => {
                   const supplier = suppliers.find(s => s.id === p.supplier_id);
                   return (
                     <tr key={p.id} className="hover:bg-white/[0.01] transition-colors group">
@@ -245,10 +309,23 @@ export default function ProductsPage() {
                           {p.availability.min_pax}-{p.availability.max_capacity || '∞'} pax
                        </td>
                        <td className="px-6 py-4 text-right">
-                          <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                             <Link to={`/productos/${p.id}/detalle`} className="p-2 text-slate-400 hover:text-white"><ExternalLink size={14}/></Link>
-                             <button onClick={() => navigate(`/productos/${p.id}/editar`)} className="p-2 text-slate-400 hover:text-sky-400"><Edit2 size={14}/></button>
-                             <button onClick={() => handleDelete(p.id, p.name)} className="p-2 text-slate-400 hover:text-rose-400"><Trash2 size={14}/></button>
+                          <div className="flex items-center justify-end gap-2">
+                             <button
+                               onClick={() => handleToggleFeatured(p.id, !!p.is_featured, p.name)}
+                               disabled={togglingId === p.id}
+                               title={p.is_featured ? 'Quitar del landing' : 'Publicar en landing'}
+                               className={`p-2 transition-colors disabled:opacity-50 ${
+                                 p.is_featured ? 'text-amber-400' : 'text-slate-600 hover:text-amber-400'
+                               }`}
+                               aria-label="Toggle landing"
+                             >
+                               <Star size={14} className={p.is_featured ? 'fill-amber-400' : ''} />
+                             </button>
+                             <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                               <Link to={`/productos/${p.id}/detalle`} className="p-2 text-slate-400 hover:text-white"><ExternalLink size={14}/></Link>
+                               <button onClick={() => navigate(`/productos/${p.id}/editar`)} className="p-2 text-slate-400 hover:text-sky-400" aria-label="Editar"><Edit2 size={14}/></button>
+                               <button onClick={() => handleDelete(p.id, p.name)} className="p-2 text-slate-400 hover:text-rose-400" aria-label="Eliminar"><Trash2 size={14}/></button>
+                             </div>
                           </div>
                        </td>
                     </tr>
@@ -258,6 +335,9 @@ export default function ProductsPage() {
            </table>
         </div>
       )}
+
+      {/* Pagination */}
+      <Pagination currentPage={page} totalItems={filteredProducts.length} pageSize={PAGE_SIZE} onPageChange={setPage} />
 
       {/* Empty View */}
       {filteredProducts.length === 0 && (

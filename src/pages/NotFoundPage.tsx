@@ -1,10 +1,8 @@
 import { Link } from 'react-router-dom';
-import { 
-  Compass, 
-  Map, 
-  ArrowLeft, 
-  Search, 
-  AlertCircle,
+import {
+  Compass,
+  ArrowLeft,
+  Search,
   Home,
   MessageSquare,
   Globe
