@@ -17,6 +17,7 @@ import {
 import { SUPPLIER_CATEGORY_META, SUPPLIER_CATEGORIES } from '../config/categoryFields';
 import { COLOMBIA_DEPARTMENTS, getMunicipalitiesByDepartment } from '../config/colombiaLocations';
 import DynamicFormSection from '../components/ui/DynamicFormSection';
+import ImageUpload from '../components/ui/ImageUpload';
 import { toast } from '../store/useToastStore';
 
 type SupplierFormValues = {
@@ -347,46 +348,25 @@ export default function SupplierFormPage() {
               <h3 className="text-lg font-black text-white flex items-center gap-2">
                  <ImageIcon size={20} className="text-amber-500" /> Branding
               </h3>
-              
-              <div className="space-y-6">
-                 {/* Logo Upload Simulation */}
-                 <div className="space-y-2">
-                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Logo Corporativo</p>
-                    <div className="flex items-center gap-4">
-                       <div className="w-20 h-20 rounded-2xl bg-slate-900 border-2 border-dashed border-white/10 flex items-center justify-center overflow-hidden shrink-0 group hover:border-amber-500/50 transition-all">
-                          {watch('logo') ? (
-                            <img src={watch('logo')} className="w-full h-full object-cover" />
-                          ) : (
-                            <Building2 className="text-slate-700 group-hover:text-amber-500/50" />
-                          )}
-                       </div>
-                       <input 
-                         {...register('logo')}
-                         placeholder="URL de imagen..."
-                         className="form-input flex-1 text-xs"
-                       />
-                    </div>
-                 </div>
 
-                 {/* Banner Upload Simulation */}
-                 <div className="space-y-2">
-                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3">Imagen de Portada</p>
-                    <div className="aspect-video w-full rounded-2xl bg-slate-900 border-2 border-dashed border-white/10 flex items-center justify-center overflow-hidden group hover:border-amber-500/50 transition-all mb-2">
-                        {watch('banner_image') ? (
-                            <img src={watch('banner_image')} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="text-center">
-                               <ImageIcon className="mx-auto text-slate-700 group-hover:text-amber-500/50 mb-2" />
-                               <span className="text-[10px] text-slate-700 uppercase font-black">Banner Preview</span>
-                            </div>
-                        )}
-                    </div>
-                    <input 
-                        {...register('banner_image')}
-                        placeholder="URL de portada..."
-                        className="form-input w-full text-xs"
-                    />
-                 </div>
+              <div className="space-y-6">
+                 <ImageUpload
+                   label="Logo Corporativo"
+                   value={watch('logo') || ''}
+                   onChange={(val) => setValue('logo', Array.isArray(val) ? val[0] || '' : val, { shouldDirty: true })}
+                   maxFiles={1}
+                   maxSizeKB={250}
+                   description="JPG, PNG o WebP — máximo 250 KB."
+                 />
+
+                 <ImageUpload
+                   label="Imagen de Portada"
+                   value={watch('banner_image') || ''}
+                   onChange={(val) => setValue('banner_image', Array.isArray(val) ? val[0] || '' : val, { shouldDirty: true })}
+                   maxFiles={1}
+                   maxSizeKB={250}
+                   description="Banner del perfil — máximo 250 KB."
+                 />
               </div>
            </div>
 

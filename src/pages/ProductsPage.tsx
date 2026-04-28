@@ -226,7 +226,10 @@ export default function ProductsPage() {
 
                  {/* Information */}
                  <div className="p-5 flex-1">
-                    <h3 className="text-base font-black text-white mb-2 line-clamp-2 leading-tight min-h-[40px]">{product.name}</h3>
+                    <h3
+                      className="text-base font-black mb-2 line-clamp-2 leading-tight min-h-[40px]"
+                      style={{ color: '#ffffff', textShadow: '0 1px 6px rgba(0,0,0,0.8)' }}
+                    >{product.name}</h3>
                     <p className="text-slate-500 text-xs font-medium line-clamp-2 mb-4 leading-relaxed h-[32px]">
                       {product.short_description || 'Sin descripción resumida disponible.'}
                     </p>

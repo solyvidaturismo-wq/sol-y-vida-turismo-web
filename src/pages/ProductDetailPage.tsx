@@ -192,11 +192,14 @@ export default function ProductDetailPage() {
                     </span>
                   )}
                </div>
-               <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none">{product.name}</h1>
+               <h1
+                 className="text-4xl md:text-6xl font-black tracking-tighter leading-none"
+                 style={{ color: '#ffffff', textShadow: '0 2px 10px rgba(0,0,0,0.95), 0 0 30px rgba(0,0,0,0.7)' }}
+               >{product.name}</h1>
                {product.short_description && (
-                 <p className="text-slate-300 text-sm font-medium max-w-xl">{product.short_description}</p>
+                 <p className="text-sm font-medium max-w-xl" style={{ color: 'rgba(255,255,255,0.85)', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>{product.short_description}</p>
                )}
-               <div className="flex flex-wrap items-center gap-6 text-slate-300 text-sm font-bold">
+               <div className="flex flex-wrap items-center gap-6 text-sm font-bold" style={{ color: 'rgba(255,255,255,0.85)', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
                   {product.duration_minutes && (
                     <span className="flex items-center gap-1.5"><Clock size={16} className="text-sky-500" /> {product.duration_minutes} min</span>
                   )}

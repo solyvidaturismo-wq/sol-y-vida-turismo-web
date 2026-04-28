@@ -103,11 +103,11 @@ export default function SupplierDetailPage() {
                        {supplier.status}
                      </span>
                   </div>
-                  <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter flex items-center gap-3">
+                  <h1 className="hero-title text-3xl md:text-5xl font-black tracking-tighter flex items-center gap-3">
                     {supplier.name}
                     {supplier.rating >= 4.5 && <ShieldCheck className="text-sky-400" size={28} />}
                   </h1>
-                  <div className="flex flex-wrap items-center gap-4 text-slate-300 text-sm font-medium">
+                  <div className="flex flex-wrap items-center gap-4 text-sm font-medium" style={{ color: 'rgba(255,255,255,0.9)', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
                     <span className="flex items-center gap-1.5"><MapPin size={16} className="text-amber-500"/> {supplier.location?.city || 'Sin ciudad'}, {supplier.location?.country || 'Sin país'}</span>
                     <span className="flex items-center gap-1.5"><Star size={16} className="text-amber-500 fill-amber-500"/> {supplier.rating}/5</span>
                     <span className="flex items-center gap-1.5"><Package size={16} className="text-sky-400"/> {supplierProducts.length} productos</span>

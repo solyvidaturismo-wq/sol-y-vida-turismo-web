@@ -22,6 +22,7 @@ import {
 import { PRODUCT_CATEGORY_META, PRODUCT_CATEGORIES } from '../config/categoryFields';
 import { COLOMBIA_DEPARTMENTS, getMunicipalitiesByDepartment } from '../config/colombiaLocations';
 import DynamicFormSection from '../components/ui/DynamicFormSection';
+import ImageUpload from '../components/ui/ImageUpload';
 import { PROFILE_TAG_GROUPS, PROFILE_COLOR_MAP, PROFILE_TAG_MAP } from '../config/profileTags';
 import { toast } from '../store/useToastStore';
 
@@ -97,7 +98,7 @@ export default function ProductFormPage() {
       duration_days: 1,
       schedule_type: 'flexible',
       rating: 4.5,
-      images: [''],
+      images: [],
       availability: {
         min_pax: 1,
         max_capacity: 0,
@@ -113,11 +114,6 @@ export default function ProductFormPage() {
       location: { department: '', city: '', country: 'Colombia' },
       extended_data: {}
     }
-  });
-
-  const { fields: imageFields, append: appendImage, remove: removeImage } = useFieldArray({
-    control,
-    name: "images" as any
   });
 
   const { fields: tierFields, append: appendTier, remove: removeTier } = useFieldArray({
@@ -164,7 +160,7 @@ export default function ProductFormPage() {
         setValue('short_description', existing.short_description || '');
         setValue('base_price', existing.base_price ?? 0);
         setValue('currency', existing.currency || 'USD');
-        setValue('images', existing.images?.length ? existing.images : ['']);
+        setValue('images', existing.images?.filter(Boolean) || []);
         setValue('price_tiers', (existing.price_tiers as any) || []);
         setValue('activity_itinerary', (existing.activity_itinerary as any) || []);
 
@@ -650,21 +646,28 @@ export default function ProductFormPage() {
               <div className="space-y-2 pt-2 border-t border-white/5">
                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Días Disponibles</label>
                  <div className="flex gap-1">
-                    {['D', 'L', 'M', 'Mi', 'J', 'V', 'S'].map((day, i) => (
-                      <label key={i} className="flex-1">
-                        <input
-                          type="checkbox"
-                          {...register(`availability.days_of_week.${i}`)}
-                          className="sr-only peer"
-                        />
-                        <div className="text-center py-2 rounded-lg text-[10px] font-black cursor-pointer transition-all border
-                          peer-checked:bg-sky-500/20 peer-checked:border-sky-500/50 peer-checked:text-sky-400
-                          bg-white/5 border-white/5 text-slate-600 hover:bg-white/10"
+                    {['D', 'L', 'M', 'Mi', 'J', 'V', 'S'].map((day, i) => {
+                      const days = (watch('availability.days_of_week') as unknown as boolean[]) || [];
+                      const isActive = !!days[i];
+                      return (
+                        <button
+                          type="button"
+                          key={i}
+                          onClick={() => {
+                            const next = [...days];
+                            next[i] = !next[i];
+                            setValue('availability.days_of_week', next as any, { shouldDirty: true });
+                          }}
+                          className={`flex-1 text-center py-2 rounded-lg text-[10px] font-black cursor-pointer transition-all border ${
+                            isActive
+                              ? 'bg-sky-500/20 border-sky-500/50 text-sky-400'
+                              : 'bg-white/5 border-white/5 text-slate-600 hover:bg-white/10'
+                          }`}
                         >
                           {day}
-                        </div>
-                      </label>
-                    ))}
+                        </button>
+                      );
+                    })}
                  </div>
               </div>
            </div>
@@ -739,27 +742,39 @@ export default function ProductFormPage() {
               </div>
            </div>
 
-           {/* Gallery Summary */}
+           {/* Banner + Galería */}
            <div className="glass-card p-6 space-y-6">
               <h3 className="text-lg font-black text-white flex items-center gap-2">
                  <ImageIcon size={20} className="text-indigo-400" /> Media & Fotos
               </h3>
-              
-              <div className="space-y-3">
-                 {imageFields.map((field, index) => (
-                   <div key={field.id} className="relative group">
-                      <input 
-                        {...register(`images.${index}`)}
-                        placeholder="URL de imagen..."
-                        className="form-input w-full text-xs pr-10"
-                      />
-                      <button onClick={() => removeImage(index)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all">
-                        <Trash2 size={12} />
-                      </button>
-                   </div>
-                 ))}
-                 <button type="button" onClick={() => appendImage('')} className="w-full py-2 border-2 border-dashed border-white/10 rounded-2xl text-[10px] font-bold text-slate-600 uppercase hover:border-sky-500 hover:text-sky-500 transition-all">+ Añadir URL</button>
-              </div>
+
+              <ImageUpload
+                label="Imagen de portada (banner)"
+                value={(watch('images') || [])[0] || ''}
+                onChange={(val) => {
+                  const current = watch('images') || [];
+                  const newBanner = Array.isArray(val) ? val[0] || '' : val;
+                  const rest = current.slice(1);
+                  setValue('images', newBanner ? [newBanner, ...rest] : rest, { shouldDirty: true });
+                }}
+                maxFiles={1}
+                maxSizeKB={250}
+                description="Foto principal que se muestra como hero del producto — máximo 250 KB."
+              />
+
+              <ImageUpload
+                label="Galería adicional"
+                value={(watch('images') || []).slice(1)}
+                onChange={(val) => {
+                  const current = watch('images') || [];
+                  const banner = current[0] || '';
+                  const gallery = Array.isArray(val) ? val : [val].filter(Boolean);
+                  setValue('images', banner ? [banner, ...gallery] : gallery, { shouldDirty: true });
+                }}
+                maxFiles={9}
+                maxSizeKB={250}
+                description="Hasta 9 fotos extra — JPG, PNG o WebP, máximo 250 KB cada una."
+              />
            </div>
         </div>
       </div>
